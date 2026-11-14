@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <NoWarn>MSB3277</NoWarn>
+  </PropertyGroup>
+
+  <!-- Compiled against the game's own assemblies, which are loaded from the
+       install at run time and never copied to the output. -->
+  <ItemGroup>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\..\GAR_Data\Managed\protobuf-net.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

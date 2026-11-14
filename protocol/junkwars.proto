@@ -1,0 +1,1099 @@
+// Guns and Robots data contracts, generated from the game's JunkWars.dll
+// with its own protobuf-net 2.0.0.668 by GARRevival/tools/ProtoSchema.
+// 122 contract types. Every byte[] parameter in PROTOCOL.md that is
+// marked proto/lz4/bzip2 holds one of these messages (see PROTOCOL.md).
+
+import "bcl.proto"; // schema for protobuf-net's handling of core .NET types
+
+message AbstractDeviceSpesificData {
+   optional float LiveTime = 1 [default = 0];
+   optional float Durability = 2 [default = 0];
+   // the following represent sub-types; at most 1 should have a value
+   optional LandMineDamageVO LandMineDamageVO = 101;
+   optional LandMineEnergyVO LandMineEnergyVO = 102;
+   optional LandMineSlowVO LandMineSlowVO = 103;
+   optional TurrentMachineGunVO TurrentMachineGunVO = 104;
+   optional TurrentRocketVO TurrentRocketVO = 105;
+   optional TurrentFlamethrowerVO TurrentFlamethrowerVO = 106;
+   optional MiniMapVO MiniMapVO = 107;
+   optional ShieldVO ShieldVO = 108;
+   optional StickyCameraVO StickyCameraVO = 109;
+   optional BasicDeviceDataVO BasicDeviceDataVO = 110;
+   optional DroneQuadcopterVO DroneQuadcopterVO = 111;
+}
+message AbstractPartSpesificData {
+   optional string PassiveEfectToExecute = 1;
+   // the following represent sub-types; at most 1 should have a value
+   optional BodyCaseVO BodyCaseVO = 101;
+   optional ChassisCaseVO ChassisCaseVO = 102;
+   optional ChassisEngineVO ChassisEngineVO = 103;
+   optional DeviceCaseVO DeviceCaseVO = 104;
+   optional WeaponBarrelVO WeaponBarrelVO = 105;
+   optional WeaponCaseVO WeaponCaseVO = 106;
+   optional BatteryCaseVO BatteryCaseVO = 107;
+}
+message AccessoryDockingPointVO {
+   optional string indent = 1;
+   repeated GarageAccessoryType dockableTypes = 2;
+   optional UIData uidata = 3;
+}
+enum AccountGroupType {
+   Admin = 0;
+   Developer = 1;
+   User = 2;
+   GM = 3;
+}
+enum AccountUserType {
+   User = 0;
+   Bot = 1;
+}
+message ActorVO {
+   optional int32 id = 1 [default = 0];
+   optional int32 team = 2 [default = 0];
+   optional int32 level = 3 [default = 1];
+   optional string name = 4;
+   optional string fullName = 5;
+   optional int32 portrait = 6 [default = 0];
+   optional float itemLevel = 7 [default = 0];
+   optional int32 robotRank = 8 [default = 0];
+   optional double ladderRating = 9 [default = 0];
+   optional double ladderRatingDeviation = 10 [default = 0];
+   optional double ladderRatingSigma = 11 [default = 0];
+   optional RobotAssembly robotAssembly = 12;
+   repeated Module moduleAssemblies = 13;
+   repeated Part parts = 14;
+   optional AmmoDistributionVO ammoDistribution = 15;
+   optional bytes allArenasLoaded = 16;
+   optional int32 partyNmbr = 17 [default = 0];
+   optional string guildName = 18;
+   optional string guildAbbreviation = 19;
+   repeated string activeGuildBuffs = 20;
+   optional InventoryItems battleInventoryItems = 21;
+   repeated string timedBuffs = 22;
+   optional AccountGroupType groupType = 23 [default = Admin];
+   optional AccountUserType userType = 24 [default = User];
+   optional int32 league = 25 [default = -1];
+   optional int32 leaguePosition = 26 [default = -1];
+   optional int32 gamesCount = 27 [default = 0];
+   optional InventoryItems usedBattleInventoryItems = 28;
+}
+enum AdditionalGemaPlayActions {
+   AcidcasterCloud = 0;
+}
+message AffectedDeployableObject {
+   optional int32 actorID = 1 [default = 0];
+   optional int32 objectID = 2 [default = 0];
+   optional float deltaValue = 3 [default = 0];
+   optional ChangeEffectType type = 4 [default = Durability];
+}
+message AffectedNonGameplayObjects {
+   optional string objectID = 1;
+   repeated ChangeEffect changeEffects = 2;
+}
+message AffectedRobot {
+   optional int32 actorID = 1 [default = 0];
+   repeated ChangeEffect changeEffects = 2;
+}
+message AmmoBuyData {
+   optional string indent = 1;
+   repeated KeyValuePair_Int32_Int32 tierData = 2;
+}
+message AmmoDistributionNode {
+   optional int32 moudleID = 1 [default = 0];
+   optional int32 currentAmmount = 2 [default = 0];
+   optional int32 desiredAmmount = 3 [default = 0];
+   optional int32 maxAmmount = 4 [default = 0];
+   optional string desiredAmmoType = 5;
+   optional int32 tier = 6 [default = 0];
+}
+message AmmoDistributionVO {
+   repeated AmmoDistributionNode nodes = 1;
+}
+message AmmoTemplate {
+   optional string indent = 1;
+   optional UIData uiData = 2;
+   repeated AmmoTemplateTierableData tierableData = 3;
+}
+message AmmoTemplateTierableData {
+   optional float damageMod = 1 [default = 0];
+   optional float splashDamageMod = 2 [default = 0];
+   optional float splashRangeMod = 3 [default = 0];
+   optional float projectileSpeedMod = 4 [default = 0];
+   optional float accuracyMod = 5 [default = 0];
+   optional float rangeMod = 6 [default = 0];
+}
+message AmmonitionVO {
+   optional string indent = 1;
+   repeated int32 quantity = 2;
+}
+message BaseStatistics {
+   optional Statistic Durability = 1;
+   optional Statistic Weight = 2;
+}
+message BasicDeviceDataVO {
+}
+message BatteryCaseVO {
+   optional float EnergyRegeneration = 1 [default = 0];
+   optional float EnergyCapacity = 2 [default = 0];
+}
+message BodyCaseVO {
+   optional float EnergyConsumption = 1 [default = 0];
+   optional float EnergyPerShootModifier = 2 [default = 0];
+}
+enum CaseFireingType {
+   Simultaneous = 0;
+   Ordery = 1;
+}
+message ChangeEffect {
+   optional int32 target = 1 [default = 0];
+   optional ChangeEffectType type = 2 [default = Durability];
+   optional float deltaValue = 3 [default = 0];
+   optional float newValue = 4 [default = 0];
+   optional int32 duration = 5 [default = 0];
+}
+enum ChangeEffectType {
+   Durability = 0;
+   Speed = 1;
+   Energy = 2;
+   Ammo = 3;
+   Shield = 4;
+   RateOfFire = 5;
+   Slow = 6;
+   EnergyDrain = 7;
+   EnergyRegenerationDelay = 8;
+}
+message ChassisCaseVO {
+   optional float TerrainPenaltyNegate = 1 [default = 0];
+   optional float EnergyConsumption = 2 [default = 0];
+   optional float Speed = 3 [default = 0];
+   optional float WeightLimit = 4 [default = 0];
+   optional ChassisType chassisType = 5 [default = Wheelled];
+}
+message ChassisEngineVO {
+   optional float SpeedModifier = 1 [default = 0];
+   optional float EnergyConsumption = 2 [default = 0];
+   optional float WeightLimit = 3 [default = 0];
+}
+enum ChassisType {
+   Wheelled = 0;
+   Hover = 1;
+   Walker = 2;
+   Tracked = 3;
+}
+message ChatBannedUser {
+   optional bcl.DateTime banStart = 1;
+   optional bcl.DateTime banEnd = 2;
+   optional int32 banDuration = 3 [default = 0];
+   optional string userId = 4;
+}
+message ChatBannedUsersList {
+   repeated ChatBannedUser bannedUsers = 1;
+}
+enum ConstructionType {
+   Editable = 0;
+   Sealed = 1;
+}
+message ConsumableBoostSlotVO {
+   optional uint32 index = 1 [default = 0];
+   optional ConsumableBoostType type = 2 [default = SpeedUp];
+}
+enum ConsumableBoostType {
+   SpeedUp = 0;
+   EnergyRefill = 1;
+   ChassisRepair = 2;
+   HeadRepair = 3;
+}
+message ConsumableBoostVO {
+   optional ConsumableBoostType type = 1 [default = SpeedUp];
+}
+message CrateKeyVO {
+   optional CrateType type = 1 [default = Bronze];
+}
+enum CrateType {
+   Bronze = 0;
+   Silver = 1;
+   Gold = 2;
+   Platinum = 3;
+}
+message CrateVO {
+   optional CrateType type = 1 [default = Bronze];
+}
+enum DayOfWeek {
+   Sunday = 0;
+   Monday = 1;
+   Tuesday = 2;
+   Wednesday = 3;
+   Thursday = 4;
+   Friday = 5;
+   Saturday = 6;
+}
+enum DeviceActions {
+   MiniMap = 0;
+   LandMineDamage = 1;
+   LandMineSlow = 2;
+   LandMineEnergyDrain = 3;
+   TurrentMachineGun = 4;
+   TurrentRocket = 5;
+   TurrentFlamethrower = 6;
+   Shield = 7;
+   StickyCamera = 8;
+   Invisibility = 9;
+   TurretRocketEaster = 10;
+   ControllableQuadcopter = 11;
+}
+message DeviceCaseVO {
+   optional DeviceActions efectToExecute = 1 [default = MiniMap];
+   optional float activationCostEnergy = 2 [default = 0];
+   optional float cooldown = 3 [default = 0];
+   optional float activationDelay = 4 [default = 0];
+   optional int32 chargesPerUse = 5 [default = 1];
+   optional AbstractDeviceSpesificData deviceSpesificData = 6;
+}
+message DeviceChargeVO {
+   optional DeviceActions deviceType = 1 [default = MiniMap];
+}
+message DockingPointToGarageLinks {
+   optional string dockingPointIdent = 1;
+   optional string accessoryID = 2;
+}
+message DockingPointToPartLinks {
+   optional string dockingPointName = 1;
+   optional int32 partID = 2 [default = 0];
+}
+message DockingPointVO {
+   optional string Name = 1;
+   optional bool isAssemblyRoot = 2 [default = false];
+   repeated LogicalType possibleDockingTypes = 3;
+   optional bool mirrorChild = 4 [default = false];
+   repeated string keywords = 5;
+}
+message DroneQuadcopterVO {
+   optional float Range = 1 [default = 0];
+   optional float Accuracy = 2 [default = 0];
+   optional float Damage = 3 [default = 0];
+   optional float FireDelay = 4 [default = 0];
+}
+message EndBattleData {
+   optional int32 kills = 1 [default = 0];
+   optional int32 penaltyKills = 2 [default = 0];
+   optional float accuracy = 3 [default = 0];
+   optional float credits = 4 [default = 0];
+   optional float penaltyCredits = 5 [default = 0];
+   optional int32 experience = 6 [default = 0];
+   optional int32 penaltyExperience = 7 [default = 0];
+   optional int32 winningTeam = 8 [default = -1];
+   repeated int32 allKills = 9;
+   optional bool survived = 10 [default = false];
+   optional int32 shots = 11 [default = 0];
+   optional int32 hits = 12 [default = 0];
+   optional float inflictedDamage = 13 [default = 0];
+   optional double ladderRatingDelta = 14 [default = 0];
+   optional double ladderRatingDeviationDelta = 15 [default = 0];
+   optional double ladderRatingSigmaDelta = 16 [default = 0];
+   repeated KeyValuePair_LogicalType_Int32 destroyedModules = 17;
+   optional bool defusedBomb = 18 [default = false];
+   optional bool plantedBomb = 19 [default = false];
+   optional bool completedMainObjective = 20 [default = false];
+   optional int32 deaths = 21 [default = 0];
+}
+enum EventMessageType {
+   FriendInvitation = 0;
+   GuildInvitation = 1;
+}
+enum GamePlayActions {
+   Flintlock = 0;
+   Revolver = 1;
+   LongBarrelRevolver = 2;
+   AutomaticPistol = 3;
+   SmallLaser = 4;
+   MicrowaveGun = 5;
+   Carbine = 6;
+   Shotgun = 7;
+   SawedOff = 8;
+   Slingshot = 9;
+   Dartgun = 10;
+   Nailgun = 11;
+   Crossbow = 12;
+   JellyfishGun = 13;
+   Shuriken = 14;
+   AssaultRifle = 15;
+   MediumLaser = 16;
+   Flamecaster = 17;
+   Cryocaster = 18;
+   Acidcaster = 19;
+   LightningGun = 20;
+   SporeGun = 21;
+   SonicCannon = 22;
+   Harpoon = 23;
+   FlareGun = 24;
+   TNT = 25;
+   RoboWeasel = 26;
+   Railgun = 27;
+   Bombcopter = 28;
+   Leecher = 29;
+   RocketDrill = 30;
+   TNTBundle = 31;
+   TriSaw = 32;
+   ClusterMissile = 33;
+   FlechetteCanister = 34;
+   MissileLauncher = 35;
+   RocketLauncher = 36;
+   Cannonball = 37;
+   Fireball = 38;
+   Plasmaball = 39;
+   Mortar = 40;
+   ElephantGun = 41;
+   AtomicGun = 42;
+   HeavyLaser = 43;
+   Discoball = 44;
+   AntKiller = 45;
+   BalloonLauncher = 46;
+   TrashGun = 47;
+   Electrocuter = 48;
+   Deathray = 49;
+   HeavyMachineGun = 50;
+   WitchBow = 51;
+   KatyushaRocketLauncher = 52;
+   StickyBombLauncher = 53;
+   ChristmasRocketLauncher = 54;
+   LoveGun = 55;
+   Fragunov = 56;
+   Plumber = 57;
+   Justice = 58;
+   Revenge = 59;
+}
+message GameResultInfo {
+   optional string chosenMap = 1;
+   optional int32 robotID = 2 [default = 0];
+   optional float credits = 3 [default = 0];
+   optional int32 experience = 4 [default = 0];
+   optional float repairs = 5 [default = 0];
+   optional int32 won = 6 [default = 0];
+   optional bcl.DateTime time = 7;
+}
+enum Gameplay_ModuleType {
+   Unknown = 0;
+   Cassis = 1;
+   Body = 2;
+   Weapon = 3;
+   Head = 4;
+   Device = 5;
+   Accesoary = 6;
+}
+enum GarageAccessoryType {
+   Radio_Type_1 = 0;
+   Radio_Type_2 = 1;
+   Stuff_1 = 2;
+   Stuff_2 = 3;
+}
+message GarageAccessoryVO {
+   optional string indent = 1;
+   optional string itemID = 2;
+   optional UIData uiData = 3;
+   optional GarageAccessoryType type = 4 [default = Radio_Type_1];
+   optional string functionalityType = 5;
+   optional string prefabPath = 6;
+}
+message GarageVO {
+   optional string indent = 1;
+   optional string itemID = 2;
+   optional UIData uiData = 3;
+   optional string prefabPath = 4;
+   repeated AccessoryDockingPointVO accessoryDockingPoints = 5;
+   repeated DockingPointToGarageLinks pointToItemLinks = 6;
+}
+enum GuildBuffCategory {
+   Damage = 0;
+   Defence = 1;
+   Accuracy = 2;
+   Speed = 3;
+   Debuffs = 4;
+   Pickables = 5;
+}
+message GuildBuffData {
+   optional GuildBuffType type = 1 [default = Damage];
+   optional float amount = 2 [default = 0];
+}
+message GuildBuffTemplate {
+   optional string indent = 1;
+   optional UIData uiData = 2;
+   optional int32 level = 3 [default = 0];
+   optional GuildBuffCategory category = 4 [default = Damage];
+   repeated GuildBuffData data = 5;
+   optional int32 duration = 6 [default = 0];
+   repeated PricePackageItem unlockPrice = 7;
+   optional int32 unlockTime = 8 [default = 0];
+   repeated PricePackageItem buyPrice = 9;
+   repeated PricePackageItem hurryPrice = 10;
+}
+enum GuildBuffType {
+   Damage = 0;
+   Defence = 1;
+   Accuracy = 2;
+   Speed = 3;
+   Debuffs = 4;
+   Pickables = 5;
+}
+message GuildBuffUpgradeVO {
+   optional string indent = 1;
+   optional bcl.DateTime startTime = 2;
+}
+message GuildBuffVO {
+   optional string indent = 1;
+   optional bcl.DateTime expiration = 2;
+   optional int32 duration = 3 [default = 0];
+   optional int32 level = 4 [default = 0];
+   optional GuildBuffCategory category = 5 [default = Damage];
+   repeated GuildBuffData data = 6;
+}
+message GuildDataTemplate {
+   repeated GuildUpgradeTemplate guildUpgradesTemplateCollection = 1;
+   repeated GuildBuffTemplate guildBuffsTemplateCollection = 2;
+}
+message GuildDonationVO {
+   optional string name = 1;
+   optional bcl.DateTime date = 2;
+   optional double credits = 3 [default = 0];
+   optional double premiumCredits = 4 [default = 0];
+}
+message GuildDonatorVO {
+   optional string name = 1;
+   optional double credits = 2 [default = 0];
+   optional double premiumCredits = 3 [default = 0];
+}
+enum GuildMemberRole {
+   Leader = 0;
+   Officer = 1;
+   Member = 2;
+   Error = 3;
+}
+message GuildMemberVO {
+   optional string userId = 1;
+   optional string name = 2;
+   optional int32 level = 3 [default = 1];
+   optional int32 portrait = 4 [default = 0];
+   optional GuildMemberRole role = 5 [default = Member];
+}
+message GuildResourcesVO {
+   optional double credits = 1 [default = 0];
+   optional double premiumCredits = 2 [default = 0];
+   optional int32 experience = 3 [default = 0];
+   optional InventoryItems addedItems = 4;
+   optional InventoryItems removedItems = 5;
+}
+message GuildUpgradeTemplate {
+   optional int32 level = 1 [default = 0];
+   optional int32 maxMembers = 2 [default = 0];
+   repeated PricePackageItem price = 3;
+}
+message GuildVO {
+   optional string guildId = 1;
+   optional string name = 2;
+   optional string abbreviation = 3;
+   optional int32 maxPlayers = 4 [default = 10];
+   optional double credits = 5 [default = 0];
+   optional int32 experience = 6 [default = 0];
+   optional int32 level = 7 [default = 1];
+   optional int32 icon = 8 [default = 0];
+   repeated GuildMemberVO members = 9;
+   repeated string unlockedBuffs = 10;
+   repeated GuildBuffVO activeBuffs = 11;
+   optional string messageOfTheDay = 12;
+   repeated GuildDonatorVO donations = 14;
+   repeated GuildDonationVO latestDonations = 15;
+   repeated GuildBuffUpgradeVO upgradingBuffs = 16;
+   optional double premiumCredits = 17 [default = 0];
+   optional InventoryItems inventory = 18;
+}
+message InventoryItem {
+   optional int32 quantity = 1 [default = 0];
+   // the following represent sub-types; at most 1 should have a value
+   optional ConsumableBoostVO ConsumableBoostVO = 101;
+   optional CrateKeyVO CrateKeyVO = 102;
+   optional CrateVO CrateVO = 103;
+   optional DeviceChargeVO DeviceChargeVO = 104;
+   optional LockpickVO LockpickVO = 106;
+   optional UpgradeComponentVO UpgradeComponentVO = 107;
+   optional PaintComponentVO PaintComponentVO = 108;
+}
+message InventoryItems {
+   repeated KeyValuePair_PackageType_List_InventoryItem _itemsDict = 1;
+}
+message KeyValuePair {
+   optional string name = 1;
+   optional string value = 2;
+}
+message KeyValuePair_Int32_Int32 {
+   optional int32 Key = 1;
+   optional int32 Value = 2;
+}
+message KeyValuePair_LogicalType_Int32 {
+   optional LogicalType Key = 1;
+   optional int32 Value = 2;
+}
+message KeyValuePair_PackageType_List_InventoryItem {
+   optional PackageType Key = 1;
+   optional List_InventoryItem Value = 2;
+}
+message LandMineDamageVO {
+   optional float Range = 1 [default = 0];
+   optional float Damage = 2 [default = 0];
+}
+message LandMineEnergyVO {
+   optional float Range = 1 [default = 0];
+   optional float Drain = 2 [default = 0];
+   optional float PenaltyDuration = 3 [default = 0];
+}
+message LandMineSlowVO {
+   optional float Range = 1 [default = 0];
+   optional float SlowPercent = 2 [default = 0];
+   optional float SlowDuration = 3 [default = 0];
+}
+message LifetimeStatisticsVO {
+   optional int32 shots = 1 [default = 0];
+   optional int32 hits = 2 [default = 0];
+   optional int32 kills = 3 [default = 0];
+   optional float inflictedDamage = 4 [default = 0];
+   optional int32 battlesParticipated = 5 [default = 0];
+   optional int32 battlesWon = 6 [default = 0];
+   optional int32 battlesLost = 7 [default = 0];
+   optional int32 battlesDrawn = 8 [default = 0];
+   optional int32 battlesSurvived = 9 [default = 0];
+   optional int32 destroyedHeads = 10 [default = 0];
+   optional int32 destroyedChassis = 11 [default = 0];
+   optional int32 destroyedWeapons = 12 [default = 0];
+   optional float maxDamageInBattle = 14 [default = 0];
+   optional int32 maxKillsInBattle = 15 [default = 0];
+   optional int32 deaths = 16 [default = 0];
+}
+message LockpickVO {
+}
+enum LogicalType {
+   Any = 0;
+   Unknown = 1;
+   Cassis = 2;
+   CassisCase = 3;
+   Body = 4;
+   BodyCase = 5;
+   Battery = 6;
+   Weapon = 7;
+   WeaponCase = 8;
+   WeaponMuzzle = 9;
+   Head = 10;
+   HeadCase = 11;
+   Engine = 12;
+   Device = 13;
+   DeviceCase = 14;
+   Eyewear = 15;
+   EyewearCase = 16;
+   Hat = 17;
+   HatCase = 18;
+   Mouthwear = 19;
+   MouthwearCase = 20;
+   Robot = 21;
+}
+message LootGroup {
+   repeated LootGroupItem possibleItems = 1;
+   optional LootNumericProperty minSlotsCount = 2;
+   optional LootNumericProperty maxSlotsCount = 3;
+   optional bool allowSameRandomItemSubtype = 4 [default = false];
+   optional LootNumericProperty probability = 5;
+}
+message LootGroupItem {
+   optional PackageType itemType = 1 [default = Credits];
+   optional string specificIndent = 2;
+   optional LootNumericProperty minCount = 3;
+   optional LootNumericProperty maxCount = 4;
+   optional LootNumericProperty probabilityWeightInt = 5;
+}
+message LootNumericProperty {
+   optional float baseValue = 1 [default = 0];
+   optional float maxScaleValue = 2 [default = 0];
+}
+message LootTemplate {
+   optional string indent = 1;
+   repeated RandomLootItem randomItems = 2;
+   repeated LootGroup groups = 3;
+}
+message MiniMapVO {
+}
+message MissionDefinition {
+   optional string missionId = 1;
+   repeated KeyValuePair targetValues = 2;
+   repeated KeyValuePair parameterValues = 3;
+   optional string MissionTypeName = 4;
+   optional Package rewardPackage = 5;
+}
+message MissionDefinitionCategory {
+   optional string categoryId = 1;
+   repeated MissionDefinition missionDefinitions = 2;
+}
+message MissionInitData {
+   repeated MissionDefinitionCategory missionDefinitions = 1;
+   repeated MissionProgress newMissionProgress = 2;
+}
+message MissionProgress {
+   optional string missionId = 1;
+   repeated ProgressValue progressValues = 2;
+   optional MissionStatus status = 3 [default = InProgress];
+   optional bcl.DateTime completeDateTime = 4;
+}
+message MissionProgressCategory {
+   optional string categoryId = 1;
+   repeated MissionProgress missionsProgress = 2;
+}
+message MissionProgressChangeData {
+   repeated MissionProgress missionProgress = 1;
+   repeated MissionDefinitionCategory newMissionsDefinitions = 2;
+}
+enum MissionStatus {
+   InProgress = 0;
+   Completed = 1;
+   Expired = 2;
+   Failed = 3;
+}
+message MisssionHourSpan {
+   optional int32 startMinute = 1 [default = 0];
+   optional int32 duration = 2 [default = 0];
+}
+message MisssionRewardPackage {
+   optional float fromPosition = 1 [default = 0];
+   optional float toPosition = 2 [default = 0];
+   repeated Package rewardPackages = 3;
+}
+message Module {
+   optional int32 moduleID = 1 [default = -1];
+   optional string moduleName = 2;
+   optional ConstructionType constructionType = 3 [default = Editable];
+   optional LogicalType type = 4 [default = Any];
+   optional Gameplay_ModuleType gameplayType = 5 [default = Unknown];
+   optional int32 moduleCaseID = 6 [default = -1];
+   repeated DockingPointToPartLinks dockingPointToPartLinks = 7;
+}
+message ModuleTemplate {
+   optional string moduleName = 1;
+   optional LogicalType type = 2 [default = Any];
+   optional bool showInShop = 3 [default = true];
+   optional ConstructionType constructionType = 4 [default = Editable];
+   optional string moduleCaseIndent = 5;
+   repeated TemplateDockingPointToPartLinks dockingPointToPartLinks = 6;
+}
+message Package {
+   optional int32 id = 1 [default = 0];
+   repeated PackageItem items = 2;
+}
+message PackageItem {
+   optional PackageType type = 1 [default = Credits];
+   optional float quantity = 2 [default = 0];
+   optional string indent = 3;
+}
+message PackagePriceTemplate {
+   repeated PricePackage packages = 1;
+}
+enum PackageType {
+   Credits = 0;
+   Part = 1;
+   Module = 2;
+   Portrait = 3;
+   InventorySlot = 4;
+   RobotSlot = 5;
+   AchievementPoints = 6;
+   PremiumCredits = 7;
+   ConsumableBoost = 8;
+   Crate = 9;
+   CrateKey = 10;
+   Lockpick = 11;
+   UpgradeComponent = 12;
+   DeviceCharge = 13;
+   PartSkin = 14;
+   Experience = 15;
+   PaintComponent = 16;
+   TintColor = 17;
+   Robot = 18;
+   GlobalBoost = 19;
+}
+message PaintComponentVO {
+}
+message Part {
+   optional uint32 skinIndex = 1 [default = 0];
+   optional string indent = 3;
+   optional int32 partID = 4 [default = 0];
+   optional LogicalType type = 5 [default = Any];
+   optional PartRole role = 6 [default = Part];
+   optional bool purchasable = 7 [default = true];
+   repeated DockingPointVO dockingPoints = 8;
+   optional UIData uiData = 9;
+   optional BaseStatistics statistics = 10;
+   optional AbstractPartSpesificData partSpesificData = 11;
+   optional float Durability2CreditsRato = 12 [default = 1];
+   optional bcl.DateTime expirationDate = 14;
+   optional int32 currentTier = 15 [default = 0];
+   optional TintingDataVO tintingData = 17;
+}
+enum PartRole {
+   Part = 0;
+   Case = 1;
+}
+message PartSkinData {
+   optional uint32 index = 1 [default = 0];
+   optional UIData uiData = 2;
+   repeated PricePackageItem normalBuy = 3;
+   repeated PricePackageItem premiumBuy = 4;
+   repeated PricePackageItem promoBuy = 5;
+   repeated PricePackageItem rent = 6;
+   optional bool purchasable = 7 [default = false];
+   optional bool showInShop = 8 [default = false];
+}
+message PartSkinsTemplate {
+   optional string partIndent = 1;
+   repeated PartSkinData skins = 2;
+   optional int32 lifetimeDays = 3 [default = 0];
+}
+message PartSkinsVO {
+   optional string partIndent = 1;
+   repeated Skin skins = 2;
+}
+message PartTemplate {
+   optional string prefabPath = 1;
+   optional string indent = 2;
+   optional UIData uiData = 3;
+   repeated DockingPointVO dockingPoints = 4;
+   optional LogicalType type = 5 [default = Any];
+   optional PartRole role = 6 [default = Part];
+   optional bool purchasable = 7 [default = true];
+   optional bool showInShop = 8 [default = true];
+   repeated string keywords = 9;
+   optional WeightType weightType = 10 [default = None];
+   optional int32 minTier = 11 [default = 0];
+   required int32 maxTier = 12 [default = 0];
+   repeated PartTierableStatistics partTierableStatistics = 14;
+}
+message PartTierableStatistics {
+   optional BaseStatistics statistics = 1;
+   optional AbstractPartSpesificData partSpesificData = 2;
+   optional float itemLevel = 3 [default = 0];
+   optional float Durability2CreditsRato = 4 [default = 1];
+}
+message PartUpgradeTimeSpan {
+   optional int32 partID = 1 [default = 0];
+   optional bcl.DateTime startTime = 2;
+   optional int32 startTier = 3 [default = 0];
+   optional int32 tier = 4 [default = 0];
+   optional int64 hurryOffset = 5 [default = 0];
+}
+message PartUpgradesTemplate {
+   repeated PartsUpgardeCategoryData upgadeData = 1;
+}
+message PartsUpgardeCategoryData {
+   optional TechCategory category = 1 [default = Chassis];
+   optional int32 maxTechTier = 2 [default = 0];
+   repeated int32 tierUpgardeDuration = 3;
+   repeated int32 selfUnlockPerPlayerLevel = 4;
+   repeated PricePackageItem tierForceUnlockPrice = 5;
+   repeated PricePackageItem tierHurryPrice = 6;
+}
+message PlayerPromotionsVO {
+   optional int32 lastLevelUpShare = 1 [default = 0];
+   optional int32 dailyLoginCount = 2 [default = 0];
+   optional bcl.DateTime dailyLoginLastDate = 3;
+}
+message PlayerVO {
+   optional float premiumCredits = 1 [default = 0];
+   optional float credits = 2 [default = 0];
+   optional int32 experience = 3 [default = 0];
+   optional int32 level = 4 [default = 1];
+   optional string playerName = 5;
+   optional string icon = 6;
+   repeated RobotAssembly ownedRobotAssemblies = 7;
+   repeated Module ownedModuleAssemblies = 8;
+   repeated Part ownedParts = 9;
+   optional AmmoDistributionVO ammoDistribution = 10;
+   repeated AmmonitionVO ownedAmmo = 11;
+   repeated GarageVO ownedGarages = 12;
+   repeated GarageAccessoryVO ownedGarageAccessories = 14;
+   optional string currentGarageID = 15;
+   optional uint32 selectedRobotIndex = 16 [default = 0];
+   optional int32 lastUsedRobotID = 17 [default = 0];
+   optional int32 lastUsedModuleID = 18 [default = 0];
+   optional int32 lastUsedPartID = 19 [default = 0];
+   optional LifetimeStatisticsVO lifetimeStatistics = 20;
+   optional int32 currentPortraitIndex = 21 [default = 0];
+   repeated int32 ownedPortraits = 22;
+   required int32 inventorySlots = 23 [default = 0];
+   optional int32 licenseAgreementState = 24 [default = 0];
+   optional int32 tutorialState = 25 [default = 0];
+   optional double ladderRating = 26 [default = 0];
+   optional double ladderRatingDeviation = 27 [default = 0];
+   optional double ladderRatingSigma = 28 [default = 0];
+   optional int32 seasonBattles = 29 [default = 0];
+   optional string fullName = 30;
+   repeated string friendList = 31;
+   optional PlayerPromotionsVO playerPromotions = 32;
+   optional string guildId = 33;
+   repeated MissionProgressCategory missionProgress = 34;
+   optional SelectableMissionsInfo dailyMissionsInfo = 35;
+   optional InventoryItems inventory = 36;
+   repeated PartUpgradeTimeSpan partInUpgrade = 37;
+   repeated TechCategoryLink techLevels = 38;
+   repeated TimedBuffVO timedBuffs = 44;
+   repeated PartSkinsVO ownedPartSkins = 45;
+   repeated int32 ownedTintColors = 46;
+   optional bool specialPackReceived = 47 [default = false];
+}
+message PortraitTemplate {
+   optional int32 indent = 1 [default = 0];
+   repeated PricePackageItem normalBuy = 7;
+   repeated PricePackageItem premiumBuy = 8;
+   repeated PricePackageItem promoBuy = 9;
+   optional bool showInShop = 11 [default = false];
+}
+message PriceDataTemplate {
+   repeated TierLink normalBuy = 1;
+   repeated TierLink premiumBuy = 2;
+   repeated TierLink promoBuy = 3;
+   repeated TierLink normalSell = 4;
+   repeated TierLink premiumSell = 5;
+   repeated TierLink upgrade = 6;
+   repeated TierLink repair = 7;
+   repeated TierLink decompose = 8;
+   repeated TierLink rent = 9;
+}
+message PricePackage {
+   optional string indent = 1;
+   optional bool showInShop = 2 [default = true];
+   optional Package itemPackage = 3;
+   repeated PricePackageItem normalBuy = 4;
+   repeated PricePackageItem promoBuy = 5;
+   repeated PricePackageItem normalSell = 6;
+}
+message PricePackageGroup {
+   repeated PricePackageItem items = 1;
+}
+message PricePackageItem {
+   optional PackageType type = 1 [default = Credits];
+   optional float quantity = 2 [default = 0];
+   optional string indent = 3;
+}
+message PriceTemplateData {
+   optional string indent = 1;
+   optional PriceDataTemplate data = 2;
+}
+message PriceTemplateList {
+   repeated PriceTemplateData templateCollection = 1;
+}
+message ProgressValue {
+   optional string name = 1;
+   optional string value = 2;
+}
+message PromotionsTemplate {
+   optional int32 SocialShareLevelUpRewardCredits = 1 [default = 1000];
+   repeated Package DailyLoginRewards = 2;
+}
+message PromotionsVO {
+   optional PromotionsTemplate promotionsTemplate = 1;
+   optional int32 dailyLoginRewardActiveIndex = 2 [default = 0];
+}
+message RandomLootItem {
+   optional PackageType itemType = 1 [default = Credits];
+   optional string specificIndent = 2;
+   optional LootNumericProperty probability = 3;
+   optional LootNumericProperty minCount = 4;
+   optional LootNumericProperty maxCount = 5;
+}
+message RobotAssembly {
+   optional bool autoRepair = 1 [default = false];
+   optional bool autoResupply = 2 [default = false];
+   optional string assemblyName = 3;
+   optional int32 assemblyID = 4 [default = -1];
+   optional int32 rootPartID = 5 [default = -1];
+   repeated RobotAssemblyChildVO dockingPointToModuleLinks = 6;
+   repeated ConsumableBoostSlotVO consumableBoostSlots = 7;
+}
+message RobotAssemblyChildVO {
+   optional int32 parentModuleID = 1 [default = 0];
+   optional string parentDockingPointName = 2;
+   optional int32 childModuleID = 3 [default = 0];
+}
+message SelectableMissionsInfo {
+   repeated string missionIds = 1;
+   optional int32 selectedMissionIndex = 2 [default = -1];
+   optional bcl.DateTime initDateTime = 3;
+   optional bcl.DateTime selectDateTime = 4;
+}
+message ShieldVO {
+   optional float ShieldDurability = 1 [default = 0];
+}
+message Skin {
+   optional uint32 Index = 1 [default = 0];
+   optional int64 ActivationDateTicks = 2 [default = -9223372036854775808];
+}
+message SocialMessageData {
+   optional string sender = 1;
+   optional string receiver = 2;
+   optional EventMessageType type = 3 [default = FriendInvitation];
+   optional string message = 4;
+   optional bcl.DateTime date = 5;
+}
+message Statistic {
+   optional float modifier = 2 [default = 0];
+   optional float currentValue = 3 [default = 0];
+   optional float maxValue = 4 [default = 0];
+}
+message StatisticChangeData {
+   optional int32 originActorID = 1 [default = 0];
+   repeated AffectedRobot affectedRobots = 2;
+   repeated AffectedNonGameplayObjects affectedNonGameplayObjects = 3;
+   repeated AffectedDeployableObject affectedDeployableObjects = 4;
+}
+message StickyCameraVO {
+}
+enum TechCategory {
+   Chassis = 0;
+   Body = 1;
+   Head = 2;
+   Weapon = 3;
+   Device = 4;
+}
+message TechCategoryLink {
+   optional TechCategory category = 1 [default = Chassis];
+   optional int32 currentTier = 2 [default = 0];
+}
+message TemplateDockingPointToPartLinks {
+   optional string dockingPointName = 1;
+   optional string partIndent = 2;
+}
+message TierLink {
+   optional int32 tier = 1 [default = 0];
+   repeated PricePackageItem items = 2;
+}
+message TimedBuffTemplate {
+   optional string indent = 1;
+   repeated string keywords = 2;
+   repeated int32 duration = 3;
+   optional bool showInShop = 4 [default = true];
+   optional float scale = 5 [default = 1];
+   repeated PricePackageGroup price = 6;
+}
+message TimedBuffTemplateList {
+   repeated TimedBuffTemplate templateCollection = 1;
+}
+message TimedBuffVO {
+   optional string indent = 1;
+   optional bcl.DateTime startTime = 2;
+   optional bcl.DateTime endTime = 3;
+}
+message TimedMissionTemplate {
+   optional bcl.DateTime StartDate = 1;
+   optional bcl.DateTime EndDate = 2;
+   optional bool primary = 3 [default = false];
+   repeated DayOfWeek ActiveWeekDays = 4;
+   repeated MisssionHourSpan ActiveDayTime = 5;
+   optional int32 AmmountToAccumolate = 6 [default = 0];
+   optional TimedMisssionType Type = 7 [default = CandyHalloween];
+   optional bool RewardByAbsolutePosition = 8 [default = false];
+   repeated MisssionRewardPackage Rewards = 9;
+   optional string Indent = 10;
+}
+enum TimedMisssionType {
+   CandyHalloween = 0;
+   PumpkinHalloween = 1;
+   DoubleExperience = 2;
+   DoubleCredits = 3;
+   ChristmasPresents = 4;
+   ChristmasCookies = 5;
+   ValentinePresents = 6;
+   ValentineHeart = 7;
+   EasterRabbits = 8;
+   EasterEggsBasket = 9;
+   OpenSeason = 10;
+   ZombieMadness = 11;
+}
+message TintColorData {
+   optional string indent = 1;
+   required float r = 2 [default = 0];
+   required float g = 3 [default = 0];
+   required float b = 4 [default = 0];
+   required float a = 5 [default = 0];
+   optional UIData uiData = 6;
+   repeated PricePackageItem normalBuy = 7;
+   repeated PricePackageItem premiumBuy = 8;
+   repeated PricePackageItem promoBuy = 9;
+   optional bool purchasable = 10 [default = false];
+   optional bool showInShop = 11 [default = false];
+}
+message TintColorTemplate {
+   optional int32 index = 1 [default = 0];
+   optional TintColorData data = 2;
+   repeated string categories = 3;
+}
+message TintingDataVO {
+   optional bool tintEnabled = 1 [default = false];
+   optional int32 primaryTintColorIndex = 2 [default = -1];
+   optional int32 secondaryTintColorIndex = 3 [default = -1];
+   optional int32 tertiaryTintColorIndex = 4 [default = -1];
+}
+message TurrentFlamethrowerVO {
+   optional float Range = 1 [default = 0];
+   optional float Accuracy = 2 [default = 0];
+   optional float Damage = 3 [default = 0];
+   optional float FireDelay = 4 [default = 0];
+}
+message TurrentMachineGunVO {
+   optional float Range = 1 [default = 0];
+   optional float Accuracy = 2 [default = 0];
+   optional float Damage = 3 [default = 0];
+   optional float FireDelay = 4 [default = 0];
+}
+message TurrentRocketVO {
+   optional float Range = 1 [default = 0];
+   optional float Accuracy = 2 [default = 0];
+   optional float SplashDamage = 3 [default = 0];
+   optional float SplashRange = 4 [default = 0];
+   optional float FireDelay = 5 [default = 0];
+}
+message UIData {
+   optional string name = 1;
+   optional string description = 2;
+   optional string icon = 3;
+}
+enum UpgradeComponentType {
+   Chassis = 0;
+   Body = 1;
+   Weapon = 2;
+   Head = 3;
+   Device = 4;
+}
+message UpgradeComponentVO {
+   optional UpgradeComponentType type = 1 [default = Chassis];
+}
+message WeaponBarrelVO {
+   optional GamePlayActions ActiveEfectToExecute = 1 [default = Flintlock];
+   repeated AdditionalGemaPlayActions AdditionalEffects = 2;
+   optional float MaxAmmo = 3 [default = 0];
+   optional float CurrentAmmo = 4 [default = 0];
+   optional float Accuracy = 5 [default = 0];
+   optional float RateOfFire = 6 [default = 0];
+   optional float Damage = 7 [default = 0];
+   optional float Range = 8 [default = 0];
+   optional float SpashDamage = 9 [default = 0];
+   optional float SpashRange = 10 [default = 0];
+   optional float AmmoPerShot = 11 [default = 0];
+   optional float EnergyConsumptionPerShoot = 12 [default = 0];
+   repeated string usableAmmoTypes = 14;
+}
+message WeaponCaseVO {
+   optional CaseFireingType fireingType = 1 [default = Simultaneous];
+   optional float fireDelay = 2 [default = 0];
+   optional float accuracyModidifer = 3 [default = 0];
+   optional float damageModidifer = 4 [default = 0];
+   optional float splashDamageModidifer = 5 [default = 0];
+   optional float projectileSpeedModidifer = 6 [default = 0];
+   optional float energyConsumptionModidifer = 7 [default = 0];
+   optional float durabilityModidifer = 8 [default = 0];
+}
+enum WeightType {
+   None = 0;
+   Light = 1;
+   Medium = 2;
+   Heavy = 3;
+}

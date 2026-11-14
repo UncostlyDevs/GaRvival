@@ -1,0 +1,24 @@
+# Copies of the game's assemblies used for compiling; never share these
+build/
+bin/
+dist/
+src/Patcher/obj/
+src/Patcher/bin/
+# Each player's own files, created by the game
+save*/
+revival*.log
+settings.cfg
+battle*.cfg
+server*.cfg
+dedicated*.cfg
+missions.cfg
+generated-templates.txt
+shot_*.png
+autoshots*.txt
+autorun*.txt
+tools/__pycache__/
+web-requests*.log
+**/obj/
+**/bin/
+# Screenshots show a player name and LAN addresses
+/*.png

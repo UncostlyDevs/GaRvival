@@ -1,0 +1,6570 @@
+{
+ "parameterCodes": {
+  "160": "PartTintingData",
+  "163": "Param6",
+  "164": "Param5",
+  "165": "Param4",
+  "166": "Param3",
+  "167": "Param2",
+  "168": "Param1",
+  "169": "Level",
+  "170": "Experience",
+  "200": "DeactivationCode",
+  "201": "ObjectId",
+  "202": "DeviceId",
+  "203": "Quaternion",
+  "204": "Vector3",
+  "205": "ModuleType",
+  "206": "BarrelId",
+  "207": "WeaponId",
+  "208": "AzureMasterNodeId",
+  "209": "AzureLocalNodeId",
+  "210": "AzureNodeInfo",
+  "211": "SecretUserId",
+  "212": "Team",
+  "213": "Credits",
+  "214": "Delta",
+  "215": "UserData",
+  "216": "Password",
+  "217": "Username",
+  "218": "Info",
+  "220": "AppVersion",
+  "221": "Secret",
+  "222": "GameList",
+  "223": "Position",
+  "224": "ApplicationId",
+  "225": "UserId",
+  "227": "MasterPeerCount",
+  "228": "GameCount",
+  "229": "PeerCount",
+  "230": "Address",
+  "231": "PartsData",
+  "232": "ModulesData",
+  "233": "ItemID",
+  "234": "ItemType",
+  "235": "ItemData",
+  "236": "RobotData",
+  "237": "MessageSender",
+  "238": "MessageReceiver",
+  "239": "MessageType",
+  "240": "MessageData",
+  "241": "CleanupCacheOnLeave",
+  "244": "Code",
+  "245": "CustomEventContent/Data",
+  "246": "ReceiverGroup",
+  "247": "Cache",
+  "248": "GameProperties",
+  "249": "ActorProperties",
+  "250": "Broadcast",
+  "251": "Properties",
+  "252": "ActorList",
+  "253": "TargetActorNr",
+  "254": "ActorNr",
+  "255": "GameId"
+ },
+ "operations": [
+  {
+   "code": 254,
+   "name": "Leave",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpLeave",
+     "peer": "NetworkingPeer",
+     "encrypted": false,
+     "params": []
+    },
+    {
+     "method": "OpLeave",
+     "peer": "GamePeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 253,
+   "name": "RaiseEvent",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpRaiseEvent",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      },
+      {
+       "key": 244,
+       "type": "byte",
+       "optional": false,
+       "name": "Code"
+      },
+      {
+       "key": 247,
+       "type": "byte",
+       "optional": true,
+       "name": "Cache"
+      },
+      {
+       "key": 252,
+       "type": "int[]",
+       "optional": true,
+       "name": "ActorList"
+      }
+     ]
+    },
+    {
+     "method": "OpRaiseEvent",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      },
+      {
+       "key": 244,
+       "type": "byte",
+       "optional": false,
+       "name": "Code"
+      },
+      {
+       "key": 246,
+       "type": "byte",
+       "optional": true,
+       "name": "ReceiverGroup"
+      },
+      {
+       "key": 247,
+       "type": "byte",
+       "optional": true,
+       "name": "Cache"
+      }
+     ]
+    },
+    {
+     "method": "RemoveCacheOfLeftPlayers",
+     "peer": "NetworkingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 244,
+       "type": "byte",
+       "optional": false,
+       "name": "Code"
+      },
+      {
+       "key": 247,
+       "type": "byte",
+       "optional": false,
+       "name": "Cache"
+      }
+     ]
+    },
+    {
+     "method": "RemoveCacheOfLeftPlayers",
+     "peer": "GamePeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 244,
+       "type": "byte",
+       "optional": false,
+       "name": "Code"
+      },
+      {
+       "key": 247,
+       "type": "byte",
+       "optional": false,
+       "name": "Cache"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "chat_arena_message_error"
+     ],
+     "returnCodes": [
+      32751
+     ],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "chat_arena_message_error"
+     ],
+     "returnCodes": [
+      32751
+     ],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 252,
+   "name": "SetProperties",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSetPropertiesOfActor",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    },
+    {
+     "method": "OpSetPropertiesOfGame",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 251,
+   "name": "GetProperties",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGetPropertiesOfActor",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    },
+    {
+     "method": "OpGetPropertiesOfGame",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 248,
+       "type": "Hashtable",
+       "name": "GameProperties"
+      },
+      {
+       "key": 249,
+       "type": "Hashtable",
+       "name": "ActorProperties"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 248,
+       "type": "Hashtable",
+       "name": "GameProperties"
+      },
+      {
+       "key": 249,
+       "type": "Hashtable",
+       "name": "ActorProperties"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 248,
+   "name": "Shoot",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpShoot",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 205,
+       "type": "byte",
+       "optional": false,
+       "name": "ModuleType"
+      },
+      {
+       "key": 207,
+       "type": "byte",
+       "optional": false,
+       "name": "WeaponId"
+      },
+      {
+       "key": 206,
+       "type": "byte",
+       "optional": false,
+       "name": "BarrelId"
+      },
+      {
+       "key": 255,
+       "type": "short",
+       "optional": false,
+       "name": "GameId"
+      },
+      {
+       "key": 244,
+       "type": "byte?",
+       "optional": true,
+       "name": "Code"
+      },
+      {
+       "key": 251,
+       "type": "object[]",
+       "optional": false,
+       "name": "Properties"
+      },
+      {
+       "key": 245,
+       "type": "float[]",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      },
+      {
+       "key": 248,
+       "type": "object[]",
+       "optional": true,
+       "name": "GameProperties"
+      },
+      {
+       "key": 164,
+       "type": "byte?",
+       "optional": true,
+       "name": "Param5"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_arena_actor_shoot_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_arena_actor_shoot_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 247,
+   "name": "Hit",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpHit",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 205,
+       "type": "byte",
+       "optional": false,
+       "name": "ModuleType"
+      },
+      {
+       "key": 207,
+       "type": "byte",
+       "optional": false,
+       "name": "WeaponId"
+      },
+      {
+       "key": 206,
+       "type": "byte",
+       "optional": false,
+       "name": "BarrelId"
+      },
+      {
+       "key": 255,
+       "type": "short",
+       "optional": false,
+       "name": "GameId"
+      },
+      {
+       "key": 244,
+       "type": "byte?",
+       "optional": true,
+       "name": "Code"
+      },
+      {
+       "key": 251,
+       "type": "object[]",
+       "optional": false,
+       "name": "Properties"
+      },
+      {
+       "key": 245,
+       "type": "float[]",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      },
+      {
+       "key": 248,
+       "type": "object[]",
+       "optional": true,
+       "name": "GameProperties"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 246,
+   "name": "PickPickable",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpPickPickable",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 223,
+       "type": "int",
+       "optional": false,
+       "name": "Position"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_arena_actor_picked_pickable"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_arena_actor_picked_pickable"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 245,
+   "name": "DeviceActivation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpDeviceActivated",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 202,
+       "type": "int",
+       "optional": false,
+       "name": "DeviceId"
+      },
+      {
+       "key": 204,
+       "type": "float[]",
+       "optional": false,
+       "name": "Vector3"
+      },
+      {
+       "key": 203,
+       "type": "float[]",
+       "optional": false,
+       "name": "Quaternion"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 244,
+   "name": "GameModeEvent",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGameModeEvent",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 243,
+   "name": "TimedMisssinAction",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "TimedMissionEvent",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 242,
+   "name": "ProjectileAttach",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpProjectileAttach",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 205,
+       "type": "byte",
+       "optional": false,
+       "name": "ModuleType"
+      },
+      {
+       "key": 207,
+       "type": "byte",
+       "optional": false,
+       "name": "WeaponId"
+      },
+      {
+       "key": 206,
+       "type": "byte",
+       "optional": false,
+       "name": "BarrelId"
+      },
+      {
+       "key": 255,
+       "type": "short",
+       "optional": false,
+       "name": "GameId"
+      },
+      {
+       "key": 244,
+       "type": "byte?",
+       "optional": true,
+       "name": "Code"
+      },
+      {
+       "key": 251,
+       "type": "object[]",
+       "optional": false,
+       "name": "Properties"
+      },
+      {
+       "key": 245,
+       "type": "float[]",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      },
+      {
+       "key": 248,
+       "type": "object[]",
+       "optional": true,
+       "name": "GameProperties"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 241,
+   "name": "DeviceDeactivation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpDeviceDeactivated",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 201,
+       "type": "int",
+       "optional": false,
+       "name": "ObjectId"
+      },
+      {
+       "key": 200,
+       "type": "byte",
+       "optional": false,
+       "name": "DeactivationCode"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 240,
+   "name": "ConsumableBoostUse",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpConsumableBoostUse",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 168,
+       "type": "= Convert.ToByte(boostSlotIndex)",
+       "optional": false,
+       "name": "Param1"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 231,
+   "name": "AdminRequest",
+   "offlineServer": false,
+   "requests": [],
+   "responses": {}
+  },
+  {
+   "code": 230,
+   "name": "Authenticate",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpAuthenticate",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 220,
+       "type": "string",
+       "optional": false,
+       "name": "AppVersion"
+      },
+      {
+       "key": 224,
+       "type": "string",
+       "optional": false,
+       "name": "ApplicationId"
+      },
+      {
+       "key": 225,
+       "type": "= PhotonNetwork.player.sessionID",
+       "optional": true,
+       "name": "UserId"
+      },
+      {
+       "key": 218,
+       "type": "string",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "OnConnectedToLogin"
+     ],
+     "returnCodes": [
+      -2,
+      32760
+     ],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "OnConnectedToMaster"
+     ],
+     "returnCodes": [
+      -2
+     ],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 229,
+   "name": "JoinLobby",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpJoinLobby",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_user_joined_garage_loby"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_user_joined_loby"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 228,
+   "name": "LeaveLobby",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpLeaveLobby",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 227,
+   "name": "CreateGame",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpCreateGame",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 248,
+       "type": "= hashtable",
+       "optional": false,
+       "name": "GameProperties"
+      },
+      {
+       "key": 249,
+       "type": "Hashtable",
+       "optional": false,
+       "name": "ActorProperties"
+      },
+      {
+       "key": 250,
+       "type": "bool",
+       "optional": false,
+       "name": "Broadcast"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "optional": true,
+       "name": "GameId"
+      },
+      {
+       "key": 241,
+       "type": "bool",
+       "optional": true,
+       "name": "CleanupCacheOnLeave"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "string[]",
+       "name": "Param1"
+      },
+      {
+       "key": 212,
+       "type": "int",
+       "name": "Team"
+      },
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      },
+      {
+       "key": 229,
+       "type": "int",
+       "name": "PeerCount"
+      },
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 226,
+   "name": "JoinGame",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpJoin",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 255,
+       "type": "string",
+       "optional": false,
+       "name": "GameId"
+      },
+      {
+       "key": 249,
+       "type": "Hashtable",
+       "optional": false,
+       "name": "ActorProperties"
+      },
+      {
+       "key": 250,
+       "type": "bool",
+       "optional": false,
+       "name": "Broadcast"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 225,
+   "name": "JoinRandomGame",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpJoinRandom",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 251,
+       "type": "Hashtable",
+       "optional": true,
+       "name": "Properties"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 222,
+   "name": "CreateAccount",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpCreateAccount",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      },
+      {
+       "key": 216,
+       "type": "string",
+       "optional": false,
+       "name": "Password"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_user_account_created"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 221,
+   "name": "Login",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpLogin",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      },
+      {
+       "key": 216,
+       "type": "string",
+       "optional": false,
+       "name": "Password"
+      }
+     ]
+    },
+    {
+     "method": "OpLoginWithSecretUserId",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      },
+      {
+       "key": 211,
+       "type": "string",
+       "optional": false,
+       "name": "SecretUserId"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 163,
+       "type": "?",
+       "name": "Param6"
+      },
+      {
+       "key": 164,
+       "type": "int",
+       "name": "Param5"
+      },
+      {
+       "key": 211,
+       "type": "string",
+       "name": "SecretUserId"
+      },
+      {
+       "key": 225,
+       "type": "string",
+       "name": "UserId"
+      },
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      }
+     ],
+     "signals": [
+      "login_connection_error",
+      "login_trytorelog",
+      "network_user_loged_in"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 220,
+   "name": "GetUserData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetUserData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "lz4<PlayerVO>",
+       "name": "UserData"
+      }
+     ],
+     "signals": [
+      "network_user_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 219,
+   "name": "GetShopData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetShopData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "bzip2<Dictionary<TechCategory, PartsUpgardeCategoryData>>",
+       "name": "Level"
+      },
+      {
+       "key": 231,
+       "type": "bzip2<Dictionary<string, PartTemplate>>",
+       "name": "PartsData"
+      },
+      {
+       "key": 232,
+       "type": "bzip2<Dictionary<string, ModuleTemplate>>",
+       "name": "ModulesData"
+      },
+      {
+       "key": 235,
+       "type": "bzip2<Dictionary<string, TimedBuffTemplate>>",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [
+      "network_shop_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 218,
+   "name": "BuyItem",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpBuyItem",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "string",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 234,
+       "type": "byte",
+       "optional": false,
+       "name": "ItemType"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 217,
+   "name": "SellItem",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSellItem",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 234,
+       "type": "byte",
+       "optional": false,
+       "name": "ItemType"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 216,
+   "name": "CreateModule",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpCreateModule",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 235,
+       "type": "proto<ModuleAssemblyVO>",
+       "optional": false,
+       "name": "ItemData"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 215,
+   "name": "DestroyModule",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpDestroyModule",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 214,
+   "name": "UpdateModule",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpUpdateModule",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 235,
+       "type": "proto<ModuleAssemblyVO>",
+       "optional": false,
+       "name": "ItemData"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 213,
+   "name": "CreateRobot",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpCreateRobot",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 212,
+   "name": "UpdateRobot",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpUpdateRobot",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 236,
+       "type": "proto<RobotAssemblyVO>",
+       "optional": false,
+       "name": "RobotData"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 211,
+   "name": "SendMessage",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSendMessage",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 237,
+       "type": "string",
+       "optional": false,
+       "name": "MessageSender"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "optional": false,
+       "name": "MessageData"
+      },
+      {
+       "key": 238,
+       "type": "string",
+       "optional": true,
+       "name": "MessageReceiver"
+      },
+      {
+       "key": 239,
+       "type": "byte?",
+       "optional": true,
+       "name": "MessageType"
+      },
+      {
+       "key": 168,
+       "type": "string",
+       "optional": true,
+       "name": "Param1"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 238,
+       "type": "string",
+       "name": "MessageReceiver"
+      },
+      {
+       "key": 239,
+       "type": "byte",
+       "name": "MessageType"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "chat_garage_guild_message_error",
+      "chat_garage_message_error",
+      "chat_garage_party_message_error",
+      "chat_garage_private_message_error"
+     ],
+     "returnCodes": [
+      32751
+     ],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 239,
+       "type": "byte",
+       "name": "MessageType"
+      }
+     ],
+     "signals": [
+      "chat_garage_guild_message_error",
+      "chat_garage_message_error",
+      "chat_garage_party_message_error"
+     ],
+     "returnCodes": [
+      32751
+     ],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 210,
+   "name": "JoinRandomBattle",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpJoinRandomBattle",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 251,
+       "type": "Hashtable",
+       "optional": true,
+       "name": "Properties"
+      }
+     ]
+    },
+    {
+     "method": "OpJoinRandomBattle",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 251,
+       "type": "Hashtable",
+       "optional": true,
+       "name": "Properties"
+      },
+      {
+       "key": 245,
+       "type": "byte[]",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "int",
+       "name": "Param1"
+      },
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      }
+     ],
+     "signals": [
+      "network_join_random_battle_response"
+     ],
+     "returnCodes": [
+      32753
+     ],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 212,
+       "type": "int",
+       "name": "Team"
+      },
+      {
+       "key": 230,
+       "type": "string",
+       "name": "Address"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [
+      32753
+     ],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 209,
+   "name": "SelectRobot",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSelectRobot",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 236,
+       "type": "byte",
+       "optional": false,
+       "name": "RobotData"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 208,
+   "name": "LoadedGame",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpLoadedGame",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 207,
+   "name": "ForceStartGame",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpForceStartGame",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 206,
+   "name": "GetPricesData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetPricesData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 231,
+       "type": "bzip2<Dictionary<string, PriceTemplate>>",
+       "name": "PartsData"
+      }
+     ],
+     "signals": [
+      "network_prices_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 205,
+   "name": "RepairItems",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpRepairItems",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 236,
+       "type": "proto<List<int>>",
+       "optional": true,
+       "name": "RobotData"
+      },
+      {
+       "key": 232,
+       "type": "proto<List<int>>",
+       "optional": true,
+       "name": "ModulesData"
+      },
+      {
+       "key": 231,
+       "type": "proto<List<int>>",
+       "optional": true,
+       "name": "PartsData"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_repair_successful",
+      "network_repair_unsuccessful"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 204,
+   "name": "AutoRepairRobot",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpAutoRepairRobot",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 236,
+       "type": "byte",
+       "optional": false,
+       "name": "RobotData"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 203,
+   "name": "AutoResupplyRobot",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpAutoResupplyRobot",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 236,
+       "type": "byte",
+       "optional": false,
+       "name": "RobotData"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 202,
+   "name": "GetAmmoData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetAmmoData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 231,
+       "type": "bzip2<Dictionary<string, AmmoTemplate>>",
+       "name": "PartsData"
+      }
+     ],
+     "signals": [
+      "network_ammo_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 201,
+   "name": "BuyAmmo",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpBuyAmmo",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 218,
+       "type": "lz4<AmmoBuyData[]>",
+       "optional": false,
+       "name": "Info"
+      },
+      {
+       "key": 234,
+       "type": "int",
+       "optional": false,
+       "name": "ItemType"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 213,
+       "type": "float",
+       "name": "Credits"
+      },
+      {
+       "key": 218,
+       "type": "proto<List<AmmonitionVO>>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "auto_resupply_credits",
+      "network_user_update_ammopool"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 200,
+   "name": "SetAmmoDistribution",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSetAmmoDistribution",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<AmmoDistributionVO>",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 199,
+   "name": "UnlockPortrait",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpUnlockPortrait",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "name": "ItemID"
+      }
+     ],
+     "signals": [
+      "network_buy_portrait_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 198,
+   "name": "SetPortrait",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSetPortrait",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "name": "ItemID"
+      }
+     ],
+     "signals": [
+      "network_set_portrait_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 197,
+   "name": "GetPortraitsData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetPortraitsData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 231,
+       "type": "bzip2<Dictionary<int, PortraitTemplate>>",
+       "name": "PartsData"
+      }
+     ],
+     "signals": [
+      "network_portraits_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 196,
+   "name": "BuyInventorySlots",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpBuyInventorySlots",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 218,
+       "type": "int",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 195,
+   "name": "SetLicenseAgreementState",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSetLicenseAgreementState",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 218,
+       "type": "int",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "int",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_user_set_license_agreement_state"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 194,
+   "name": "SetTutorialState",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSetTutorialState",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 218,
+       "type": "int",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "int",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_user_set_tutorial_state"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 193,
+   "name": "ClaimReward",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "ClaimReward",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 168,
+       "type": "byte",
+       "optional": false,
+       "name": "Param1"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "byte",
+       "name": "Param1"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 192,
+   "name": "SetUserGarageState",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpSetUserGarageState",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {}
+  },
+  {
+   "code": 191,
+   "name": "SendPartyInvitation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSendPartyInvitation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 238,
+       "type": "string",
+       "optional": false,
+       "name": "MessageReceiver"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 190,
+   "name": "RespondToPartyInvitation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSendPartyInvitationResponse",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 255,
+       "type": "= PartyManager.Instance.GetParty().partyId",
+       "optional": false,
+       "name": "GameId"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 189,
+   "name": "ChangePartyState",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpChangePartyState",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "byte",
+       "optional": false,
+       "name": "Info"
+      },
+      {
+       "key": 245,
+       "type": "byte[]",
+       "optional": false,
+       "name": "CustomEventContent/Data"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 188,
+   "name": "LeaveParty",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpLeaveParty",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 187,
+   "name": "KickPlayerFromParty",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpKickPlayerFromParty",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 186,
+   "name": "SendFriendInvitation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSendFriendInvitation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 238,
+       "type": "string",
+       "optional": false,
+       "name": "MessageReceiver"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 238,
+       "type": "string",
+       "name": "MessageReceiver"
+      }
+     ],
+     "signals": [
+      "network_friend_invitation_sent"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 185,
+   "name": "RespondToFriendInvitation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpRespondToFriendInvitation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 237,
+       "type": "string",
+       "optional": false,
+       "name": "MessageSender"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 184,
+   "name": "RemoveFriend",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpRemoveFriend",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 183,
+   "name": "GetFriendsOnlineStatus",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGetFriendsOnlineStatus",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 221,
+       "type": "bool",
+       "optional": false,
+       "name": "Secret"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 182,
+   "name": "GetMessageBoxData",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGetMessageBoxData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_message_box_content_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 181,
+   "name": "GetGarageInitData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetGarageInitData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 163,
+       "type": "proto<List<LootTemplate>>",
+       "name": "Param6"
+      },
+      {
+       "key": 164,
+       "type": "bzip2<PackagePriceTemplate>",
+       "name": "Param5"
+      },
+      {
+       "key": 165,
+       "type": "proto<MissionDefinitionCategory>",
+       "name": "Param4"
+      },
+      {
+       "key": 166,
+       "type": "proto<SelectableMissionsInfo>",
+       "name": "Param3"
+      },
+      {
+       "key": 167,
+       "type": "proto<MissionInitData>",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "proto<PromotionsVO>",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "NETWORK_PACKAGE_PRICE_TEMPLATE_DATA",
+      "network_mission_init_data",
+      "network_promotions_data",
+      "network_selectable_mission_info_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 180,
+   "name": "RentItem",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpRentItem",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "string",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 234,
+       "type": "byte",
+       "optional": false,
+       "name": "ItemType"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 179,
+   "name": "GetGuildData",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGetGuildData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "lz4<GuildVO>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_data_received",
+      "network_guild_data_received_empty"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 178,
+   "name": "CreateGuild",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpCreateGuild",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 168,
+       "type": "string",
+       "optional": false,
+       "name": "Param1"
+      },
+      {
+       "key": 167,
+       "type": "string",
+       "optional": false,
+       "name": "Param2"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "lz4<GuildVO>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_created"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 177,
+   "name": "SendGuildInvitation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSendGuildInvitation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 238,
+       "type": "string",
+       "optional": false,
+       "name": "MessageReceiver"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_guild_invitation_sent"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 176,
+   "name": "RespondToGuildInvitation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpRespondToGuildInvitation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 255,
+       "type": "string",
+       "optional": false,
+       "name": "GameId"
+      },
+      {
+       "key": 168,
+       "type": "string",
+       "optional": false,
+       "name": "Param1"
+      },
+      {
+       "key": 237,
+       "type": "string",
+       "optional": false,
+       "name": "MessageSender"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 175,
+   "name": "LeaveGuild",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpLeaveGuild",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 174,
+   "name": "DisbandGuild",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpDisbandGuild",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 173,
+   "name": "KickPlayerFromGuild",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpKickPlayerFromGuild",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 172,
+   "name": "ChangeGuildMemberRole",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpChangeGuildMemberRole",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "optional": false,
+       "name": "Username"
+      },
+      {
+       "key": 218,
+       "type": "byte",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 171,
+   "name": "DepositCreditsToGuildVault",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpDepositCreditsToGuildVault",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 213,
+       "type": "float",
+       "optional": false,
+       "name": "Credits"
+      },
+      {
+       "key": 218,
+       "type": "float",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_guild_credits_donated"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 170,
+   "name": "UpgradeGuild",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpUpgradeGuild",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_guild_upgrade_result"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 169,
+   "name": "GetGuildBuffsData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetGuildBuffsData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 231,
+       "type": "bzip2<Dictionary<string, GuildBuffTemplate>>",
+       "name": "PartsData"
+      },
+      {
+       "key": 232,
+       "type": "bzip2<Dictionary<int, GuildUpgradeTemplate>>",
+       "name": "ModulesData"
+      }
+     ],
+     "signals": [
+      "network_guild_buffs_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 168,
+   "name": "UnlockGuildBuff",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpUnlockGuildBuff",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "string",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 167,
+   "name": "BuyGuildBuff",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpBuyGuildBuff",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "string",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 166,
+   "name": "ChangeGuildMessageOfTheDay",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpChangeGuildMessageOfTheDay",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 240,
+       "type": "string",
+       "optional": false,
+       "name": "MessageData"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 165,
+   "name": "GetMissionData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetMissionData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "bool",
+       "name": "Info"
+      },
+      {
+       "key": 231,
+       "type": "Hashtable",
+       "name": "PartsData"
+      }
+     ],
+     "signals": [
+      "network_mission_data_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 164,
+   "name": "SelectableMissionsOperation",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSelectableMissionsOperation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 168,
+       "type": "byte",
+       "optional": false,
+       "name": "Param1"
+      },
+      {
+       "key": 167,
+       "type": "string",
+       "optional": false,
+       "name": "Param2"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "proto<MissionDefinitionCategory>",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "proto<SelectableMissionsInfo>",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "network_selectable_mission_info_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 163,
+   "name": "ConsumableBoostSlotSelect",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpConsumableBoostSelectOperation",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 168,
+       "type": "int",
+       "optional": false,
+       "name": "Param1"
+      },
+      {
+       "key": 167,
+       "type": "byte",
+       "optional": false,
+       "name": "Param2"
+      },
+      {
+       "key": 166,
+       "type": "= ((!boostType.HasValue) ? ((short)(-1)) : ((short)boostType.Value))",
+       "optional": false,
+       "name": "Param3"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "proto<IEnumerable<ConsumableBoostSlotVO>>",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "int",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "network_consumable_boost_select_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 162,
+   "name": "UpgradeItem",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "UpgradeItem",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 234,
+       "type": "byte",
+       "optional": false,
+       "name": "ItemType"
+      },
+      {
+       "key": 213,
+       "type": "byte",
+       "optional": false,
+       "name": "Credits"
+      },
+      {
+       "key": 169,
+       "type": "byte",
+       "optional": false,
+       "name": "Level"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 161,
+   "name": "GetWeeklyPromotionsData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpWeeklyPromotionsData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "string[]",
+       "name": "Param2"
+      }
+     ],
+     "signals": [
+      "network_weekly_promotions_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 160,
+   "name": "ConvertCurrency",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpConvertCurrency",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 213,
+       "type": "float",
+       "optional": false,
+       "name": "Credits"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 159,
+   "name": "UpgradeTechCategory",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "UpgardeTechLevel",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 218,
+       "type": "byte",
+       "optional": false,
+       "name": "Info"
+      },
+      {
+       "key": 169,
+       "type": "byte",
+       "optional": false,
+       "name": "Level"
+      },
+      {
+       "key": 168,
+       "type": "bool",
+       "optional": false,
+       "name": "Param1"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 158,
+   "name": "HurryPartUpgrade",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "HurryItemUpgarde",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 234,
+       "type": "byte",
+       "optional": false,
+       "name": "ItemType"
+      },
+      {
+       "key": 169,
+       "type": "int",
+       "optional": false,
+       "name": "Level"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 157,
+   "name": "ActivateTimedBuff",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpActivateTimedBuff",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "string",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 169,
+       "type": "int",
+       "optional": false,
+       "name": "Level"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 156,
+   "name": "OpenCrate",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpOpenCrate",
+     "peer": "NetworkingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 168,
+       "type": "byte",
+       "optional": false,
+       "name": "Param1"
+      },
+      {
+       "key": 167,
+       "type": "bool",
+       "optional": false,
+       "name": "Param2"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "bool",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "NETWORK_CRATE_LOCKPICK_FAILED"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 155,
+   "name": "UnlockPartSkin",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpUnlockPartSkin",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "string",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 218,
+       "type": "byte",
+       "optional": false,
+       "name": "Info"
+      },
+      {
+       "key": 168,
+       "type": "bool",
+       "optional": false,
+       "name": "Param1"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "long",
+       "name": "Param1"
+      },
+      {
+       "key": 218,
+       "type": "byte",
+       "name": "Info"
+      },
+      {
+       "key": 233,
+       "type": "string",
+       "name": "ItemID"
+      }
+     ],
+     "signals": [
+      "network_buy_part_skin_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 154,
+   "name": "SetPartSkin",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSetPartSkin",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 218,
+       "type": "byte",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "byte",
+       "name": "Info"
+      },
+      {
+       "key": 233,
+       "type": "int",
+       "name": "ItemID"
+      }
+     ],
+     "signals": [
+      "network_set_part_skin_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 153,
+   "name": "HurryGuildBuffUnlock",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpHurryGuildBuffUnlock",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": [
+      {
+       "key": 218,
+       "type": "string",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 152,
+   "name": "GetPartSkinsData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetPartSkinsData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "bzip2<Dictionary<string, PartSkinsTemplate>>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_part_skins_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 151,
+   "name": "SetPartTintingData",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpSetPartTintingData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 160,
+       "type": "proto<TintingDataVO>",
+       "optional": false,
+       "name": "PartTintingData"
+      },
+      {
+       "key": 233,
+       "type": "int",
+       "optional": false,
+       "name": "ItemID"
+      },
+      {
+       "key": 168,
+       "type": "bool",
+       "optional": false,
+       "name": "Param1"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 160,
+       "type": "proto<TintingDataVO>",
+       "name": "PartTintingData"
+      },
+      {
+       "key": 233,
+       "type": "int",
+       "name": "ItemID"
+      }
+     ],
+     "signals": [
+      "user_set_part_tinting_data_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 150,
+   "name": "UnlockColor",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpUnlockColor",
+     "peer": "LoadbalancingPeer",
+     "encrypted": true,
+     "params": [
+      {
+       "key": 235,
+       "type": "int",
+       "optional": false,
+       "name": "ItemData"
+      },
+      {
+       "key": 218,
+       "type": "bool",
+       "optional": false,
+       "name": "Info"
+      }
+     ]
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 235,
+       "type": "int",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [
+      "user_set_buy_color_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 149,
+   "name": "GetTintingColorsData",
+   "offlineServer": true,
+   "requests": [
+    {
+     "method": "OpGetTintingColorsData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "bzip2<Dictionary<int, TintColorTemplate>>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_tinting_colors_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 148,
+   "name": "GetMissionTemplateData",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGetMissionTemplateData",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "bzip2<Dictionary<string, TimedMissionTemplate>>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_missions_template_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 147,
+   "name": "GetSpecialPack",
+   "offlineServer": false,
+   "requests": [
+    {
+     "method": "OpGetSpecialPack",
+     "peer": "LoadbalancingPeer",
+     "encrypted": false,
+     "params": []
+    }
+   ],
+   "responses": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  }
+ ],
+ "events": [
+  {
+   "code": 255,
+   "name": "Join",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 249,
+       "type": "Hashtable",
+       "name": "ActorProperties"
+      }
+     ],
+     "signals": [
+      "network_anotheruser_joined_room",
+      "network_user_joined_room"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 249,
+       "type": "Hashtable",
+       "name": "ActorProperties"
+      }
+     ],
+     "signals": [
+      "network_anotheruser_joined_room",
+      "network_user_joined_room"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 254,
+   "name": "Leave",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_anotheruser_left_room"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_anotheruser_left_room"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 253,
+   "name": "SetProperties",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 251,
+       "type": "Hashtable",
+       "name": "Properties"
+      },
+      {
+       "key": 253,
+       "type": "int",
+       "name": "TargetActorNr"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 251,
+       "type": "Hashtable",
+       "name": "Properties"
+      },
+      {
+       "key": 253,
+       "type": "int",
+       "name": "TargetActorNr"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 252,
+   "name": "Shoot",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_shoot"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_shoot"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 251,
+   "name": "Hit",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_hit"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_hit"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 250,
+   "name": "DeviceActivate",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_deviceactivate"
+     ],
+     "returnCodes": [],
+     "decoders": [
+      "DeviceActivationData"
+     ]
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_deviceactivate"
+     ],
+     "returnCodes": [],
+     "decoders": [
+      "DeviceActivationData"
+     ]
+    }
+   }
+  },
+  {
+   "code": 249,
+   "name": "DisableDeployedObject",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_depolyable_deactivate"
+     ],
+     "returnCodes": [],
+     "decoders": [
+      "DeployedObjectDeactivationData"
+     ]
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_depolyable_deactivate"
+     ],
+     "returnCodes": [],
+     "decoders": [
+      "DeployedObjectDeactivationData"
+     ]
+    }
+   }
+  },
+  {
+   "code": 248,
+   "name": "GameModeEvent",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_gamemode_event"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_gamemode_event"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 247,
+   "name": "MissionUpdate",
+   "handlers": {
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_timedmission_event"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 246,
+   "name": "ProjectileAttach",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_attach_projectile"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_attach_projectile"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 245,
+   "name": "ConsumableBoostUse",
+   "handlers": {
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "network_arena_actor_picked_pickable"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 230,
+   "name": "GameList",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 222,
+       "type": "Hashtable",
+       "name": "GameList"
+      }
+     ],
+     "signals": [
+      "network_user_room_list"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 222,
+       "type": "Hashtable",
+       "name": "GameList"
+      }
+     ],
+     "signals": [
+      "network_user_room_list"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 229,
+   "name": "GameListUpdate",
+   "handlers": {
+    "GamePeer": {
+     "params": [
+      {
+       "key": 222,
+       "type": "Hashtable",
+       "name": "GameList"
+      }
+     ],
+     "signals": [
+      "network_user_update_room_list"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 228,
+   "name": "QueueState",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 227,
+   "name": "Match",
+   "handlers": {}
+  },
+  {
+   "code": 226,
+   "name": "AppStats",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 227,
+       "type": "int",
+       "name": "MasterPeerCount"
+      },
+      {
+       "key": 228,
+       "type": "int",
+       "name": "GameCount"
+      },
+      {
+       "key": 229,
+       "type": "int",
+       "name": "PeerCount"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 227,
+       "type": "int",
+       "name": "MasterPeerCount"
+      },
+      {
+       "key": 228,
+       "type": "int",
+       "name": "GameCount"
+      },
+      {
+       "key": 229,
+       "type": "int",
+       "name": "PeerCount"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 225,
+   "name": "QueueStats",
+   "handlers": {
+    "GamePeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "Hashtable",
+       "name": "UserData"
+      },
+      {
+       "key": 218,
+       "type": "Hashtable",
+       "name": "Info"
+      },
+      {
+       "key": 229,
+       "type": "int",
+       "name": "PeerCount"
+      },
+      {
+       "key": 235,
+       "type": "Hashtable[]",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 220,
+   "name": "CreditsUpdate",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "byte",
+       "name": "Param1"
+      },
+      {
+       "key": 213,
+       "type": "float",
+       "name": "Credits"
+      },
+      {
+       "key": 214,
+       "type": "float",
+       "name": "Delta"
+      },
+      {
+       "key": 218,
+       "type": "float",
+       "name": "Info"
+      },
+      {
+       "key": 234,
+       "type": "float",
+       "name": "ItemType"
+      }
+     ],
+     "signals": [
+      "network_user_credits_updated"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 219,
+   "name": "StartGame",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_arena_startgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_arena_startgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 218,
+   "name": "ItemsRemoved",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 231,
+       "type": "proto<List<int>>",
+       "name": "PartsData"
+      },
+      {
+       "key": 232,
+       "type": "proto<List<int>>",
+       "name": "ModulesData"
+      },
+      {
+       "key": 235,
+       "type": "proto<InventoryItems>",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [
+      "network_user_remove_items"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 217,
+   "name": "ItemsAdded",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "byte",
+       "name": "Param1"
+      },
+      {
+       "key": 231,
+       "type": "proto<List<PartVO>>",
+       "name": "PartsData"
+      },
+      {
+       "key": 232,
+       "type": "proto<List<ModuleAssemblyVO>>",
+       "name": "ModulesData"
+      },
+      {
+       "key": 235,
+       "type": "proto<InventoryItems>",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [
+      "network_user_add_items"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 216,
+   "name": "ItemsUpdated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 231,
+       "type": "proto<List<PartVO>>",
+       "name": "PartsData"
+      },
+      {
+       "key": 232,
+       "type": "proto<List<ModuleAssemblyVO>>",
+       "name": "ModulesData"
+      }
+     ],
+     "signals": [
+      "network_user_update_items"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 215,
+   "name": "RobotAdded",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 236,
+       "type": "proto<RobotAssemblyVO>",
+       "name": "RobotData"
+      }
+     ],
+     "signals": [
+      "network_user_add_robot_slot"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 214,
+   "name": "RobotUpdated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 236,
+       "type": "proto<RobotAssemblyVO>",
+       "name": "RobotData"
+      }
+     ],
+     "signals": [
+      "network_user_update_robot_slot"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 213,
+   "name": "EndGame",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<EndBattleData>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_arena_endgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<EndBattleData>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_arena_endgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 212,
+   "name": "ExitGame",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_arena_exitgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_arena_exitgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 211,
+   "name": "MessageReceived",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 166,
+       "type": "string",
+       "name": "Param3"
+      },
+      {
+       "key": 167,
+       "type": "byte",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "string",
+       "name": "Param1"
+      },
+      {
+       "key": 218,
+       "type": "byte",
+       "name": "Info"
+      },
+      {
+       "key": 237,
+       "type": "string",
+       "name": "MessageSender"
+      },
+      {
+       "key": 238,
+       "type": "string",
+       "name": "MessageReceiver"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "chat_garage_guild_message_received",
+      "chat_garage_message_received",
+      "chat_garage_party_message_received",
+      "chat_garage_private_message_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "byte",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "string",
+       "name": "Param1"
+      },
+      {
+       "key": 218,
+       "type": "byte",
+       "name": "Info"
+      },
+      {
+       "key": 237,
+       "type": "string",
+       "name": "MessageSender"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      },
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "chat_arena_guild_message_received",
+      "chat_arena_message_received",
+      "chat_arena_party_message_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 210,
+   "name": "AzureNodeInfo",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 208,
+       "type": "byte",
+       "name": "AzureMasterNodeId"
+      },
+      {
+       "key": 209,
+       "type": "byte",
+       "name": "AzureLocalNodeId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 208,
+       "type": "byte",
+       "name": "AzureMasterNodeId"
+      },
+      {
+       "key": 209,
+       "type": "byte",
+       "name": "AzureLocalNodeId"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 209,
+   "name": "RobotStatusChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "bool",
+       "name": "Info"
+      },
+      {
+       "key": 236,
+       "type": "int",
+       "name": "RobotData"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 208,
+   "name": "AllRobotsStatus",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 236,
+       "type": "proto<List<int>>",
+       "name": "RobotData"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 207,
+   "name": "UserDataChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "lz4<PartVO[]>",
+       "name": "UserData"
+      }
+     ],
+     "signals": [
+      "network_user_parts_statistics_updated"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 206,
+   "name": "LoadGame",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_arena_loadgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_arena_loadgame"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 204,
+   "name": "",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 203,
+   "name": "",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 202,
+   "name": "",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 201,
+   "name": "",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "Hashtable",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 200,
+   "name": "",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 199,
+   "name": "StartCountdown",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "?",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_arena_startcountdown"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "?",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_arena_startcountdown"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 198,
+   "name": "StatisticsChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<StatisticChangeData>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_arena_statistic_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<StatisticChangeData>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_arena_statistic_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 197,
+   "name": "Destruction",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 225,
+       "type": "int",
+       "name": "UserId"
+      },
+      {
+       "key": 232,
+       "type": "proto<Dictionary<int, List<int>>>",
+       "name": "ModulesData"
+      },
+      {
+       "key": 235,
+       "type": "proto<Dictionary<int, List<int>>>",
+       "name": "ItemData"
+      },
+      {
+       "key": 236,
+       "type": "proto<List<int>>",
+       "name": "RobotData"
+      }
+     ],
+     "signals": [
+      "network_arena_destruction_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 225,
+       "type": "int",
+       "name": "UserId"
+      },
+      {
+       "key": 232,
+       "type": "proto<Dictionary<int, List<int>>>",
+       "name": "ModulesData"
+      },
+      {
+       "key": 235,
+       "type": "proto<Dictionary<int, List<int>>>",
+       "name": "ItemData"
+      },
+      {
+       "key": 236,
+       "type": "proto<List<int>>",
+       "name": "RobotData"
+      }
+     ],
+     "signals": [
+      "network_arena_destruction_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 196,
+   "name": "ExperienceUpdate",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 170,
+       "type": "int",
+       "name": "Experience"
+      },
+      {
+       "key": 214,
+       "type": "int",
+       "name": "Delta"
+      }
+     ],
+     "signals": [
+      "network_user_experience_updated"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 195,
+   "name": "SpawnPickables",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string[]",
+       "name": "Info"
+      },
+      {
+       "key": 223,
+       "type": "int[]",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "network_arena_spawn_pickables"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string[]",
+       "name": "Info"
+      },
+      {
+       "key": 223,
+       "type": "int[]",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "network_arena_spawn_pickables"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 194,
+   "name": "DespawnPickables",
+   "handlers": {
+    "GamePeer": {
+     "params": [
+      {
+       "key": 223,
+       "type": "int[]",
+       "name": "Position"
+      },
+      {
+       "key": 225,
+       "type": "int[]",
+       "name": "UserId"
+      }
+     ],
+     "signals": [
+      "network_arena_despawn_pickables"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 193,
+   "name": "SendChatMessage",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "byte",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "string",
+       "name": "Param1"
+      },
+      {
+       "key": 237,
+       "type": "string",
+       "name": "MessageSender"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      },
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "chat_arena_message_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "byte",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "string",
+       "name": "Param1"
+      },
+      {
+       "key": 237,
+       "type": "string",
+       "name": "MessageSender"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      },
+      {
+       "key": 245,
+       "type": "?",
+       "name": "CustomEventContent/Data"
+      }
+     ],
+     "signals": [
+      "chat_arena_message_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 192,
+   "name": "AmmoChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "proto<List<AmmonitionVO>>",
+       "name": "UserData"
+      },
+      {
+       "key": 231,
+       "type": "proto<AmmoDistributionVO>",
+       "name": "PartsData"
+      }
+     ],
+     "signals": [
+      "network_user_update_ammodistibution",
+      "network_user_update_ammopool"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 191,
+   "name": "GameResultInfo",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<List<GameResultInfo>>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "game_results_info_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<List<GameResultInfo>>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "game_results_info_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 190,
+   "name": "InventorySlotsAdded",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "int",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "user_buy_inventory_slots_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 189,
+   "name": "AdminMessageReseived",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_admin_message_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_admin_message_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 188,
+   "name": "PortraitsUnlocked",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "int[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_buy_portrait_response"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 187,
+   "name": "LevelUpdate",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int",
+       "name": "Level"
+      },
+      {
+       "key": 213,
+       "type": "float",
+       "name": "Credits"
+      }
+     ],
+     "signals": [
+      "network_user_level_updated"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 186,
+   "name": "LifetimeStatisticsUpdated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<LifetimeStatisticsVO>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_user_lifetime_statistics_update"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 185,
+   "name": "ReadyForBattle",
+   "handlers": {
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_ready_for_battle"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 184,
+   "name": "SelectedForBattle",
+   "handlers": {
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_selected_for_battle"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 183,
+   "name": "DeselectedForBattle",
+   "handlers": {
+    "GamePeer": {
+     "params": [],
+     "signals": [
+      "network_deselected_for_battle"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 182,
+   "name": "PartyCreated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int[]",
+       "name": "Level"
+      },
+      {
+       "key": 215,
+       "type": "string[]",
+       "name": "UserData"
+      },
+      {
+       "key": 223,
+       "type": "int[]",
+       "name": "Position"
+      },
+      {
+       "key": 231,
+       "type": "byte[]",
+       "name": "PartsData"
+      },
+      {
+       "key": 232,
+       "type": "byte[]",
+       "name": "ModulesData"
+      },
+      {
+       "key": 234,
+       "type": "float[]",
+       "name": "ItemType"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [
+      "network_party_created"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 181,
+   "name": "PartyDisbanded",
+   "handlers": {}
+  },
+  {
+   "code": 180,
+   "name": "PartyStateChanged",
+   "handlers": {}
+  },
+  {
+   "code": 179,
+   "name": "PlayerJoinedParty",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int",
+       "name": "Level"
+      },
+      {
+       "key": 215,
+       "type": "string",
+       "name": "UserData"
+      },
+      {
+       "key": 218,
+       "type": "float",
+       "name": "Info"
+      },
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "network_player_joined_party"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 178,
+   "name": "PlayerLeftParty",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "string",
+       "name": "UserData"
+      }
+     ],
+     "signals": [
+      "network_player_left_party"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 177,
+   "name": "PlayerChangedPartyState",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "string",
+       "name": "UserData"
+      },
+      {
+       "key": 232,
+       "type": "byte",
+       "name": "ModulesData"
+      }
+     ],
+     "signals": [
+      "network_player_changed_party_state"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 176,
+   "name": "PlayerChangedPartyData",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int",
+       "name": "Level"
+      },
+      {
+       "key": 215,
+       "type": "string",
+       "name": "UserData"
+      },
+      {
+       "key": 218,
+       "type": "float",
+       "name": "Info"
+      },
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "network_player_changed_party_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 175,
+   "name": "LeaveParty",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_leave_party"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 174,
+   "name": "ChangePartyState",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 232,
+       "type": "byte",
+       "name": "ModulesData"
+      }
+     ],
+     "signals": [
+      "network_change_party_state"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 173,
+   "name": "PartyInvitationReceived",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 237,
+       "type": "string",
+       "name": "MessageSender"
+      }
+     ],
+     "signals": [
+      "network_party_invitation_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 172,
+   "name": "PlayersResetPartyStates",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 217,
+       "type": "string[]",
+       "name": "Username"
+      }
+     ],
+     "signals": [
+      "network_reset_all_party_states"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 171,
+   "name": "FriendAdded",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "name": "Username"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [
+      "network_friend_added"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 170,
+   "name": "FriendRemoved",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "name": "Username"
+      }
+     ],
+     "signals": [
+      "network_friend_removed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 169,
+   "name": "FriendsOnlineStatusesReceived",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string[]",
+       "name": "Info"
+      },
+      {
+       "key": 240,
+       "type": "bool[]",
+       "name": "MessageData"
+      },
+      {
+       "key": 255,
+       "type": "string[]",
+       "name": "GameId"
+      }
+     ],
+     "signals": [
+      "network_friends_online_statuses_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 168,
+   "name": "FriendOnlineStatusChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string",
+       "name": "Info"
+      },
+      {
+       "key": 240,
+       "type": "bool",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_friend_online_status_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 167,
+   "name": "MessageBoxContentChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_message_box_content_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 166,
+   "name": "GuildCreated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "string[]",
+       "name": "Param1"
+      },
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_created_event"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 165,
+   "name": "PlayerJoinedGuild",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_player_joined_guild"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 164,
+   "name": "PlayerLeftGuild",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 215,
+       "type": "string",
+       "name": "UserData"
+      }
+     ],
+     "signals": [
+      "network_player_left_guild"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 163,
+   "name": "LeaveGuild",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_leave_guild"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 162,
+   "name": "GuildDisbanded",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [],
+     "signals": [
+      "network_guild_disbanded"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 161,
+   "name": "PlayersChangedGuildRoles",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 237,
+       "type": "string[]",
+       "name": "MessageSender"
+      },
+      {
+       "key": 240,
+       "type": "byte[]",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_players_changed_guild_roles"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 160,
+   "name": "GuildMembersOnlineStatusesReceived",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_all_guild_members_statuses"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 159,
+   "name": "GuildMemberOnlineStatusChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string",
+       "name": "Info"
+      },
+      {
+       "key": 240,
+       "type": "bool",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_guild_member_online_status_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 158,
+   "name": "PlayerChangedGuildData",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int",
+       "name": "Level"
+      },
+      {
+       "key": 215,
+       "type": "string",
+       "name": "UserData"
+      },
+      {
+       "key": 223,
+       "type": "int",
+       "name": "Position"
+      }
+     ],
+     "signals": [
+      "network_player_changed_guild_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 157,
+   "name": "GuildCreditsChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 213,
+       "type": "double",
+       "name": "Credits"
+      },
+      {
+       "key": 218,
+       "type": "proto<GuildDonationVO>",
+       "name": "Info"
+      },
+      {
+       "key": 234,
+       "type": "double",
+       "name": "ItemType"
+      }
+     ],
+     "signals": [
+      "network_guild_credits_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 156,
+   "name": "GuildExperienceChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 170,
+       "type": "int",
+       "name": "Experience"
+      }
+     ],
+     "signals": [
+      "network_guild_experience_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 155,
+   "name": "GuildLevelChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int",
+       "name": "Level"
+      },
+      {
+       "key": 218,
+       "type": "int",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_level_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 154,
+   "name": "FriendGuildChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "name": "Username"
+      },
+      {
+       "key": 255,
+       "type": "string",
+       "name": "GameId"
+      }
+     ],
+     "signals": [
+      "network_friend_guild_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 153,
+   "name": "GuildBuffExpired",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "string[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_buff_expired"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 152,
+   "name": "GuildBuffUnlocked",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "long",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "bool",
+       "name": "Param1"
+      },
+      {
+       "key": 218,
+       "type": "string",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_buff_unlocked"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 151,
+   "name": "GuildBuffBought",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_buff_bought"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 150,
+   "name": "GuildMessageOfTheDayChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 217,
+       "type": "string",
+       "name": "Username"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_guild_message_of_the_day_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 149,
+   "name": "GuildNameChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 239,
+       "type": "int",
+       "name": "MessageType"
+      },
+      {
+       "key": 240,
+       "type": "string",
+       "name": "MessageData"
+      }
+     ],
+     "signals": [
+      "network_guild_name_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 148,
+   "name": "MissionStateUpdate",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "Hashtable",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_mission_data_received"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 147,
+   "name": "MissionsProgressChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "proto<MissionProgressChangeData>",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "network_mission_progress_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    },
+    "GamePeer": {
+     "params": [
+      {
+       "key": 168,
+       "type": "proto<MissionProgressChangeData>",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "network_mission_progress_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 146,
+   "name": "SelectableMissionsInfoChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "proto<MissionDefinitionCategory>",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "proto<SelectableMissionsInfo>",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "network_selectable_mission_info_change"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 145,
+   "name": "WeeklyPromotionsUpdated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "string[]",
+       "name": "Param2"
+      }
+     ],
+     "signals": [
+      "network_weekly_promotions_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 144,
+   "name": "TechLevelsUpdated",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 169,
+       "type": "int[]",
+       "name": "Level"
+      },
+      {
+       "key": 218,
+       "type": "TechCategory[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_user_techlevels_update"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 143,
+   "name": "TimedBuffsChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 166,
+       "type": "bool",
+       "name": "Param3"
+      },
+      {
+       "key": 167,
+       "type": "long",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "long",
+       "name": "Param1"
+      },
+      {
+       "key": 218,
+       "type": "string[]",
+       "name": "Info"
+      },
+      {
+       "key": 235,
+       "type": "string[]",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [
+      "network_user_update_timed_buffs"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 142,
+   "name": "GuildResourcesChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "proto<GuildResourcesVO>",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_guild_resources_changed"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 141,
+   "name": "TintColorsAdded",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 235,
+       "type": "proto<List<int>>",
+       "name": "ItemData"
+      }
+     ],
+     "signals": [
+      "network_user_add_colors"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 140,
+   "name": "UpgradeDataChanged",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 218,
+       "type": "byte[]",
+       "name": "Info"
+      }
+     ],
+     "signals": [
+      "network_user_upgradedata_update"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 139,
+   "name": "UserLadderInfo",
+   "handlers": {
+    "NetworkingPeer": {
+     "params": [
+      {
+       "key": 166,
+       "type": "short",
+       "name": "Param3"
+      },
+      {
+       "key": 167,
+       "type": "int",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "short",
+       "name": "Param1"
+      }
+     ],
+     "signals": [],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  },
+  {
+   "code": 138,
+   "name": "Resurrection",
+   "handlers": {
+    "GamePeer": {
+     "params": [
+      {
+       "key": 167,
+       "type": "int[]",
+       "name": "Param2"
+      },
+      {
+       "key": 168,
+       "type": "int[]",
+       "name": "Param1"
+      }
+     ],
+     "signals": [
+      "network_arena_resurrection_data"
+     ],
+     "returnCodes": [],
+     "decoders": []
+    }
+   }
+  }
+ ]
+}

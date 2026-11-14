@@ -1,0 +1,198 @@
+assetName | goName | exported | type | indent | keywords | skins | tints | dockingPoints
+prefabs/caseprefabs/arms/frames/hw_c_ballistic | HW_C_Ballistic | True | WeaponCase | HW_C_Ballistic |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/hw_c_cannon | HW_C_Cannon | True | WeaponCase | HW_C_Cannon |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/lw_c_hiccs | LW_C_Hiccs | True | WeaponCase | LW_C_Hiccs |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/lw_c_injector | LW_C_Injector | True | WeaponCase | LW_C_Injector |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/lw_c_revolver | LW_C_Revolver | True | WeaponCase | LW_C_Revolver |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/lw_c_trigun | LW_C_Trigun | True | WeaponCase | LW_C_Trigun |  | 0 | 2 | MuzzleSlot1(WeaponMuzzle); MuzzleSlot2(WeaponMuzzle); MuzzleSlot3(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/mw_c_aeroblaster | MW_C_Aeroblaster | True | WeaponCase | MW_C_Aeroblaster |  | 0 | 2 | MuzzleSlot2(WeaponMuzzle); MuzzleSlot1(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/mw_c_arclight | MW_C_Arclight | True | WeaponCase | MW_C_Arclight |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/mw_c_lancer | MW_C_Lancer | True | WeaponCase | MW_C_Lancer |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/mw_c_maximus_arm | MW_C_Maximus_Arm | True | WeaponCase | MW_C_Maximus_Arm |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/mw_c_maximus_braclet | MW_C_Maximus_Braclet | True | WeaponCase | MW_C_Maximus_Braclet |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/frames/mw_c_staccato | MW_C_Staccato | True | WeaponCase | MW_C_Staccato |  | 0 | 2 | MuzzleSlot(WeaponMuzzle)
+prefabs/caseprefabs/arms/parts/hw_b_barry_light | HW_B_Barry_Light | True | WeaponMuzzle | HW_B_Barry_Light | Rocket,HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_bertha | HW_B_Bertha | True | WeaponMuzzle | LW_B_Bertha | Rocket,HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_christmasrocketlauncher | HW_B_ChristmasRocketLauncher | True | WeaponMuzzle | HW_B_ChristmasRocketLauncher | Rocket,HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_fragunov | HW_B_Fragunov | True | WeaponMuzzle | HW_B_Fragunov | HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_machinegun | HW_B_MachineGun | True | WeaponMuzzle | HW_B_MachineGun | HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_missile | HW_B_Missile | True | WeaponMuzzle | HW_B_Missile | Rocket,HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_necrotron3000 | HW_B_Necrotron3000 | True | WeaponMuzzle | HW_B_Necrotron3000 | HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/hw_b_plumber | HW_B_Plumber | True | WeaponMuzzle | HW_B_Plumber | HWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_antkiller | LW_B_AntKiller | True | WeaponMuzzle | LW_B_AntKiller | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_arbalet | LW_B_Arbalet | True | WeaponMuzzle | LW_B_Arbalet | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_electrocutter | LW_B_ElectroCutter | True | WeaponMuzzle | LW_B_ElectroCutter | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_flintlock | LW_B_Flintlock | True | WeaponMuzzle | LW_B_Flintlock | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_humiliator | LW_B_Humiliator | True | WeaponMuzzle | LW_B_Humiliator | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_nailgun | LW_B_NailGun | True | WeaponMuzzle | LW_B_NailGun | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_revolver | LW_B_Revolver | True | WeaponMuzzle | LW_B_Revolver | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_sawedoff | LW_B_SawedOff | True | WeaponMuzzle | LW_B_SawedOff | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_shotgun | LW_B_Shotgun | True | WeaponMuzzle | LW_B_Shotgun | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_slingshot | LW_B_Slingshot | True | WeaponMuzzle | LW_B_Slingshot | LWeapon | 0 | 3 | 
+prefabs/caseprefabs/arms/parts/lw_b_smalllaser | LW_B_SmallLaser | True | WeaponMuzzle | LW_B_SmallLaser | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/lw_b_trasher | LW_B_Trasher | True | WeaponMuzzle | LW_B_Trasher | LWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_acidcaster | MW_B_AcidCaster | True | WeaponMuzzle | MW_B_AcidCaster | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_deathray | MW_B_DeathRay | True | WeaponMuzzle | MW_B_DeathRay | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_flamecaster | MW_B_FlameCaster | True | WeaponMuzzle | MW_B_FalmeCaster | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_katyusha | MW_B_Katyusha | True | WeaponMuzzle | MW_B_Katyusha | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_laser | MW_B_Laser | True | WeaponMuzzle | MW_B_Laser | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_machine gun | MW_B_Machine Gun | True | WeaponMuzzle | MW_B_Machine Gun | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_maximus_justice | MW_B_Maximus_Justice | True | WeaponMuzzle | MW_B_Maximus_Justice | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_maximus_revenge | MW_B_Maximus_Revenge | True | WeaponMuzzle | MW_B_Maximus_Revenge | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_railgun | MW_B_Railgun | True | WeaponMuzzle | MW_B_Railgun | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_stickybomblauncher | MW_B_StickyBombLauncher | True | WeaponMuzzle | MW_B_StickyBombLauncher | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/arms/parts/mw_b_witchbow | MW_B_WitchBow | True | WeaponMuzzle | MW_B_WitchBow | MWeapon | 0 | 2 | 
+prefabs/caseprefabs/body/frames/hb_chopper | HB_Chopper | True | BodyCase | HB_Chopper |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); DockingPoint_Hand_TL*(Weapon); DockingPoint_Hand_TR*(Weapon); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/hb_forge | HB_Forge | True | BodyCase | HB_Forge |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Battery2(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); DockingPoint_LeftHand_BL*(Weapon); DockingPoint_LeftHand_TL*(Weapon); DockingPoint_RightHand_BR*(Weapon); DockingPoint_RightHand_TR*(Weapon)
+prefabs/caseprefabs/body/frames/hb_gasleak | HB_GasLeak | True | BodyCase | HB_GasLeak |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); DockingPoint_Hand_TL*(Weapon); DockingPoint_Hand_TR*(Weapon); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/hb_mantis | HB_Mantis | True | BodyCase | HB_Mantis |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D2*(Device); DockingPoint_Device_D1*(Device); DockingPoint_Hand_TL*(Weapon); DockingPoint_Hand_TR*(Weapon); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/hb_pazersturm | HB_Pazersturm | True | BodyCase | HB_Pazersturm |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Battery2(Battery); DockingPoint_Device_D2*(Device); DockingPoint_Device_D1*(Device); DockingPoint_Hand_BL*(Weapon); DockingPoint_Hand_BR*(Weapon); DockingPoint_Hand_TL*(Weapon); DockingPoint_Hand_TR*(Weapon); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/lb_bandit | LB_Bandit | True | BodyCase | LB_Bandit |  | 0 | 3 | DockingPoint_Battery1(Battery); LeftHand_Slot*(Weapon); RightHandSlot*(Weapon); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/lb_cuckoo | LB_Cuckoo | True | BodyCase | LB_Cuckoo |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); LeftHand_Slot*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/lb_firefighter | LB_Firefighter | True | BodyCase | LB_Firefighter |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); LeftHand_Slot*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/lb_flex | LB_Flex | True | BodyCase | LB_Flex |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); LeftHand_Slot*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/lb_ghast | LB_Ghast | True | BodyCase | LB_Ghast |  | 0 | 3 | HeadSlot*(Head); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon); DockingPoint_Battery1(Battery); DockingPoint_Battery2(Battery); RightHand_BL*(Weapon); RightHand_BR*(Weapon)
+prefabs/caseprefabs/body/frames/lb_jackhammer | LB_Jackhammer | True | BodyCase | LB_Jackhammer |  | 0 | 3 | DockingPoint_Battery1(Battery); HeadSlot*(Head); LeftHand_Slot*(Weapon); RightHandSlot*(Weapon); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device)
+prefabs/caseprefabs/body/frames/lb_lizgar | LB_Lizgar | True | BodyCase | LB_Lizgar |  | 0 | 3 | DockingPoint_Battery1(Battery); HeadSlot*(Head); DockingPoint_Device_D1*(Device); LeftHand_Slot*(Weapon); DockingPoint_Device_D2*(Device); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/lb_sheriff | LB_Sheriff | True | BodyCase | LB_Sheriff |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D2*(Device); DockingPoint_Device_D1*(Device); DP_Arm_TL*(Weapon); DP_Arm_TR*(Weapon); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/lb_shinobi | LB_Shinobi | True | BodyCase | LB_Shinobi |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); DP_Arm_TL*(Weapon); DP_Arm_TR*(Weapon); HeadSlot*(Head)
+prefabs/caseprefabs/body/frames/lb_spitfire | LB_Spitfire | True | BodyCase | LB_Spitfire |  | 0 | 3 | DockingPoint_Device_D2*(Device); DockingPoint_Device_D1*(Device); DockingPoint_Battery1(Battery); DockingPoint_Battery2(Battery); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHand_BL*(Weapon); RightHand_BR*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/mb_chromax | MB_Chromax | True | BodyCase | MB_Chromax |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/mb_clunker | MB_Clunker | True | BodyCase | MB_Clunker |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D2*(Device); DockingPoint_Device_D1*(Device); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/mb_dervish | MB_Dervish | True | BodyCase | MB_Dervish |  | 0 | 3 | DockingPoint_Battery2(Battery); DockingPoint_Battery1(Battery); BottomLeftHandSlot*(Weapon); BottomRightHandSlot*(Weapon); DockingPoint_Device_D2*(Device); DockingPoint_Device_D1*(Device); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/mb_eimer-kreiger | MB_Eimer-Kreiger | True | BodyCase | MB_Eimer-Kreiger |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Battery2(Battery); BottomRightHandSlot*(Weapon); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon); BottomLeftHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/mb_electra | MB_Electra | True | BodyCase | MB_Electra |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); BottomLeftHandSlot_TL*(Weapon); BottomRightHandSlot_TR*(Weapon)
+prefabs/caseprefabs/body/frames/mb_headlight | MB_Headlight | True | BodyCase | MB_Headlight |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Battery2(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); DockingPoint_LeftHand_TL*(Weapon); DockingPoint_LeftHand_BL*(Weapon); DockingPoint_RightHand_BR*(Weapon); DockingPoint_RightHand_TR*(Weapon)
+prefabs/caseprefabs/body/frames/mb_maximus_lagacy | MB_Maximus_Lagacy | True | BodyCase | MB_Maximus_Lagacy |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/frames/mb_six_strings_samurai | MB_Six_Strings_Samurai | True | BodyCase | MB_Six_Strings_Samurai |  | 0 | 3 | DockingPoint_Battery1(Battery); DockingPoint_Device_D1*(Device); DockingPoint_Device_D2*(Device); HeadSlot*(Head); DockingPoint_LeftHand*(Weapon); RightHandSlot*(Weapon)
+prefabs/caseprefabs/body/parts/battery_01 | Battery_01 | True | Battery | Battery_01 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_01_fuze | Battery_01_Fuze | True | Battery | Battery_01 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_02 | Battery_02 | True | Battery | Battery_02 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_02_fuze | Battery_02_Fuze | True | Battery | Battery_02 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_03 | Battery_03 | True | Battery | Battery_03 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_03_fuze | Battery_03_Fuze | True | Battery | Battery_03 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_04 | Battery_04 | True | Battery | Battery_04 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_04_fuze | Battery_04_Fuze | True | Battery | Battery_04 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_05 | Battery_05 | True | Battery | Battery_05 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_05_fuze | Battery_05_Fuze | True | Battery | Battery_05 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_06 | Battery_06 | True | Battery | Battery_06 |  | 0 | 0 | 
+prefabs/caseprefabs/body/parts/battery_06_fuze | Battery_06_Fuze | True | Battery | Battery_06 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/frames/hc_ao | HC_AO | True | CassisCase | HC_AO |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_bahemoth | HC_Bahemoth | True | CassisCase | HC_Bahemoth |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_bucephalas | HC_Bucephalas | True | CassisCase | HC_Bucephalas |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_christmassleigh | HC_ChristmasSleigh | True | CassisCase | HC_ChristmasSleigh |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_daggerjaw | HC_Daggerjaw | True | CassisCase | HC_Daggerjaw |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_raptor | HC_Raptor | True | CassisCase | HC_Raptor |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_rollover | HC_Rollover | True | CassisCase | HC_Rollover |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/hc_warhawk | HC_Warhawk | True | CassisCase | HC_Warhawk |  | 0 | 3 | EngineSlot(Engine); BodySlot*(Body)
+prefabs/caseprefabs/chassis/frames/lc_buzzer | LC_Buzzer | True | CassisCase | LC_Buzzer |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_chicken | LC_Chicken | True | CassisCase | LC_Chicken |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_creeper | LC_Creeper | True | CassisCase | LC_Creeper |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_drifter | LC_Drifter | True | CassisCase | LC_Drifter |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_dune | LC_Dune | True | CassisCase | LC_Dune |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_dynamo | LC_Dynamo | True | CassisCase | LC_Dynamo |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_meerkat | LC_Meerkat | True | CassisCase | LC_Meerkat |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_piranha | LC_Piranha | True | CassisCase | LC_Piranha |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_tumbleweed | LC_Tumbleweed | True | CassisCase | LC_Tumbleweed |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_ural | LC_Ural | True | CassisCase | LC_Ural |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/lc_zip-line | LC_Zip-Line | True | CassisCase | LC_Zip-Line |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_bugsy | MC_Bugsy | True | CassisCase | MC_Bugsy |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_chimney | MC_Chimney | True | CassisCase | MC_Chimney |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_cucaracha | MC_Cucaracha | True | CassisCase | MC_Cucaracha |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_frog | MC_Frog | True | CassisCase | MC_Frog |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_hotrod | MC_HotRod | True | CassisCase | MC_HotRod |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_maximus_pride | MC_Maximus_Pride | True | CassisCase | MC_Maximus_Pride |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_off-road_warrior | MC_Off-Road_Warrior | True | CassisCase | MC_Off-Road_Warrior |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_prospector | MC_Prospector | True | CassisCase | MC_Prospector |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_samum | MC_Samum | True | CassisCase | MC_Samum |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_troll | MC_Troll | True | CassisCase | MC_Troll |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/frames/mc_wheelbarrow | MC_Wheelbarrow | True | CassisCase | MC_Wheelbarrow |  | 0 | 3 | BodySlot*(Body); EngineSlot(Engine)
+prefabs/caseprefabs/chassis/parts/engine_01 | Engine_01 | True | Engine | Engine_01 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/parts/engine_02 | Engine_02 | True | Engine | Engine_02 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/parts/engine_03 | Engine_03 | True | Engine | Engine_03 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/parts/engine_04 | Engine_04 | True | Engine | Engine_04 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/parts/engine_05 | Engine_05 | True | Engine | Engine_05 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/parts/engine_06 | Engine_06 | True | Engine | Engine_06 |  | 0 | 0 | 
+prefabs/caseprefabs/chassis/parts/engine_maximus_power | Engine_Maximus_Power | True | Engine | Engine_Maximus_Power |  | 0 | 0 | 
+prefabs/caseprefabs/device/frame/device_controllablequadcopter | Device_ControllableQuadcopter | True | DeviceCase | Device_ControllableQuadcopter |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_eggpunch | Device_EggPunch | True | DeviceCase | Device_EggPunch |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_emp | Device_EMP | False | DeviceCase | Device_EMP |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_invisibility | Device_Invisibility | True | DeviceCase | Device_Invisibility |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_landminedamage | Device_LandMineDamage | True | DeviceCase | Device_LandMineDamage |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_landmineenergydrain | Device_LandMineEnergyDrain | True | DeviceCase | Device_LandMineEnergyDrain |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_landmineslow | Device_LandMineSlow | True | DeviceCase | Device_LandMineSlow |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_minimap | Device_MiniMap | True | DeviceCase | Device_MiniMap |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_shield | Device_Shield | True | DeviceCase | Device_Shield |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_spycam | Device_SpyCam | True | DeviceCase | Device_SpyCam |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_turrentflamethrower | Device_TurrentFlamethrower | True | DeviceCase | Device_TurrentFlamethrower |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_turrentmachinegun | Device_TurrentMachineGun | True | DeviceCase | Device_TurrentMachineGun |  | 0 | 3 | 
+prefabs/caseprefabs/device/frame/device_turrentrocket | Device_TurrentRocket | True | DeviceCase | Device_TurrentRocket |  | 0 | 3 | 
+prefabs/caseprefabs/head/frames/he_annie | HE_Annie | True | HeadCase | HE_Annie |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_bandit | HE_Bandit | True | HeadCase | HE_Bandit |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_bottrooper | HE_BotTrooper | True | HeadCase | HE_BotTrooper |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_buzzpunk | HE_BuzzPunk | True | HeadCase | HE_BuzzPunk |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_insector | HE_Insector | True | HeadCase | HE_Insector |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_kunoichi | HE_Kunoichi | True | HeadCase | HE_Kunoichi |  | 0 | 0 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_lilbrother | HE_LilBrother | True | HeadCase | HE_LilBrother |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_maximus_triumph | HE_Maximus_Triumph | True | HeadCase | HE_Maximus_Triumph |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_monitor | HE_Monitor | True | HeadCase | HE_Monitor |  | 0 | 2 | HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_mr_pinchy | HE_Mr_Pinchy | True | HeadCase | HE_Mr_Pinchy |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_ozzy | HE_Ozzy | True | HeadCase | HE_Ozzy |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_psycrow | HE_Psycrow | True | HeadCase | HE_PsyCrow |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_pumpkin | HE_Pumpkin | True | HeadCase | HE_Pumpkin |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_sabretooth | HE_Sabretooth | True | HeadCase | HE_Sabretooth |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_sandman | HE_SandMan | True | HeadCase | HE_SandMan |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_scarface | HE_ScarFace | True | HeadCase | HE_ScarFace |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_shellhead | HE_ShellHead | True | HeadCase | HE_ShellHead |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_sheriff | HE_Sheriff | True | HeadCase | HE_Sheriff |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_smooch | HE_Smooch | True | HeadCase | HE_Smooch |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_snowman | HE_Snowman | True | HeadCase | HE_Snowman |  | 0 | 2 | EyewearSlot*(Eyewear)
+prefabs/caseprefabs/head/frames/he_steamer | HE_Steamer | True | HeadCase | HE_Steamer |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_toaster | HE_Toaster | True | HeadCase | HE_Toaster |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_vertigo | HE_Vertigo | True | HeadCase | HE_Vertigo |  | 0 | 2 | EyeGlassSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/frames/he_zombie | HE_Zombie | True | HeadCase | HE_Zombie |  | 0 | 2 | EyewearSlot*(Eyewear); HatSlot*(Hat)
+prefabs/caseprefabs/head/parts/ae_breathtaker | AE_Breathtaker | True | EyewearCase | AE_Breathtaker |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_disguised_operator | AE_Disguised_Operator | True | EyewearCase | AE_Disguised_Operator |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_divingmask | AE_DivingMask | True | EyewearCase | AE_DivingMask |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_halloween_frankie | AE_Halloween_Frankie | True | EyewearCase | AE_Halloween_Frankie |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_halloween_mummy | AE_Halloween_Mummy | True | EyewearCase | AE_Halloween_Mummy |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_halloween_scream | AE_Halloween_Scream | True | EyewearCase | AE_Halloween_Scream |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_halloween_skull | AE_Halloween_Skull | True | EyewearCase | AE_Halloween_Skull |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_halloween_vamp | AE_Halloween_Vamp | True | EyewearCase | AE_Halloween_Vamp |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_halloween_zombie | AE_Halloween_Zombie | True | EyewearCase | AE_Halloween_Zombie |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_harbrained_schemer | AE_Harbrained_Schemer | True | EyewearCase | AE_Harbrained_Schemer |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_kinght | AE_Kinght | True | EyewearCase | AE_Kinght |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_nightvision | AE_Nightvision | True | EyewearCase | AE_Nightvision |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_nosegoogles | AE_NoseGoogles | True | EyewearCase | AE_NoseGoogles |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ae_repairingmask | AE_RepairingMask | True | EyewearCase | AE_RepairingMask |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_bandithat | AH_BanditHat | True | HatCase | AH_BanditHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_bghat | AH_BgHat | True | HatCase | AH_BgHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_christmas_elf | AH_Christmas_Elf | True | HatCase | AH_Christmas_Elf |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_coineater | AH_CoinEater | True | HatCase | AH_CoinEater |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_conehat | AH_ConeHat | True | HatCase | AH_ConeHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_cookhat | AH_CookHat | True | HatCase | AH_CookHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_crown | AH_Crown | True | HatCase | AH_Crown |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_easter_commando | AH_Easter_Commando | True | HatCase | AH_Easter_Commando |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_fanhat | AH_FanHat | True | HatCase | AH_FanHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_fanhelmet | AH_FanHelmet | True | HatCase | AH_FanHelmet |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_fireproof | AH_Fireproof | True | HatCase | AH_Fireproof |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_general | AH_General | True | HatCase | AH_General |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_hathobo | AH_HatHobo | True | HatCase | AH_HatHobo |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_hatviking | AH_HatViking | True | HatCase | AH_HatViking |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_indianhat | AH_IndianHat | True | HatCase | AH_IndianHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_jhat | AH_JHat | True | HatCase | AH_JHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_militaryhelmet | AH_MilitaryHelmet | True | HatCase | AH_MilitaryHelmet |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_rainbow_warrior | AH_Rainbow_Warrior | True | HatCase | AH_Rainbow_Warrior |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_rangerhat | AH_RangerHat | True | HatCase | AH_RangerHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_rudolph | AH_Rudolph | True | HatCase | AH_Rudolph |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_santahat | AH_SantaHat | True | HatCase | AH_SantaHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_sheriffhat | AH_SheriffHat | True | HatCase | AH_SheriffHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_sourcerer | AH_Sourcerer | True | HatCase | AH_Sourcerer |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_spanishhelmet | AH_SpanishHelmet | True | HatCase | AH_SpanishHelmet |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_theclown | AH_TheClown | True | HatCase | AH_TheClown |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_tophat | AH_TopHat | True | HatCase | AH_TopHat |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_ushanka | AH_Ushanka | True | HatCase | AH_Ushanka |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_valantine_fool | AH_Valantine_Fool | True | HatCase | AH_Valantine_Fool |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_valantine_saint | AH_Valantine_Saint | True | HatCase | AH_Valantine_Saint |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_valentine_sinner | AH_Valentine_Sinner | True | HatCase | AH_Valentine_Sinner |  | 0 | 1 | 
+prefabs/caseprefabs/head/parts/ah_witch | AH_Witch | True | HatCase | AH_Witch |  | 0 | 1 | 

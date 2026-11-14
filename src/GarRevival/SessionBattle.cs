@@ -1,0 +1,864 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using ExitGames.Client.Photon;
+using JunkWars.Client;
+using JunkWars.Client.Arena;
+using JunkWars.Client.Arena.Offline;
+using JunkWars.Client.Robot;
+using JunkWars.Common.Arena;
+using JunkWars.Common.Gameplay;
+using JunkWars.Common.Player.ValueObjects;
+using JunkWars.Common.Robot.Enums;
+using JunkWars.Common.Utils;
+using UnityEngine;
+
+namespace GarRevival
+{
+    // A battle shared by everyone in a session, built on the game's offline
+    // battle mode. Every player's game runs the arena; the difference is who
+    // controls what:
+    //   - each game drives its own player's robot; the host also drives the bots
+    //   - everyone else's robots are puppets, moved by position updates
+    //   - the battle rules (OfflineServerEmulator: damage, destruction, pickups,
+    //     game clock, results) run only on the host. A client's actions are
+    //     sent to the host, and the host's rule events are replayed on clients.
+    internal static class SessionBattle
+    {
+        // First byte of a battle message.
+        private const byte MsgPrepare = 1; // host -> clients: a battle is starting, send your robot
+        private const byte MsgRobot = 2;   // client -> host: ready flag + ActorVO (protobuf)
+        private const byte MsgSetup = 3;   // host -> client: map, mode, duration, your id, all players
+        private const byte MsgState = 4;   // either way: positions of the sender's robots
+        private const byte MsgAction = 5;  // client -> host: something my robot did
+        private const byte MsgFire = 6;    // host -> clients: show a robot firing
+        private const byte MsgEvent = 7;   // host -> clients: a rule event to replay
+        private const byte MsgEndGame = 8; // host -> client: your EndBattleData (protobuf)
+        private const byte MsgWear = 9;    // host -> client: what is left of each of your robot's parts
+
+        private const byte ActShoot = 1, ActHit = 2, ActPick = 3, ActGameMode = 4, ActDevice = 5, ActUndeploy = 6, ActBoost = 7;
+        private const byte EvStat = 1, EvDestruction = 2, EvGameMode = 3, EvDeviceActivate = 4, EvUndeploy = 5,
+            EvSpawn = 6, EvDespawn = 7, EvCountdown = 8, EvStart = 9, EvBoost = 10;
+
+        private const float StateInterval = 0.066f;
+        private const float PrepareTimeout = 5f;
+        private static readonly string[] BotNames = { "Blick", "Flick", "Glick", "Plick", "Quee", "Snick", "Whick", "Grumbles", "Lionel", "Rusty" };
+
+        public static bool Active;
+        public static int LocalActorId;
+        public static int LocalTeam = 1;
+
+        private static readonly Dictionary<string, int> ActorOf = new Dictionary<string, int>(); // host: member -> actor
+        private static readonly Queue<Action> Pending = new Queue<Action>();                     // client: until the arena is up
+        private static MessengerListenerContainer _listeners;
+        private static bool _applyingRemote;
+        private static bool _sawArena;
+        private static float _nextState;
+        private static float _nextReport;
+        private static int _statesSent, _statesReceived, _eventsReplayed, _firesShown;
+
+        private static bool _preparing;
+        private static float _prepareDeadline;
+        private static List<string> _waiting;
+        private static Dictionary<string, ActorVO> _replies;
+
+        // A battle is being set up or fought.
+        public static bool Busy
+        {
+            get { return _preparing || Active; }
+        }
+
+        private static bool IsClient
+        {
+            get { return Active && Session.Role == Session.Roles.Client; }
+        }
+
+        private static OfflineArena Arena
+        {
+            get { return BattleManager.arena as OfflineArena; }
+        }
+
+        private static bool ArenaReady
+        {
+            get { return Arena != null && Arena.gameLoaded && Arena.robots.Count > 0; }
+        }
+
+        // ---- starting ----
+
+        // The host pressed BATTLE with other players in the session.
+        public static void HostStart()
+        {
+            if (_preparing || Active)
+            {
+                return;
+            }
+            _replies = new Dictionary<string, ActorVO>();
+            _waiting = Session.RemoteNames;
+            _preparing = true;
+            _prepareDeadline = Time.realtimeSinceStartup + PrepareTimeout;
+            Session.BroadcastBattle(new[] { MsgPrepare }, null);
+            GameServer.Notice("Starting a battle...");
+        }
+
+        private static void FinishPrepare()
+        {
+            _preparing = false;
+            OfflineBattle.Settings settings = OfflineBattle.LoadSettings();
+            List<PlayerStartData> players = new List<PlayerStartData>();
+            ActorOf.Clear();
+
+            // Humans first: the host is actor 0 on team 1, like a solo battle.
+            int nextId = 0;
+            int humanIndex = 0;
+            Func<ActorVO, PlayerStartData> addHuman = vo =>
+            {
+                int team = settings.HumansSplit ? (humanIndex % 2 == 0 ? 1 : 0) : 1;
+                humanIndex++;
+                return Add(players, vo, nextId++, team, false);
+            };
+            // A dedicated server fields no robot of its own.
+            if (!DedicatedServer.Enabled)
+            {
+                addHuman(OfflineBattle.BuildLocalActor());
+            }
+            foreach (KeyValuePair<string, ActorVO> reply in _replies)
+            {
+                ActorOf[reply.Key] = addHuman(reply.Value).playerID;
+            }
+            if (DedicatedServer.Enabled && ActorOf.Count == 0)
+            {
+                RevivalLog.Info("Session battle: no player was ready; not starting");
+                Session.SendChat("Nobody was ready (in the garage with a complete robot), so the match did not start.", null);
+                return;
+            }
+
+            // Bots fill each team up to its configured size.
+            int botName = 0;
+            int[] target = { settings.Enemies, settings.Allies + 1 };
+            for (int team = 0; team < 2; team++)
+            {
+                for (int have = players.Count(p => p.vo.team == team); have < target[team]; have++)
+                {
+                    int id = nextId++;
+                    ActorVO bot = OfflineServerEmulator.GenerateActorVO(BotNames[botName++ % BotNames.Length], 1, 1, id, team, string.Empty, team == 0 && settings.WeakEnemies);
+                    Add(players, bot, id, team, true);
+                }
+            }
+
+            string map = OfflineBattle.PickMap(settings);
+            object[] roster = players.Select(p => (object)new object[] { p.playerID, p.vo.team, p.isBot, DataSerialization.ProtoSerializeObject(p.vo) }).ToArray();
+            foreach (KeyValuePair<string, int> member in ActorOf)
+            {
+                Session.SendBattleTo(member.Key, Message(MsgSetup, new object[] { map, (int)settings.Mode, settings.Minutes * 60, member.Value, roster }));
+            }
+            // The arena needs a robot to follow; a dedicated server watches a bot.
+            int watched = DedicatedServer.Enabled ? (players.FirstOrDefault(p => p.isBot && p.vo.team == 1) ?? players.First(p => p.isBot)).playerID : 0;
+            RevivalLog.Info("Session battle: " + map + ", " + settings.Mode + ", " + players.Count(p => !p.isBot) + " players, " + players.Count(p => p.isBot) + " bots" +
+                (DedicatedServer.Enabled ? ", server watches bot " + watched : string.Empty));
+            Begin(map, settings.Mode, settings.Minutes * 60, players, watched);
+        }
+
+        private static PlayerStartData Add(List<PlayerStartData> players, ActorVO vo, int id, int team, bool isBot)
+        {
+            vo.id = id;
+            vo.team = team;
+            PlayerStartData player = new PlayerStartData { isBot = isBot, playerID = id, partyIndex = 0, vo = vo };
+            players.Add(player);
+            return player;
+        }
+
+        private static void Begin(string map, GameModeType mode, int seconds, List<PlayerStartData> players, int localId)
+        {
+            foreach (PlayerStartData player in players)
+            {
+                player.possesed = player.playerID == localId;
+            }
+            LocalActorId = localId;
+            LocalTeam = players.First(p => p.playerID == localId).vo.team;
+            Active = true;
+            _sawArena = false;
+            _statesSent = _statesReceived = _eventsReplayed = _firesShown = 0;
+            Pending.Clear();
+            if (Session.Role == Session.Roles.Host)
+            {
+                ListenToRules();
+            }
+            BattleManager.offlineBattleData = new OfflineBattleData
+            {
+                mapID = map,
+                gameMode = mode,
+                teamsCount = 2,
+                gameDuration = seconds,
+                players = players.ToArray(),
+            };
+            GameManager.Instance.ChangeGameState(GameState.OfflineArena);
+        }
+
+        private static void End(string why)
+        {
+            if (!Active)
+            {
+                return;
+            }
+            RevivalLog.Info("Session battle over (" + why + "): sent " + _statesSent + " / received " + _statesReceived + " position updates, " +
+                _eventsReplayed + " rule events, " + _firesShown + " remote shots shown");
+            Active = false;
+            Pending.Clear();
+            ActorOf.Clear();
+            if (_listeners != null)
+            {
+                _listeners.Dispose();
+                _listeners = null;
+            }
+        }
+
+        public static void OnSessionEnded()
+        {
+            _preparing = false;
+            if (Active && Arena != null && GameManager.Instance.currentGameState == GameState.OfflineArena)
+            {
+                End("session closed");
+                Arena.LeaveBattle();
+            }
+            else
+            {
+                End("session closed");
+            }
+        }
+
+        // ---- building the arena (replaces OfflineArena.AddRobots) ----
+
+        public static void AddRobots(OfflineArena arena)
+        {
+            MethodInfo build = typeof(BaseArena).GetMethod("BuildRobotAs", BindingFlags.NonPublic | BindingFlags.Instance);
+            PlayerStartData[] players = arena.battleSetupData.players;
+            arena.actors = new Dictionary<int, ActorVO>();
+            foreach (PlayerStartData player in players)
+            {
+                player.vo.partyNmbr = player.partyIndex;
+                arena.actors.Add(player.playerID, player.vo);
+            }
+            bool host = Session.Role == Session.Roles.Host;
+            foreach (PlayerStartData player in players)
+            {
+                // Mine to drive: my own robot, and the bots if I am the host.
+                bool local = player.possesed || (player.isBot && host);
+                RobotAvatar robot = (RobotAvatar)build.Invoke(arena, new object[] { player.possesed, player.vo, player.playerID, local, player.isBot });
+                robot.AddFullAmmo();
+                GameObject holder = new GameObject();
+                OfflineArenaCombatant combatant = holder.AddComponent<OfflineArenaCombatant>();
+                holder.AddComponent<RobotAvatarTicker>();
+                combatant.LinkToRobot(player.playerID);
+                if (!local)
+                {
+                    robot.StartNetSync();
+                }
+            }
+            RevivalLog.Info("Session battle arena: " + players.Length + " robots, " + arena.robots.Values.Count(r => r.localyControlled) + " driven here");
+        }
+
+        // ---- every frame ----
+
+        public static void Update()
+        {
+            if (_preparing && (_waiting.Count == 0 || Time.realtimeSinceStartup > _prepareDeadline))
+            {
+                FinishPrepare();
+            }
+            if (!Active)
+            {
+                return;
+            }
+            if (!ArenaReady)
+            {
+                if (_sawArena && GameManager.Instance.currentGameState == GameState.Garage)
+                {
+                    End("back in the garage");
+                }
+                return;
+            }
+            _sawArena = true;
+            while (Pending.Count > 0)
+            {
+                Guard("replay", Pending.Dequeue());
+            }
+            if (Time.realtimeSinceStartup >= _nextState)
+            {
+                _nextState = Time.realtimeSinceStartup + StateInterval;
+                SendState();
+            }
+            if (Time.realtimeSinceStartup >= _nextReport)
+            {
+                _nextReport = Time.realtimeSinceStartup + 10f;
+                RobotAvatar last = Arena.robots.Values.OrderBy(r => r.actorId).Last();
+                RevivalLog.Info("Session battle: sent " + _statesSent + " / received " + _statesReceived + " position updates, " + _eventsReplayed +
+                    " rule events, " + _firesShown + " remote shots; robot " + last.actorId + " at " + (last.capusle == null ? "-" : last.capusle.transform.position.ToString("0.0")));
+            }
+        }
+
+        private static void Guard(string what, Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Session battle " + what + " failed", ex);
+            }
+        }
+
+        // ---- movement ----
+
+        private static void SendState()
+        {
+            MemoryStream stream = new MemoryStream();
+            BinaryWriter w = new BinaryWriter(stream);
+            w.Write(MsgState);
+            w.Write(Session.ClockMs);
+            List<RobotAvatar> mine = Arena.robots.Values.Where(r => r.localyControlled && r.capusle != null && r.movementControler != null).ToList();
+            w.Write((byte)mine.Count);
+            foreach (RobotAvatar robot in mine)
+            {
+                Vector3 position = robot.capusle.GetComponent<Rigidbody>().position;
+                Vector2 look = robot.movementControler.controllerScript.inputLook;
+                Vector3 aim = robot.movementControler.desiredLookAtLocation;
+                w.Write((byte)robot.actorId);
+                w.Write((byte)(robot.sprinting ? 1 : 0));
+                w.Write(position.x); w.Write(position.y); w.Write(position.z);
+                w.Write(look.x); w.Write(look.y);
+                w.Write(aim.x); w.Write(aim.y); w.Write(aim.z);
+            }
+            byte[] message = stream.ToArray();
+            _statesSent++;
+            if (Session.Role == Session.Roles.Host)
+            {
+                Session.BroadcastBattle(message, null);
+            }
+            else
+            {
+                Session.SendBattleToHost(message);
+            }
+        }
+
+        private static void ApplyState(byte[] message)
+        {
+            if (!ArenaReady)
+            {
+                return;
+            }
+            BinaryReader r = new BinaryReader(new MemoryStream(message));
+            r.ReadByte();
+            // Re-express the sender's timestamp on this game's own clock.
+            double age = Mathf.Clamp((Session.ClockMs - r.ReadInt32()) / 1000f, 0f, 1f);
+            int stamp = (int)(uint)((GameNetwork.time - age) * 1000.0);
+            for (int count = r.ReadByte(); count > 0; count--)
+            {
+                int id = r.ReadByte();
+                bool sprinting = r.ReadByte() != 0;
+                Vector3 position = new Vector3(r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
+                Vector2 look = new Vector2(r.ReadSingle(), r.ReadSingle());
+                Vector3 aim = new Vector3(r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
+                RobotAvatar robot;
+                if (Arena.robots.TryGetValue(id, out robot) && !robot.localyControlled && robot.playerSyncScript != null && robot.movementControler != null)
+                {
+                    robot.playerSyncScript.OnSyncData(new PhotonMessageInfo(null, stamp, null), position, look);
+                    robot.movementControler.desiredLookAtLocation = aim;
+                    robot.ChangeSprintStateAsRemote(sprinting); // speed effect and sprint animation
+                }
+            }
+            _statesReceived++;
+        }
+
+        // ---- messages ----
+
+        private static byte[] Message(byte type, object payload)
+        {
+            byte[] body = Protocol.Serialize(payload);
+            byte[] message = new byte[body.Length + 1];
+            message[0] = type;
+            Buffer.BlockCopy(body, 0, message, 1, body.Length);
+            return message;
+        }
+
+        private static object Body(byte[] message)
+        {
+            byte[] body = new byte[message.Length - 1];
+            Buffer.BlockCopy(message, 1, body, 0, body.Length);
+            return Protocol.Deserialize(body);
+        }
+
+        public static void FromHost(byte[] message)
+        {
+            Guard("message from host", () =>
+            {
+                switch (message[0])
+                {
+                    case MsgPrepare:
+                        AnswerPrepare();
+                        break;
+                    case MsgSetup:
+                        ReceiveSetup((object[])Body(message));
+                        break;
+                    case MsgState:
+                        ApplyState(message);
+                        break;
+                    case MsgFire:
+                        object[] fire = (object[])Body(message);
+                        Pending.Enqueue(() => ShowFire(fire));
+                        break;
+                    case MsgEvent:
+                        object[] ev = (object[])Body(message);
+                        Pending.Enqueue(() => Replay(Convert.ToByte(ev[0]), ev[1]));
+                        break;
+                    case MsgWear:
+                        object[] wear = (object[])Body(message);
+                        Dictionary<int, float> left = new Dictionary<int, float>();
+                        int[] partIds = (int[])wear[0];
+                        float[] durability = (float[])wear[1];
+                        for (int i = 0; i < partIds.Length; i++)
+                        {
+                            left[partIds[i]] = durability[i];
+                        }
+                        BattleUpkeep.ApplyWear(left);
+                        break;
+                    case MsgEndGame:
+                        byte[] bytes = new byte[message.Length - 1];
+                        Buffer.BlockCopy(message, 1, bytes, 0, bytes.Length);
+                        EndBattleData result = DataSerialization.ProtoDeserializeObject<EndBattleData>(bytes);
+                        Pending.Enqueue(() => Messenger<DataMessage>.Invoke("offline_arena_endgame", new DataMessage(result, null)));
+                        break;
+                }
+            });
+        }
+
+        public static void FromClient(string name, byte[] message)
+        {
+            Guard("message from " + name, () =>
+            {
+                switch (message[0])
+                {
+                    case MsgRobot:
+                        if (_preparing && _waiting.Remove(name) && message[1] == 1)
+                        {
+                            byte[] bytes = new byte[message.Length - 2];
+                            Buffer.BlockCopy(message, 2, bytes, 0, bytes.Length);
+                            ActorVO vo = DataSerialization.ProtoDeserializeObject<ActorVO>(bytes);
+                            VoNormalizer.FillNullCollections(vo);
+                            _replies[name] = vo;
+                        }
+                        break;
+                    case MsgState:
+                        if (Active)
+                        {
+                            ApplyState(message);
+                            Session.BroadcastBattle(message, name);
+                        }
+                        break;
+                    case MsgAction:
+                        if (Active && ArenaReady && ActorOf.ContainsKey(name))
+                        {
+                            HandleAction(name, (object[])Body(message));
+                        }
+                        break;
+                }
+            });
+        }
+
+        // Client: the host is about to start a battle.
+        private static void AnswerPrepare()
+        {
+            bool ready = !Active && GameManager.Instance.currentGameState == GameState.Garage && GameManager.Instance.garage != null
+                && GameManager.Instance.garage.currentRobotAssembly != null && GameManager.Instance.garage.currentRobotAssembly.rootModule != null;
+            MemoryStream stream = new MemoryStream();
+            stream.WriteByte(MsgRobot);
+            stream.WriteByte((byte)(ready ? 1 : 0));
+            if (ready)
+            {
+                byte[] vo = DataSerialization.ProtoSerializeObject(OfflineBattle.BuildLocalActor());
+                stream.Write(vo, 0, vo.Length);
+            }
+            else
+            {
+                GameServer.Notice("The host started a battle, but you need to be in the garage with a complete robot to join.");
+            }
+            Session.SendBattleToHost(stream.ToArray());
+        }
+
+        private static void ReceiveSetup(object[] setup)
+        {
+            List<PlayerStartData> players = new List<PlayerStartData>();
+            foreach (object[] entry in (object[])setup[4])
+            {
+                ActorVO vo = DataSerialization.ProtoDeserializeObject<ActorVO>((byte[])entry[3]);
+                VoNormalizer.FillNullCollections(vo);
+                Add(players, vo, Convert.ToInt32(entry[0]), Convert.ToInt32(entry[1]), (bool)entry[2]);
+            }
+            RevivalLog.Info("Session battle: joining on " + setup[0] + " as actor " + setup[3] + " of " + players.Count);
+            Begin((string)setup[0], (GameModeType)Convert.ToInt32(setup[1]), Convert.ToInt32(setup[2]), players, Convert.ToInt32(setup[3]));
+        }
+
+        // ---- actions: what a locally driven robot does ----
+
+        private static object[] PackTargets(WeaponHitPoint[] targets)
+        {
+            return targets == null ? null : targets.Select(t => (object)WeaponHitPoint.GetAsSerializableObjectArray(t)).ToArray();
+        }
+
+        private static WeaponHitPoint[] UnpackTargets(object packed)
+        {
+            object[] targets = packed as object[];
+            return targets == null ? null : targets.Select(t => WeaponHitPoint.ObjectArrayToWeaponHitPoint((object[])t)).ToArray();
+        }
+
+        private static byte? NullableByte(object value)
+        {
+            return value == null ? (byte?)null : Convert.ToByte(value);
+        }
+
+        private static void SendAction(byte kind, int actor, params object[] args)
+        {
+            object[] payload = new object[args.Length + 2];
+            payload[0] = kind;
+            payload[1] = actor;
+            Array.Copy(args, 0, payload, 2, args.Length);
+            Session.SendBattleToHost(Message(MsgAction, payload));
+        }
+
+        // Hook on OfflineArenaCombatant.ExecuteShoot. True = skip the original.
+        public static bool OnShoot(OfflineArenaCombatant combatant, int moduleType, int weaponId, int barrelId, short shootIndex, byte? checkForAmmo, byte? effectId, WeaponHitPoint[] targets, Vector3 aim, object[] extra)
+        {
+            if (!Active)
+            {
+                return false;
+            }
+            RobotAvatar robot = combatant.theAvatar;
+            if (robot == null || !robot.localyControlled)
+            {
+                return true;
+            }
+            object[] shot = { moduleType, weaponId, barrelId, shootIndex, checkForAmmo, effectId, PackTargets(targets), new[] { aim.x, aim.y, aim.z }, extra };
+            if (IsClient)
+            {
+                SendAction(ActShoot, robot.actorId, (object)shot);
+                return true;
+            }
+            Session.BroadcastBattle(Message(MsgFire, new object[] { robot.actorId, shot }), null);
+            return false;
+        }
+
+        // Hook on OfflineArenaCombatant.ExecuteHit.
+        public static bool OnHit(OfflineArenaCombatant combatant, int moduleType, int weaponId, int barrelId, short shootIndex, byte? effectId, WeaponHitPoint[] targets)
+        {
+            if (!Active)
+            {
+                return false;
+            }
+            RobotAvatar robot = combatant.theAvatar;
+            if (robot == null || !robot.localyControlled)
+            {
+                return true;
+            }
+            if (IsClient)
+            {
+                SendAction(ActHit, robot.actorId, moduleType, weaponId, barrelId, shootIndex, effectId, PackTargets(targets));
+                return true;
+            }
+            return false;
+        }
+
+        // Hook on OfflineArenaCombatant.ExecuteDeviceActivate.
+        public static bool OnDeviceActivate(OfflineArenaCombatant combatant, int deviceId, Vector3 position, Quaternion rotation)
+        {
+            if (!Active)
+            {
+                return false;
+            }
+            RobotAvatar robot = combatant.theAvatar;
+            if (robot == null || !robot.localyControlled)
+            {
+                return true;
+            }
+            if (IsClient)
+            {
+                SendAction(ActDevice, robot.actorId, deviceId, new[] { position.x, position.y, position.z }, new[] { rotation.x, rotation.y, rotation.z, rotation.w });
+                return true;
+            }
+            return false;
+        }
+
+        // Hook on OfflineArenaCombatant.ExecuteDeviceDeactivate.
+        public static bool OnDeviceDeactivate(OfflineArenaCombatant combatant, int objectId, byte code)
+        {
+            if (!IsClient)
+            {
+                return false;
+            }
+            if (combatant.theAvatar != null && combatant.theAvatar.possesedByLocalPlayer)
+            {
+                SendAction(ActUndeploy, combatant.theAvatar.actorId, objectId, code);
+            }
+            return true;
+        }
+
+        // Hooks on OfflineServerEmulator.HandlePickPickableOperation / HandleGameModeEvent.
+        public static bool OnPick(int actorId, int index)
+        {
+            if (!IsClient || _applyingRemote)
+            {
+                return false;
+            }
+            if (actorId == LocalActorId)
+            {
+                SendAction(ActPick, actorId, index);
+            }
+            return true;
+        }
+
+        public static bool OnGameModeEvent(int actorId, Hashtable data)
+        {
+            if (!IsClient || _applyingRemote)
+            {
+                return false;
+            }
+            if (actorId == LocalActorId)
+            {
+                SendAction(ActGameMode, actorId, data);
+            }
+            return true;
+        }
+
+        // Host: a client's robot did something.
+        private static void HandleAction(string name, object[] a)
+        {
+            byte kind = Convert.ToByte(a[0]);
+            int actor = Convert.ToInt32(a[1]);
+            if (ActorOf[name] != actor)
+            {
+                return;
+            }
+            OfflineServerEmulator rules = Arena.offlineServerEmulator;
+            _applyingRemote = true;
+            try
+            {
+                switch (kind)
+                {
+                    case ActShoot:
+                        object[] shot = (object[])a[2];
+                        object[] fire = { actor, shot };
+                        ShowFire(fire);
+                        Session.BroadcastBattle(Message(MsgFire, fire), name);
+                        rules.HandleShoot(actor, Convert.ToInt32(shot[0]), Convert.ToInt32(shot[1]), Convert.ToInt32(shot[2]), Convert.ToInt16(shot[3]),
+                            NullableByte(shot[4]), NullableByte(shot[5]), UnpackTargets(shot[6]));
+                        break;
+                    case ActHit:
+                        rules.HandleHit(actor, Convert.ToInt32(a[2]), Convert.ToInt32(a[3]), Convert.ToInt32(a[4]), Convert.ToInt16(a[5]), NullableByte(a[6]), UnpackTargets(a[7]));
+                        break;
+                    case ActPick:
+                        rules.HandlePickPickableOperation(actor, Convert.ToInt32(a[2]));
+                        break;
+                    case ActGameMode:
+                        rules.HandleGameModeEvent(actor, (Hashtable)a[2]);
+                        break;
+                    case ActDevice:
+                        rules.HandleDeviceActivationEvent(actor, Convert.ToInt32(a[2]), (float[])a[3], (float[])a[4]);
+                        break;
+                    case ActUndeploy:
+                        rules.DisableDeployedObject(actor, Convert.ToInt32(a[2]), Convert.ToByte(a[3]));
+                        break;
+                    case ActBoost:
+                        BattleUpkeep.ApplyOnRules(actor, Convert.ToInt32(a[2]), Convert.ToByte(a[3]));
+                        break;
+                }
+            }
+            finally
+            {
+                _applyingRemote = false;
+            }
+        }
+
+        // Show a robot driven elsewhere firing, as the online game did.
+        private static void ShowFire(object[] fire)
+        {
+            int actor = Convert.ToInt32(fire[0]);
+            object[] shot = (object[])fire[1];
+            RobotAvatar robot;
+            if (!Arena.robots.TryGetValue(actor, out robot) || robot.localyControlled)
+            {
+                return;
+            }
+            float[] aim = (float[])shot[7];
+            Vector3 aimPoint = new Vector3(aim[0], aim[1], aim[2]);
+            int moduleType = Convert.ToInt32(shot[0]);
+            if (moduleType == 0)
+            {
+                robot.ExecuteFireEffectAsRemotePlayer(Convert.ToInt16(shot[3]), Convert.ToInt32(shot[1]), Convert.ToInt32(shot[2]), UnpackTargets(shot[6]), aimPoint, shot[8] as object[]);
+            }
+            else if (moduleType == 1)
+            {
+                robot.ExecuteDeviceFireEffectAsRemotePlayer(Convert.ToInt16(shot[3]), Convert.ToInt32(shot[1]), Convert.ToInt32(shot[2]), UnpackTargets(shot[6]), aimPoint);
+            }
+            _firesShown++;
+        }
+
+        // ---- rule events: host -> clients ----
+
+        private static void ListenToRules()
+        {
+            _listeners = new MessengerListenerContainer();
+            _listeners.AddListener<DataMessage>("offline_arena_statistic_change", m => SendEvent(EvStat, DataSerialization.ProtoSerializeObject((StatisticChangeData)m.data)));
+            _listeners.AddListener<DataMessage>("offline_arena_destruction_data", m => SendEvent(EvDestruction, PackDestruction((DestructionData)m.data)));
+            _listeners.AddListener<DataMessage>("offline_arena_gamemode_event", m => SendEvent(EvGameMode, m.data));
+            _listeners.AddListener<DataMessage>("offline_arena_actor_deviceactivate", m => SendEvent(EvDeviceActivate, m.data));
+            _listeners.AddListener<DataMessage>("offline_arena_actor_depolyable_deactivate", m => SendEvent(EvUndeploy, m.data));
+            _listeners.AddListener<DataMessage>("offline_arena_spawn_pickables", m => SendEvent(EvSpawn, m.data));
+            _listeners.AddListener<DataMessage>("offline_arena_despawn_pickables", m => SendEvent(EvDespawn, new object[] { ((int[][])m.data)[0], ((int[][])m.data)[1] }));
+            _listeners.AddListener<DataMessage>("offline_arena_startcountdown", m => SendEvent(EvCountdown, Convert.ToInt32(m.data)));
+            _listeners.AddListener<Message>("offline_arena_startgame", m => SendEvent(EvStart, 0));
+        }
+
+        private static void SendEvent(byte kind, object payload)
+        {
+            if (Active && Session.Role == Session.Roles.Host)
+            {
+                Guard("event " + kind, () => Session.BroadcastBattle(Message(MsgEvent, new object[] { kind, payload }), null));
+            }
+        }
+
+        private static void Replay(byte kind, object payload)
+        {
+            _eventsReplayed++;
+            switch (kind)
+            {
+                case EvStat:
+                    Raise("offline_arena_statistic_change", DataSerialization.ProtoDeserializeObject<StatisticChangeData>((byte[])payload));
+                    break;
+                case EvDestruction:
+                    Raise("offline_arena_destruction_data", UnpackDestruction((object[])payload));
+                    break;
+                case EvGameMode:
+                    Raise("offline_arena_gamemode_event", payload);
+                    break;
+                case EvDeviceActivate:
+                    Raise("offline_arena_actor_deviceactivate", payload);
+                    break;
+                case EvUndeploy:
+                    Raise("offline_arena_actor_depolyable_deactivate", payload);
+                    break;
+                case EvSpawn:
+                    Raise("offline_arena_spawn_pickables", payload);
+                    break;
+                case EvDespawn:
+                    object[] pair = (object[])payload;
+                    Raise("offline_arena_despawn_pickables", new[] { (int[])pair[0], (int[])pair[1] });
+                    break;
+                case EvCountdown:
+                    Raise("offline_arena_startcountdown", Convert.ToInt32(payload));
+                    break;
+                case EvStart:
+                    Messenger<Message>.Invoke("offline_arena_startgame", new Message("start", null));
+                    break;
+                case EvBoost:
+                    object[] boost = (object[])payload;
+                    BattleUpkeep.Show(Convert.ToInt32(boost[0]), Convert.ToInt32(boost[1]));
+                    break;
+            }
+        }
+
+        private static void Raise(string name, object data)
+        {
+            Messenger<DataMessage>.Invoke(name, new DataMessage(data, null));
+        }
+
+        // Client: my robot used a consumable boost.
+        public static void SendBoost(int actorId, int slotIndex, byte type)
+        {
+            SendAction(ActBoost, actorId, slotIndex, type);
+        }
+
+        // Host: a boost took effect; every other screen shows it.
+        public static void AnnounceBoost(int actorId, int slotIndex)
+        {
+            SendEvent(EvBoost, new object[] { actorId, slotIndex });
+        }
+
+        // Hook on OfflineServerEmulator.PublishEndGameEvent (host): every
+        // player gets their own result.
+        public static void OnEndGame(object data)
+        {
+            Dictionary<int, EndBattleData> results = data as Dictionary<int, EndBattleData>;
+            if (!Active || Session.Role != Session.Roles.Host || results == null)
+            {
+                return;
+            }
+            foreach (KeyValuePair<string, int> member in ActorOf)
+            {
+                // Before the result, so the wear is saved by the time the
+                // player's game applies its rewards.
+                Dictionary<int, float> left = BattleUpkeep.EndDurability(member.Value);
+                if (left.Count > 0)
+                {
+                    Session.SendBattleTo(member.Key, Message(MsgWear, new object[] { left.Keys.ToArray(), left.Values.ToArray() }));
+                }
+                EndBattleData result;
+                if (results.TryGetValue(member.Value, out result))
+                {
+                    byte[] body = DataSerialization.ProtoSerializeObject(result);
+                    byte[] message = new byte[body.Length + 1];
+                    message[0] = MsgEndGame;
+                    Buffer.BlockCopy(body, 0, message, 1, body.Length);
+                    Session.SendBattleTo(member.Key, message);
+                }
+            }
+        }
+
+        // Hook on OfflineServerEmulator.PublishStartCountdownEvent: a client's
+        // own copy of the rules never starts its clock.
+        public static bool SuppressLocalRules()
+        {
+            return IsClient;
+        }
+
+        // ---- DestructionData is not a protobuf type ----
+
+        private static object[] PackMap(Dictionary<int, List<int>> map)
+        {
+            return map == null ? new object[0] : map.Select(e => (object)new object[] { e.Key, e.Value.ToArray() }).ToArray();
+        }
+
+        private static Dictionary<int, List<int>> UnpackMap(object packed)
+        {
+            Dictionary<int, List<int>> map = new Dictionary<int, List<int>>();
+            foreach (object[] entry in (object[])packed)
+            {
+                map[Convert.ToInt32(entry[0])] = new List<int>((int[])entry[1]);
+            }
+            return map;
+        }
+
+        private static object[] PackDestruction(DestructionData d)
+        {
+            return new object[]
+            {
+                d.originActorID, PackMap(d.destroyedModules),
+                (d.destroyedModuleTypes ?? new List<LogicalType>()).Select(t => (int)t).ToArray(),
+                (d.destroyedRobots ?? new List<int>()).ToArray(), PackMap(d.destroyedDeployables),
+            };
+        }
+
+        private static DestructionData UnpackDestruction(object[] p)
+        {
+            return new DestructionData
+            {
+                originActorID = Convert.ToInt32(p[0]),
+                destroyedModules = UnpackMap(p[1]),
+                destroyedModuleTypes = ((int[])p[2]).Select(t => (LogicalType)t).ToList(),
+                destroyedRobots = new List<int>((int[])p[3]),
+                destroyedDeployables = UnpackMap(p[4]),
+            };
+        }
+    }
+}
