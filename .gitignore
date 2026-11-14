@@ -22,3 +22,6 @@ web-requests*.log
 **/bin/
 # Screenshots show a player name and LAN addresses
 /*.png
+codes.cfg
+redeemed.txt
+VERSION.txt

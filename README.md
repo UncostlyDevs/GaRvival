@@ -29,6 +29,8 @@ it can be undone.
 | Battles together in a hosted session (two of the three modes tested) | |
 | Servers with their own profiles, starting money and reward rates | |
 | Dedicated servers (host without playing, headless or windowed) | |
+| Redeem codes (Menu > Redeem Code) from `codes.cfg` | |
+| Watch Tutorial (the official video, in the Steam overlay) | |
 
 Building modules and robots by drag and drop is implemented on the server side
 but has only been checked through the UI screens, not by hand. Please report
@@ -264,6 +266,31 @@ hosted, announced and started two matches in a row (one through `!start`), its
 bots fought, and the player got their rewards and wear each time. Not tested:
 Steam hosting, players from another PC, several players at once, running for
 hours.
+
+## Garage extras
+
+- **Redeem codes** (Menu > Redeem Code) used to be checked by the website. They
+  now come from `codes.cfg`, created on first use with the sample code
+  `REVIVAL`. Each line is a code and what it gives:
+
+  ```
+  REVIVAL = credits 5000, sparks 25
+  WELCOME = credits 2000
+  ```
+
+  Codes are not case-sensitive and work once per profile (the used ones are in
+  the profile's `redeemed.txt`). A server owner can hand out codes this way;
+  like everything else on a player's PC, nothing stops a player from adding
+  their own.
+- **Buy** next to the sparks was the real-money store. It now says where sparks
+  come from (Exchange, daily login rewards, missions, crates). Before, with the
+  Steam overlay off, it opened a payment browser whose library no longer ships
+  with the game, which hid the whole interface until a restart.
+- **Watch Tutorial** opens the official tutorial video on YouTube in the Steam
+  overlay (it needs the game started from Steam with the overlay on).
+- The **arcade machine** in the garage only ever showed a joke popup
+  ("Fun-O-Matic: Alienoids ver. 1.0"); there is no game behind it.
+- The **banners** next to Buy open the store pages they advertise.
 
 ## Your profile
 

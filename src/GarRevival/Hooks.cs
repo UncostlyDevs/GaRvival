@@ -205,6 +205,26 @@ namespace GarRevival
         }
 
         // The offline arena left this unimplemented (it throws).
+        // The sparks Buy button. Real-money purchases went through the dead
+        // website, and with the Steam overlay off the game opens a payment
+        // browser whose library no longer ships: it hides the whole interface
+        // and never comes back. Explain where sparks come from instead.
+        public static bool SteamPurchaseServiceInitCurrencyPurchase(object self, int purchaseOption)
+        {
+            try
+            {
+                RevivalLog.Info("Sparks purchase (option " + purchaseOption + ") not available; told the player");
+                PopUpWindowsManager.Instance.RegisterWindow("Sparks",
+                    "GAR Revival has no real-money store. Get sparks from the Exchange (credits to sparks), daily login rewards, missions and crates.",
+                    new string[1] { Localizator.Get("GN_Ok") }, new Action[1], 2, 11);
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Sparks purchase notice failed", ex);
+            }
+            return true;
+        }
+
         public static bool CombatantExecuteConsumableBoost(object self, int boostSlotIndex)
         {
             try

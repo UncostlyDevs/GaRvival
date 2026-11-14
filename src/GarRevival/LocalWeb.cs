@@ -243,6 +243,11 @@ namespace GarRevival
                 }
                 return json.Append("]").ToString();
             }
+            if (path == "/garphpapi/utils/redeemcode.php")
+            {
+                string code;
+                return RedeemCodes.Redeem(Query(target).TryGetValue("code", out code) ? code : string.Empty);
+            }
             status = 404;
             return "Not served by GAR Revival";
         }

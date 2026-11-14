@@ -321,10 +321,105 @@ namespace GarRevival
                         map.FindObjectComponent<UIToggle>(name).value = true;
                     }
                     break;
+                case "buttons": // log everything clickable on screen (UI colliders), with labels and scripts
+                    foreach (Collider c in FindObjectsOfType<Collider>().Where(c => c.enabled && c.gameObject.activeInHierarchy && PathOf(c.transform).StartsWith("UI Root")))
+                    {
+                        UILabel label = c.GetComponentInChildren<UILabel>();
+                        RevivalLog.Info("  clickable " + PathOf(c.transform) + " \"" + (label == null ? string.Empty : label.text.Replace("\n", " ")) + "\" [" +
+                            string.Join(",", c.GetComponents<MonoBehaviour>().Select(m => m.GetType().Name).ToArray()) + "]");
+                    }
+                    break;
+                case "press": // press <text>: click the first visible button whose name or label contains the text
+                    string wanted = string.Join(" ", words.Skip(1).ToArray());
+                    Collider hit = FindObjectsOfType<Collider>().FirstOrDefault(c => c.enabled && c.gameObject.activeInHierarchy && PathOf(c.transform).StartsWith("UI Root") &&
+                        (PathOf(c.transform).IndexOf(wanted, StringComparison.OrdinalIgnoreCase) >= 0 || LabelOf(c).IndexOf(wanted, StringComparison.OrdinalIgnoreCase) >= 0));
+                    RevivalLog.Info(hit == null ? "press: nothing matching \"" + wanted + "\"" : "press: clicking " + PathOf(hit.transform));
+                    if (hit != null)
+                    {
+                        hit.gameObject.SendMessage("OnClick", SendMessageOptions.DontRequireReceiver);
+                    }
+                    break;
+                case "arcade": // what clicking the garage's arcade machine does
+                    PopUpWindowsManager.Instance.RegisterWindow("Fun-O-Matic", "Alienoids ver. 1.0", new string[1] { Localizator.Get("GN_Ok") }, new Action[1], 2, 11);
+                    break;
+                case "inspect": // inspect <text>: the simple public fields of every script on the matching UI objects
+                    string part = string.Join(" ", words.Skip(1).ToArray());
+                    foreach (Collider c in FindObjectsOfType<Collider>().Where(c => c.gameObject.activeInHierarchy && PathOf(c.transform).IndexOf(part, StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        RevivalLog.Info("inspect " + PathOf(c.transform));
+                        foreach (MonoBehaviour m in c.GetComponents<MonoBehaviour>())
+                        {
+                            LogFields(m);
+                        }
+                    }
+                    break;
+                case "urls": // every web link the UI can open, loaded or not
+                    foreach (GarUIOpenBrowserUrl link in Resources.FindObjectsOfTypeAll<GarUIOpenBrowserUrl>())
+                    {
+                        RevivalLog.Info("  link " + PathOf(link.transform) + " -> " + link.url + (link.localize ? " = " + Localizator.Get(link.url) : string.Empty));
+                    }
+                    break;
+                case "type": // type <text>: put text in the first visible text box
+                    UIInput input = FindObjectsOfType<UIInput>().FirstOrDefault(i => i.gameObject.activeInHierarchy);
+                    RevivalLog.Info(input == null ? "type: no text box" : "type: into " + PathOf(input.transform));
+                    if (input != null)
+                    {
+                        input.value = string.Join(" ", words.Skip(1).ToArray());
+                    }
+                    break;
+                case "redeem": // redeem <code>: the Redeem Code window's request, through the game's own code
+                    RedeemPromoCode.Redeem(words[1], r => RevivalLog.Info("redeem " + words[1] + ": " + r));
+                    break;
+                case "log": // log <text>: a marker in the log
+                    RevivalLog.Info("---- " + string.Join(" ", words.Skip(1).ToArray()));
+                    break;
                 default:
                     RevivalLog.Info("autorun: unknown command " + words[0]);
                     break;
             }
+        }
+
+        private static string PathOf(Transform t)
+        {
+            string path = t.name;
+            for (Transform p = t.parent; p != null && path.Length < 120; p = p.parent)
+            {
+                path = p.name + "/" + path;
+            }
+            return path;
+        }
+
+        private static void LogFields(object target)
+        {
+            foreach (FieldInfo f in target.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
+            {
+                object value = f.GetValue(target);
+                if (value == null || value is string || value.GetType().IsPrimitive || value.GetType().IsEnum)
+                {
+                    RevivalLog.Info("    " + target.GetType().Name + "." + f.Name + " = " + value);
+                }
+                else if (value is System.Collections.IEnumerable)
+                {
+                    foreach (object item in (System.Collections.IEnumerable)value)
+                    {
+                        if (item != null && !(item is UnityEngine.Object))
+                        {
+                            RevivalLog.Info("    " + target.GetType().Name + "." + f.Name + "[]:");
+                            LogFields(item);
+                        }
+                    }
+                }
+                else if (value is UnityEngine.Object)
+                {
+                    RevivalLog.Info("    " + target.GetType().Name + "." + f.Name + " -> " + ((UnityEngine.Object)value).name);
+                }
+            }
+        }
+
+        private static string LabelOf(Component clickable)
+        {
+            UILabel label = clickable.GetComponentInChildren<UILabel>();
+            return label == null || label.text == null ? string.Empty : label.text.Replace("\n", " ");
         }
 
         private static void GoTo(string what)
