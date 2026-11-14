@@ -225,6 +225,20 @@ namespace GarRevival
             return true;
         }
 
+        // A click on a garage object: the arcade machine opens its game.
+        public static bool AssemblyMouseManagerSelectGrageInteractiveObject(object self, ref bool result)
+        {
+            try
+            {
+                return ArcadeMode.OnGarageClick(ref result);
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Arcade click failed", ex);
+                return false;
+            }
+        }
+
         public static bool CombatantExecuteConsumableBoost(object self, int boostSlotIndex)
         {
             try

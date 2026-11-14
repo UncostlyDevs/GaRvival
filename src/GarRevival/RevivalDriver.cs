@@ -42,6 +42,7 @@ namespace GarRevival
             DontDestroyOnLoad(go);
             _instance = go.AddComponent<RevivalDriver>();
             _overlay = go.AddComponent<PlayScreen>();
+            go.AddComponent<ArcadeMode>();
             SteamNet.Init();
         }
 
@@ -369,6 +370,38 @@ namespace GarRevival
                     break;
                 case "redeem": // redeem <code>: the Redeem Code window's request, through the game's own code
                     RedeemPromoCode.Redeem(words[1], r => RevivalLog.Info("redeem " + words[1] + ": " + r));
+                    break;
+                case "arcade2": // arcade on|off: the new arcade mode, as clicking the machine / LEAVE ARCADE does
+                    if (words[1] == "on")
+                    {
+                        ArcadeMode.Enter();
+                    }
+                    else
+                    {
+                        ArcadeMode.Leave();
+                    }
+                    break;
+                case "arcadeplay": // resume the arcade game and fire a shot, as a click on its screen would
+                    ArcadeGame_RobotShooter shooter = FindObjectOfType<ArcadeGame_RobotShooter>();
+                    if (shooter != null)
+                    {
+                        if (shooter.paused)
+                        {
+                            shooter.ResumeGame();
+                        }
+                        shooter.Shoot();
+                        RevivalLog.Info("arcadeplay: running=" + shooter.running + " paused=" + shooter.paused);
+                    }
+                    break;
+                case "queue": // queue on|off: the camera move to and from the arcade machine (the old matchmaking queue view)
+                    if (words[1] == "on")
+                    {
+                        GameManager.Instance.garage.DoRobotAssembyToBattleQueueTransition();
+                    }
+                    else
+                    {
+                        GameManager.Instance.garage.DoBattleQueueToRobotAssembyTransition();
+                    }
                     break;
                 case "log": // log <text>: a marker in the log
                     RevivalLog.Info("---- " + string.Join(" ", words.Skip(1).ToArray()));

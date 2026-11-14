@@ -31,6 +31,7 @@ it can be undone.
 | Dedicated servers (host without playing, headless or windowed) | |
 | Redeem codes (Menu > Redeem Code) from `codes.cfg` | |
 | Watch Tutorial (the official video, in the Steam overlay) | |
+| The garage arcade machine's shooting gallery | |
 
 Building modules and robots by drag and drop is implemented on the server side
 but has only been checked through the UI screens, not by hand. Please report
@@ -288,8 +289,13 @@ hours.
   with the game, which hid the whole interface until a restart.
 - **Watch Tutorial** opens the official tutorial video on YouTube in the Steam
   overlay (it needs the game started from Steam with the overlay on).
-- The **arcade machine** in the garage only ever showed a joke popup
-  ("Fun-O-Matic: Alienoids ver. 1.0"); there is no game behind it.
+- The **arcade machine** in the garage is playable: click it and the camera
+  moves to it, as it did while you waited in the old matchmaking queue, and
+  the game's own shooting gallery starts on its screen (`ArcadeMode.cs`;
+  the original only showed it in the queue, which no longer exists). Click
+  the screen to start or resume, left click shoots, right click reloads, Esc
+  pauses, and LEAVE ARCADE at the bottom takes you back to the garage. Levels
+  get harder as you meet each level's kill quota and accuracy.
 - The **banners** next to Buy open the store pages they advertise.
 
 ## Your profile
@@ -441,6 +447,8 @@ GARRevival/
     ServerRules.cs    server.cfg: server profiles and reward rates
     DedicatedServer.cs  -garserver: hosting without playing, automatic matches
     LocalWeb.cs       local stand-in for the game's dead website
+    ArcadeMode.cs     the arcade machine's mini-game
+    RedeemCodes.cs    Menu > Redeem Code from codes.cfg
     BattleHud.cs      match timer and start countdown
     BattleUpkeep.cs   battle wear, consumable boosts in battle
     ArenaSpawns.cs    spawn points for oversized teams
