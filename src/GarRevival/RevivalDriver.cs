@@ -18,7 +18,8 @@ namespace GarRevival
     //                   buy Part|Module <indent>, state <GarageState>,
     //                   toggle <UI toggle names...>, battle, shot <name>,
     //                   host tcp <port> | host steam, join tcp <host:port>,
-    //                   lobbies, leave, overlay, chat <text>
+    //                   lobbies, leave, overlay, chat <text>,
+    //                   skins, skin <indent|first> <index>, skindump <path> <index>
     // With "-garprofile <name>" the files are autorun-<name>.txt etc.
     public sealed class RevivalDriver : MonoBehaviour
     {
@@ -43,6 +44,7 @@ namespace GarRevival
             _instance = go.AddComponent<RevivalDriver>();
             _overlay = go.AddComponent<PlayScreen>();
             go.AddComponent<ArcadeMode>();
+            go.AddComponent<SkinShop>();
             SteamNet.Init();
         }
 
@@ -433,6 +435,15 @@ namespace GarRevival
                     break;
                 case "ammo": // ammo [buy <type> <tier> <qty> | auto on|off | max]: log stock and loads, or what the supply screen does (test aid)
                     AmmoCommand(words);
+                    break;
+                case "skins": // open or close the skin screen (focused part, else the first one on a robot)
+                    SkinShop.Toggle();
+                    break;
+                case "skin": // skin <indent|first> <index>: buy if needed and wear it, 0 = original look
+                    SkinShop.Wear(words[1], byte.Parse(words[2], CultureInfo.InvariantCulture));
+                    break;
+                case "skindump": // skindump <prefabPath> <index>: the part's albedo before/after as PNGs in skins-dump/
+                    SkinPainter.Dump(words[1], byte.Parse(words[2], CultureInfo.InvariantCulture));
                     break;
                 case "log": // log <text>: a marker in the log
                     RevivalLog.Info("---- " + string.Join(" ", words.Skip(1).ToArray()));

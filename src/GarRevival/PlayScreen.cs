@@ -56,6 +56,8 @@ namespace GarRevival
             }
         }
 
+        public static bool Showing => _instance != null && _instance._show;
+
         public void Toggle()
         {
             _show = !_show;

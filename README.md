@@ -12,9 +12,9 @@ it can be undone.
 | Works | Not yet |
 | --- | --- |
 | Launching past the "servers are being shut down" notice | Real part stats (placeholders, see below) |
-| Garage, UI, portraits | Part skins (none ship with the game) |
-| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | Guild buffs |
-| Buying and selling, credits, sparks exchange | The in-game ladder table (the master server keeps a ladder; the game does not show it yet) |
+| Garage, UI, portraits | Guild buffs |
+| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | The in-game ladder table (the master server keeps a ladder; the game does not show it yet) |
+| Buying and selling, credits, sparks exchange | |
 | A starter robot, robot builder, module editor | |
 | **Test Run** in the training ground | |
 | **Bot matches**: Team Deathmatch, Capture the Batteries, Base Destruction | |
@@ -23,6 +23,7 @@ it can be undone.
 | Ammo weapons: ammo types, buying, loading, auto resupply, use and pickups in battle | |
 | Part upgrades and tech levels, timed boosts, VIP, inventory slots, renting | |
 | Paint colours, crates and keys, daily login rewards | |
+| Part skins: 12 camo, stripe and metal patterns drawn by the mod (SKINS button or F8) | |
 | Daily missions, achievements, ladder rating and league badge | |
 | Profile saved between sessions | |
 | Hosting and joining sessions (Steam or direct), shared garage chat | |
@@ -483,6 +484,28 @@ player what their battle used.
   pauses, and LEAVE ARCADE at the bottom takes you back to the garage. Levels
   get harder as you meet each level's kill quota and accuracy.
 - The **banners** next to Buy open the store pages they advertise.
+- **Part skins.** No skins shipped with the game, so the mod draws its own
+  (`SkinCatalog.cs`, `SkinPatterns.cs`): Woodland, Desert, Urban, Arctic,
+  Digital and Hazard for 3,000 credits; Tiger, Carbon Fibre, Rust and Brushed
+  Steel for 25 sparks; Circuit and Flames for 60 sparks. Select a part on a
+  robot and press **SKINS** (or F8): BUY asks for confirmation and puts the
+  skin on once bought, EQUIP and ORIGINAL LOOK switch for free. A bought skin
+  fits every part of that kind. Skins are saved in the profile and other
+  players with the mod see them in hosted battles; a player without it sees
+  the part's own look.
+
+  How they are drawn (`SkinPainter.cs`): when the game loads the model
+  `<part>_s<N>`, the mod copies the part and bakes the pattern into its colour
+  texture, only where the part can be painted, keeping the texture's shading
+  and its alpha (glow, cut-outs). The paint mask is untouched, so painting
+  still works on a skinned part. The pattern repeats according to the part's
+  size. Settings in `settings.cfg`:
+
+  ```
+  skinTextureSize=1024   # largest generated texture side (128-2048)
+  skinCompress=true      # DXT-compress generated textures (4x less memory)
+  skinCacheParts=48      # skinned part models kept ready
+  ```
 
 ## Your profile
 
@@ -579,6 +602,7 @@ The patcher (Mono.Cecil) inserts hook calls into:
   inside `GarRevival.dll`, which answers with proper `OperationResponse`s and
   `EventData`. The game's own networking state machine and handlers process
   them unchanged.
+- `ResourcesManager.LoadPartPrefab`, which hands out the generated part skins.
 - `PhotonNetwork.JoinRandomBattle` starts an offline match instead of
   matchmaking, and `OfflineArena.OnEndGame` hands the result to the server.
 - `RobotAvatar.AddFullAmmo`, so a robot enters a battle with the rounds it
@@ -639,6 +663,7 @@ GARRevival/
     DataFactory.cs    other startup data (portraits, prices...)
     Workshop*.cs      part upgrades, tech levels, boosts, repairs, slots, renting
     Cosmetics*.cs     paint colours, crates, loot, daily login rewards
+    Skin*.cs          part skins: catalog, patterns, texture baking, SKINS screen
     Mission*.cs, LadderOps.cs, MessageBoxOps.cs
                       daily missions, achievements, ladder rating
     Social*.cs        friends, whispers, squads, guilds
@@ -702,6 +727,10 @@ game's assemblies used for compiling. **Don't share that folder.**
     `findmatch [TeamDeadmach|CaptureTheFlag|DestoryBase|any|cancel]`
   - `ammo` (log stock and loads, and in battle the robot's rounds), `ammo buy
     <type> <tier> <qty>`, `ammo max` (Max load all + OK/Buy), `ammo auto on|off`
+  - `skins` (the SKINS screen), `skin <part id|first> <skin>` (buy if needed and
+    wear on the first such part on a robot; 0 = original look),
+    `skindump <prefab path> <skin>` (the part's textures before and after, as
+    PNGs in `skins-dump/`)
   - `shot <name>`
 
   Delete it afterwards, or every launch will run it.

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using UnityEngine;
 
 namespace GarRevival
 {
@@ -81,6 +82,18 @@ namespace GarRevival
         public static bool Ammo
         {
             get { return !string.Equals(Get("ammo"), "off", StringComparison.OrdinalIgnoreCase); }
+        }
+
+        public static int SkinTextureSize => Mathf.ClosestPowerOfTwo(Int("skintexturesize", 1024, 128, 2048));
+
+        public static bool SkinCompress => !string.Equals(Get("skincompress"), "false", StringComparison.OrdinalIgnoreCase);
+
+        public static int SkinCacheParts => Int("skincacheparts", 48, 4, 512);
+
+        private static int Int(string key, int fallback, int min, int max)
+        {
+            int value;
+            return int.TryParse(Get(key), out value) ? Math.Min(max, Math.Max(min, value)) : fallback;
         }
 
         private static string Get(string key)

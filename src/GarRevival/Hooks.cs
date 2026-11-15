@@ -239,16 +239,36 @@ namespace GarRevival
             return true;
         }
 
-        // A click on a garage object: the arcade machine opens its game.
+        // A click on a garage object: the arcade machine opens its game. A click
+        // on the skin screen is its own, not the garage's.
         public static bool AssemblyMouseManagerSelectGrageInteractiveObject(object self, ref bool result)
         {
             try
             {
+                if (SkinShop.SwallowGarageClick())
+                {
+                    result = true;
+                    return true;
+                }
                 return ArcadeMode.OnGarageClick(ref result);
             }
             catch (Exception ex)
             {
                 RevivalLog.Error("Arcade click failed", ex);
+                return false;
+            }
+        }
+
+        // Every part model load. "<prefabPath>_s<N>" is a part wearing skin N.
+        public static bool ResourcesManagerLoadPartPrefab(string name, ref GameObject result)
+        {
+            try
+            {
+                return SkinPainter.TryLoad(name, ref result);
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Part skin load failed for " + name, ex);
                 return false;
             }
         }
