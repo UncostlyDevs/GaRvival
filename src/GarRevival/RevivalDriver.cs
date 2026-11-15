@@ -403,12 +403,57 @@ namespace GarRevival
                         GameManager.Instance.garage.DoBattleQueueToRobotAssembyTransition();
                     }
                     break;
+                case "ammo": // ammo [buy <type> <tier> <qty> | auto on|off | max]: log stock and loads, or what the supply screen does (test aid)
+                    AmmoCommand(words);
+                    break;
                 case "log": // log <text>: a marker in the log
                     RevivalLog.Info("---- " + string.Join(" ", words.Skip(1).ToArray()));
                     break;
                 default:
                     RevivalLog.Info("autorun: unknown command " + words[0]);
                     break;
+            }
+        }
+
+        private static void AmmoCommand(string[] words)
+        {
+            Player player = PlayerManager.Instance.player;
+            switch (words.Length > 1 ? words[1] : string.Empty)
+            {
+                case "buy":
+                    DataManager.Instance.BuyAmmo(new[] { new BuyAmmoData { AmmoType = words[2], tier = int.Parse(words[3], CultureInfo.InvariantCulture), quantity = int.Parse(words[4], CultureInfo.InvariantCulture) } }, 0);
+                    return;
+                case "auto":
+                    player.SelectedRobotAssembly.valueObject.autoResupply = words[2] == "on";
+                    DataManager.Instance.SetRobotsSlotSupplyMode(player.valueObject.selectedRobotIndex, words[2] == "on");
+                    return;
+                case "max": // "Max load all", then OK or Buy
+                    List<PartToAmmmoDistribLink> links = player.GetPerRobotDistributionData(player.SelectedRobotAssembly) ?? new List<PartToAmmmoDistribLink>();
+                    links.ForEach(l => l.distribNode.desiredAmmount = Math.Max(0, l.distribNode.maxAmmount));
+                    BuyAmmoData[] order = player.GetAmmoPurcase(links);
+                    if (order.Length > 0)
+                    {
+                        DataManager.Instance.BuyAmmo(order, 0);
+                    }
+                    else
+                    {
+                        DataManager.Instance.DoUpdateAmmoDistrib();
+                    }
+                    return;
+            }
+            JunkWars.Common.Player.ValueObjects.PlayerVO saved = PlayerState.Current;
+            RevivalLog.Info("ammo: economy " + (AmmoOps.Economy ? "on" : "off") + ", stock " +
+                string.Join("; ", saved.ownedAmmo.Select(a => a.indent + " " + string.Join("/", (a.quantity ?? new int[0]).Select(q => q.ToString()).ToArray())).ToArray()));
+            foreach (JunkWars.Common.Robot.ValueObjects.AmmoDistributionNode n in saved.ammoDistribution.nodes)
+            {
+                RevivalLog.Info("ammo:   part " + n.moudleID + " " + (n.desiredAmmoType.Length == 0 ? "energy" : n.desiredAmmoType + " t" + n.tier) +
+                    " current " + n.currentAmmount + " desired " + n.desiredAmmount + " max " + n.maxAmmount);
+            }
+            JunkWars.Client.Robot.RobotAvatar robot = JunkWars.Client.Arena.BattleManager.arena == null ? null : JunkWars.Client.Arena.BattleManager.arena.possessedRobot;
+            foreach (JunkWars.Client.Robot.WeaponBarrel barrel in robot == null || robot.weapons == null ? new JunkWars.Client.Robot.WeaponBarrel[0] : robot.weapons.SelectMany(w => w.weaponBarrels))
+            {
+                RevivalLog.Info("ammo:   in battle part " + barrel.partVO.partID + " " + (string.IsNullOrEmpty(barrel.currentAmmoType) ? "energy" : barrel.currentAmmoType) +
+                    " " + barrel.CurrentAmmo + "/" + barrel.MaxAmmo);
             }
         }
 

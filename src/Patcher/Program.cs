@@ -72,6 +72,7 @@ namespace GarRevival.Patcher
                 H("JunkWars.Client.Garage.UI.GarageInfoScreenSubmenu", "Start", new string[0], "GarageInfoScreenSubmenuStart"),
                 H("JunkWars.Client.Arena.OfflineArena", "AddRobots", new string[0], "OfflineArenaAddRobots"),
                 H("JunkWars.Client.Robot.RobotAvatar", "SetFreeLook", new[] { "System.Boolean" }, "RobotAvatarSetFreeLook"),
+                H("JunkWars.Client.Robot.RobotAvatar", "AddFullAmmo", new string[0], "RobotAvatarAddFullAmmo"),
                 H("OfflineArenaCombatant", "ExecuteShoot", new[] { "System.Int32", "System.Int32", "System.Int32", "System.Int16", "System.Nullable`1<System.Byte>", "System.Nullable`1<System.Byte>", "JunkWars.Client.Robot.WeaponHitPoint[]", "UnityEngine.Vector3", "System.Object[]" }, "CombatantExecuteShoot"),
                 H("OfflineArenaCombatant", "ExecuteHit", new[] { "System.Int32", "System.Int32", "System.Int32", "System.Int16", "System.Nullable`1<System.Byte>", "JunkWars.Client.Robot.WeaponHitPoint[]", "UnityEngine.Vector3", "System.Object[]" }, "CombatantExecuteHit"),
                 H("OfflineArenaCombatant", "ExecuteDeviceActivate", new[] { "System.Int32", "UnityEngine.Vector3", "UnityEngine.Quaternion" }, "CombatantExecuteDeviceActivate"),

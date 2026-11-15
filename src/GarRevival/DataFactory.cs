@@ -55,7 +55,7 @@ namespace GarRevival
 
         public static Dictionary<string, AmmoTemplate> Ammo()
         {
-            return new Dictionary<string, AmmoTemplate>();
+            return AmmoDesign.Templates();
         }
 
         private static List<int> _portraitIndices;
@@ -95,6 +95,7 @@ namespace GarRevival
         public static PlayerVO Player()
         {
             WorkshopOps.PrepareProfile();
+            AmmoOps.Resync(null);
             return PlayerState.Current;
         }
 

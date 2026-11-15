@@ -38,6 +38,7 @@ namespace GarRevival
         private const byte MsgEvent = 7;   // host -> clients: a rule event to replay
         private const byte MsgEndGame = 8; // host -> client: your EndBattleData (protobuf)
         private const byte MsgWear = 9;    // host -> client: what is left of each of your robot's parts
+        private const byte MsgAmmo = 10;   // host -> client: rounds left in each of your robot's ammo barrels
 
         private const byte ActShoot = 1, ActHit = 2, ActPick = 3, ActGameMode = 4, ActDevice = 5, ActUndeploy = 6, ActBoost = 7;
         private const byte EvStat = 1, EvDestruction = 2, EvGameMode = 3, EvDeviceActivate = 4, EvUndeploy = 5,
@@ -126,6 +127,8 @@ namespace GarRevival
             }
             foreach (KeyValuePair<string, ActorVO> reply in _replies)
             {
+                // The host's ammo rules decide what each robot is loaded with.
+                AmmoOps.NormalizeActor(reply.Value, false);
                 ActorOf[reply.Key] = addHuman(reply.Value).playerID;
             }
             if (DedicatedServer.Enabled && ActorOf.Count == 0)
@@ -144,6 +147,7 @@ namespace GarRevival
                 {
                     int id = nextId++;
                     ActorVO bot = OfflineServerEmulator.GenerateActorVO(BotNames[botName++ % BotNames.Length], 1, 1, id, team, string.Empty, team == 0 && settings.WeakEnemies);
+                    AmmoOps.NormalizeActor(bot, true);
                     Add(players, bot, id, team, true);
                 }
             }
@@ -178,6 +182,7 @@ namespace GarRevival
             }
             LocalActorId = localId;
             LocalTeam = players.First(p => p.playerID == localId).vo.team;
+            AmmoOps.RecordStart(players.Where(p => p.playerID == localId && !p.isBot).Select(p => p.vo).FirstOrDefault());
             Active = true;
             _sawArena = false;
             _statesSent = _statesReceived = _eventsReplayed = _firesShown = 0;
@@ -424,6 +429,12 @@ namespace GarRevival
                             left[partIds[i]] = durability[i];
                         }
                         BattleUpkeep.ApplyWear(left);
+                        break;
+                    case MsgAmmo:
+                        object[] ammo = (object[])Body(message);
+                        int[] barrels = (int[])ammo[0];
+                        int[] rounds = (int[])ammo[1];
+                        AmmoOps.ApplyBattleUse(Enumerable.Range(0, Math.Min(barrels.Length, rounds.Length)).ToDictionary(i => barrels[i], i => rounds[i]));
                         break;
                     case MsgEndGame:
                         byte[] bytes = new byte[message.Length - 1];
@@ -802,6 +813,11 @@ namespace GarRevival
                 if (left.Count > 0)
                 {
                     Session.SendBattleTo(member.Key, Message(MsgWear, new object[] { left.Keys.ToArray(), left.Values.ToArray() }));
+                }
+                Dictionary<int, int> rounds = AmmoOps.Economy ? AmmoOps.EndAmmo(member.Value) : new Dictionary<int, int>();
+                if (rounds.Count > 0)
+                {
+                    Session.SendBattleTo(member.Key, Message(MsgAmmo, new object[] { rounds.Keys.ToArray(), rounds.Values.ToArray() }));
                 }
                 EndBattleData result;
                 if (results.TryGetValue(member.Value, out result))

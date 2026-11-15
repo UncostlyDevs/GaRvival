@@ -355,6 +355,7 @@ namespace GarRevival
                 if (raised.Count > 0)
                 {
                     GameServer.Event(conn, 216, new Dictionary<byte, object> { { 231, DataSerialization.ProtoSerializeObject(raised) } });
+                    AmmoOps.Resync(conn);
                 }
                 // The client reads this one with protobuf directly, as an array.
                 GameServer.Event(conn, 140, new Dictionary<byte, object> { { 218, DataSerialization.ProtoSerializeObject(player.partInUpgrade.ToArray()) } });

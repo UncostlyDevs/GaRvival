@@ -76,6 +76,10 @@ namespace GarRevival
                 }
                 report.AppendLine(indent + " | " + template.type + " | " + template.weightType + " | " + Describe(template.partTierableStatistics[0].partSpesificData));
             }
+            foreach (KeyValuePair<string, PriceTemplate> ammo in AmmoDesign.Prices(Parts.Values.Where(p => p.type == LogicalType.WeaponMuzzle)))
+            {
+                Prices[ammo.Key] = ammo.Value;
+            }
 
             // A report only; a second copy of the game (a server, say) may be writing it at the same moment.
             try
@@ -291,8 +295,8 @@ namespace GarRevival
             };
         }
 
-        // All weapons are energy weapons for now, which avoids needing an ammo
-        // economy. To the client that means AmmoPerShot 0 (WeaponBarrel
+        // Barrels whose description names projectiles fire ammo (AmmoDesign);
+        // the rest are energy weapons: AmmoPerShot 0 (WeaponBarrel
         // .AreRequermentsMeet skips the ammo check) and MaxAmmo -1 (the garage
         // skips ammo distribution). CurrentAmmo must not be negative: the bot
         // AI sums it to decide whether to go looking for ammo instead of
@@ -316,11 +320,13 @@ namespace GarRevival
             }
             int tier = (int)Math.Round((t - 0.7f) / 0.075f);
             float shotDamage = damage * traits.Damage * t;
+            string[] ammo = AmmoDesign.TypesFor(template.indent);
+            bool usesAmmo = ammo.Length > 0;
             return new WeaponBarrelVO
             {
                 ActiveEfectToExecute = WeaponAction(template.indent),
                 AdditionalEffects = new AdditionalGemaPlayActions[0],
-                MaxAmmo = -1f,
+                MaxAmmo = usesAmmo ? AmmoDesign.Capacity(template.weightType, traits) : -1f,
                 CurrentAmmo = 0f,
                 // Original UI maxima: accuracy 1, rate of fire 5, range 200.
                 Accuracy = Mathf.Min(1f, traits.Accuracy + 0.0125f * tier),
@@ -329,10 +335,10 @@ namespace GarRevival
                 Range = Mathf.Min(200f, range * traits.Range),
                 SpashDamage = 26.88f * traits.Splash * t,
                 SpashRange = traits.SplashRange,
-                AmmoPerShot = 0f,
+                AmmoPerShot = usesAmmo ? 1f : 0f,
                 // Heavier hits cost more energy per shot (original maximum 19.2).
-                EnergyConsumptionPerShoot = 19.2f * Mathf.Clamp(shotDamage / 96f, 0.15f, 1f),
-                usableAmmoTypes = new string[0],
+                EnergyConsumptionPerShoot = 19.2f * Mathf.Clamp(shotDamage / 96f, 0.15f, 1f) * (usesAmmo ? AmmoDesign.EnergyShare : 1f),
+                usableAmmoTypes = ammo,
             };
         }
 
@@ -466,12 +472,12 @@ namespace GarRevival
             };
         }
 
-        private static TierLink[] Tiers(Func<int, float> credits)
+        internal static TierLink[] Tiers(Func<int, float> credits, bool whole = true)
         {
             return Enumerable.Range(0, MaxTier + 1).Select(tier => new TierLink
             {
                 tier = tier,
-                items = new[] { new PricePackageItem { type = PackageType.Credits, quantity = Mathf.Round(credits(tier)), indent = string.Empty } },
+                items = new[] { new PricePackageItem { type = PackageType.Credits, quantity = whole ? Mathf.Round(credits(tier)) : credits(tier), indent = string.Empty } },
             }).ToArray();
         }
 

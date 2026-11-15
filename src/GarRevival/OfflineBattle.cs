@@ -145,6 +145,7 @@ namespace GarRevival
             actor.fullName = player.fullName;
             actor.level = player.level;
             actor.battleInventoryItems = BattleUpkeep.BattleInventory();
+            AmmoOps.LoadActor(actor);
             return actor;
         }
 
@@ -158,6 +159,7 @@ namespace GarRevival
         {
             Settings settings = LoadSettings();
             ActorVO actor = BuildLocalActor();
+            AmmoOps.RecordStart(actor);
             string map = PickMap(settings);
             BattleManager.offlineBattleData = OfflineServerEmulator.GenerateBattleData(map, settings.Mode, settings.Minutes * 60, actor, settings.Enemies, settings.Allies, settings.WeakEnemies);
             RevivalLog.Info("Offline battle: " + map + ", " + settings.Mode + ", " + settings.Enemies + " enemies vs you + " + settings.Allies + " allies, " + settings.Minutes + " min");
@@ -187,6 +189,10 @@ namespace GarRevival
             if (!(SessionBattle.Active && Session.Role == Session.Roles.Client) && BattleManager.arena != null && BattleManager.arena.possessedRobot != null)
             {
                 BattleUpkeep.ApplyWear(BattleUpkeep.EndDurability(BattleManager.arena.possessedRobot.actorId));
+                if (AmmoOps.Economy)
+                {
+                    AmmoOps.ApplyBattleUse(AmmoOps.EndAmmo(BattleManager.arena.possessedRobot.actorId));
+                }
             }
             PlayerVO player = PlayerState.Current;
             float credits = Math.Max(0f, result.credits - result.penaltyCredits) * ServerRules.CreditRewards * WorkshopOps.CreditsBoost();

@@ -16,7 +16,10 @@ namespace GarRevival
             "# The original new-player tutorial takes over the BATTLE button (it starts a\n" +
             "# scripted practice battle) and expects features that are not back yet.\n" +
             "# true marks it as completed; false leaves it running.\n" +
-            "skipTutorial=true\n";
+            "skipTutorial=true\n" +
+            "# on = ammo used in battles is paid for; off = every battle starts fully loaded.\n" +
+            "# In a hosted game the host's server.cfg decides.\n" +
+            "ammo=on\n";
 
         public const float UnlimitedCreditsAmount = 10000000f;
         public const float UnlimitedPremiumAmount = 100000f;
@@ -32,6 +35,12 @@ namespace GarRevival
         public static bool SkipTutorial
         {
             get { return !string.Equals(Get("skiptutorial"), "false", StringComparison.OrdinalIgnoreCase); }
+        }
+
+        // On unless the file says off.
+        public static bool Ammo
+        {
+            get { return !string.Equals(Get("ammo"), "off", StringComparison.OrdinalIgnoreCase); }
         }
 
         private static string Get(string key)
