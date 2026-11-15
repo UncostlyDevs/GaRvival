@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using JunkWars.Client;
 using JunkWars.Common.Garage.ValueObjects;
-using JunkWars.Common.Guild.Templates;
 using JunkWars.Common.Init;
 using JunkWars.Common.Missions;
 using JunkWars.Common.Packages;
@@ -103,11 +102,6 @@ namespace GarRevival
             PackagePriceTemplate template = WorkshopData.PackagePrices();
             CosmeticsOps.AddPackages(template);
             return template;
-        }
-
-        public static Dictionary<string, GuildBuffTemplate> GuildBuffs()
-        {
-            return new Dictionary<string, GuildBuffTemplate>();
         }
 
         private static bool _catalogWritten;

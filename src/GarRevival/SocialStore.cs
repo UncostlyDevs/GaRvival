@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using JunkWars.Common.Guild.ValueObjects;
 using JunkWars.Common.Social;
 using JunkWars.Common.Utils;
@@ -34,6 +35,8 @@ namespace GarRevival
         public static GuildVO Guild;
         public static long GuildRevision;
         public static readonly Dictionary<string, int> GuildExperience = new Dictionary<string, int>();
+        // What each member spent from the vault on guild benefits (credits, sparks).
+        public static readonly List<GuildDonatorVO> GuildBuffSpending = new List<GuildDonatorVO>();
         public static string PendingGuildJoin = string.Empty;
 
         // The guild as I left it, for members who were away when I left.
@@ -83,6 +86,7 @@ namespace GarRevival
             Guild = null;
             GuildRevision = 0;
             GuildExperience.Clear();
+            GuildBuffSpending.Clear();
             PendingGuildJoin = string.Empty;
             FarewellGuildId = string.Empty;
             FarewellRevision = 0;
@@ -124,6 +128,11 @@ namespace GarRevival
             FarewellGuildId = r.ReadString();
             FarewellRevision = r.ReadInt64();
             FarewellState = r.ReadBytes(r.ReadInt32());
+            // Added later; older files end here and older builds stop reading here.
+            if (r.BaseStream.Position < r.BaseStream.Length)
+            {
+                GuildBuffSpending.AddRange(ReadTallies(r));
+            }
         }
 
         public static void Save()
@@ -164,6 +173,7 @@ namespace GarRevival
             w.Write(FarewellRevision);
             w.Write(FarewellState.Length);
             w.Write(FarewellState);
+            WriteTallies(w, GuildBuffSpending);
             w.Flush();
 
             string dir = Path.GetDirectoryName(SavePath);
@@ -187,6 +197,34 @@ namespace GarRevival
             GuildVO guild = DataSerialization.ProtoDeserializeObject<GuildVO>(bytes);
             VoNormalizer.FillNullCollections(guild);
             return guild;
+        }
+
+        // Per member: name, credits, sparks.
+        public static void WriteTallies(BinaryWriter w, List<GuildDonatorVO> tallies)
+        {
+            w.Write(tallies.Count);
+            foreach (GuildDonatorVO tally in tallies)
+            {
+                w.Write(tally.name ?? string.Empty);
+                w.Write(tally.credits);
+                w.Write(tally.premiumCredits);
+            }
+        }
+
+        public static List<GuildDonatorVO> ReadTallies(BinaryReader r)
+        {
+            List<GuildDonatorVO> tallies = new List<GuildDonatorVO>();
+            for (int i = Math.Min(r.ReadInt32(), 1000); i > 0; i--)
+            {
+                GuildDonatorVO tally = new GuildDonatorVO { name = r.ReadString(), credits = r.ReadDouble(), premiumCredits = r.ReadDouble() };
+                if (tally.name.Length > 0 && !double.IsNaN(tally.credits) && !double.IsNaN(tally.premiumCredits) && !tallies.Any(t => t.name == tally.name))
+                {
+                    tally.credits = Math.Max(0, tally.credits);
+                    tally.premiumCredits = Math.Max(0, tally.premiumCredits);
+                    tallies.Add(tally);
+                }
+            }
+            return tallies;
         }
 
         private static void ReadNames(BinaryReader r, List<string> into)

@@ -135,11 +135,9 @@ namespace GarRevival
                 case 171: SocialGuild.Deposit(conn, op, Number(request, 213), Number(request, 218)); break;
                 case 170: SocialGuild.Upgrade(conn, op); break;
                 case 166: SocialGuild.SetMessageOfTheDay(conn, op, Text(request, 240)); break;
-                case 168:
-                case 167:
-                case 153:
-                    GameServer.Fail(conn, op, "Guild buffs are not part of GAR Revival yet.");
-                    break;
+                case 168: SocialGuild.UnlockBuff(conn, op, Text(request, 218)); break;
+                case 167: SocialGuild.ActivateBuff(conn, op, Text(request, 218)); break;
+                case 153: SocialGuild.HurryBuff(conn, op, Text(request, 218)); break;
             }
             return true;
         }
@@ -368,6 +366,7 @@ namespace GarRevival
         {
             SocialParty.Tick();
             SocialGuild.WatchExperience();
+            SocialGuild.TickBuffs();
         }
 
         // Introduces me (my card rides on every message) and says which guild

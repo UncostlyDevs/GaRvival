@@ -15,9 +15,9 @@ it can be undone.
 | Garage, UI, portraits | Ammo (every weapon is an energy weapon for now) |
 | Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | Real part stats (placeholders, see below) |
 | Buying and selling, credits, sparks exchange | Part skins (none ship with the game) |
-| A starter robot, robot builder, module editor | Guild buffs |
-| **Test Run** in the training ground | The ladder table (it was a web page on the dead site) |
-| **Bot matches**: Team Deathmatch, Capture the Batteries, Base Destruction | A server browser beyond the LAN list and Steam lobbies |
+| A starter robot, robot builder, module editor | The ladder table (it was a web page on the dead site) |
+| **Test Run** in the training ground | A server browser beyond the LAN list and Steam lobbies |
+| **Bot matches**: Team Deathmatch, Capture the Batteries, Base Destruction | |
 | Battle rewards (credits, XP, levels, lifetime stats, loot drops) | |
 | Battle wear and repairs (manual or auto repair); consumable boosts in battle | |
 | Part upgrades and tech levels, timed boosts, VIP, inventory slots, renting | |
@@ -26,6 +26,7 @@ it can be undone.
 | Profile saved between sessions | |
 | Hosting and joining sessions (Steam or direct), shared garage chat | |
 | Friends, whispers, squads and guilds among players in a session | |
+| Guild benefits: unlock, build, hurry and activate; their effects in battle | |
 | Battles together in a hosted session (two of the three modes tested) | |
 | Servers with their own profiles, starting money and reward rates | |
 | Dedicated servers (host without playing, headless or windowed) | |
@@ -231,6 +232,7 @@ startingCredits=20000  # for new server profiles
 startingSparks=0
 creditRewards=1        # multipliers for what battles pay on this server
 experienceRewards=1
+guildBuffs=on          # off = players' guild benefits do not count in battles here
 ```
 
 With `profiles=server`, a player's game switches to
@@ -248,6 +250,32 @@ ranks, a vault, levels, message of the day and guild chat. Friend lists and
 guilds are saved on each player's PC and members are shown online while they
 are in the same session. While you are in a squad the game's own rule applies:
 the leader starts the match once every member has pressed Ready.
+
+**Guild benefits** (the Benefits tab; `SocialGuild.Buffs.cs`): six structures
+of five levels. The leader or an officer unlocks a level from the vault; it then
+builds for 30 min to 24 h (or is finished at once for sparks from the vault)
+and can be activated for 24 hours, one level per structure at a time. Level L
+needs guild level L and the previous level built. Influence shown in the price
+is required, not spent. Effects are the client's own battle code, per level:
+
+| Structure | L1-L5 | Applied as |
+| --- | --- | --- |
+| Damage | 2-10 | damage dealt x (1 + x/100) |
+| Defence | 2-10 | damage taken / (1 + x/100), so "10%" is -9.1% |
+| Accuracy | 1-5 | + x/100 weapon accuracy |
+| Speed | 1-5 | + x km/h |
+| Debuffs | 5-25 | field repair, slow and drain times / (1 + x/100) |
+| Pickables | 5-25 | pickup amounts and durations x (1 + x/100) |
+
+Prices: unlock 10k/25k/60k/150k/400k credits, hurry 10/25/50/100/200 sparks,
+activation 2k/5k/10k/20k/40k credits. Guild benefits are combat only; the
+credit, XP and repair boosts are the personal timed boosts. Benefits travel
+with the guild copy: unlocks merge, the earliest build start and latest expiry
+win, and what each member spent is a tally like donations. Two officers who
+activate the same structure while apart both pay, and the copies keep one (the
+highest level); a later expiry learned that way shows after the next login.
+In a hosted battle the host accepts at most one benefit per structure from
+each player.
 
 Tested: two copies of the game on one PC over a direct connection (join,
 roster, chat both ways, leave); creating a Steam lobby and finding it in the
@@ -575,10 +603,11 @@ the dead website) no longer opens by itself.
 What the newer garage features do and don't do:
 
 - **Designed numbers.** Upgrade times and costs, tech-level unlocks, boost and
-  key prices, loot chances, mission goals and rewards, guild levels and the
-  daily login table are all designed here; the originals were server-side and
-  are lost. They are kept together at the top of `WorkshopData.cs`,
-  `CosmeticsDesign.cs`, `MissionCatalog.cs` and `SocialGuild.cs`.
+  key prices, loot chances, mission goals and rewards, guild levels and
+  benefits, and the daily login table are all designed here; the originals
+  were server-side and are lost. They are kept together at the top of
+  `WorkshopData.cs`, `CosmeticsDesign.cs`, `MissionCatalog.cs`,
+  `SocialGuild.cs` and `SocialGuild.Buffs.cs`.
 - **Sparks** have little income (exchange, some rewards and crates), so spark
   prices are low.
 - **Achievements** on an existing profile: several complete at the first login

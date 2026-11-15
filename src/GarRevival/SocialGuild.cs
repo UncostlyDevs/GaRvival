@@ -32,7 +32,7 @@ namespace GarRevival
     //
     // A receiver compares its copy before and after and gives its client the
     // events GuildManager expects for the differences.
-    internal static class SocialGuild
+    internal static partial class SocialGuild
     {
         // ---- designed values; the originals were kept on the lost servers ----
 
@@ -113,6 +113,7 @@ namespace GarRevival
             }
             if (Guild == null)
             {
+                SocialStore.GuildBuffSpending.Clear();
                 // A guild id left in the profile is kept: if social.dat was
                 // lost, a guild mate's copy brings the guild back.
                 GameServer.Reply(conn, op);
@@ -122,6 +123,7 @@ namespace GarRevival
             GuildMemberVO me = Find(Guild, Me);
             me.level = player.level;
             me.portrait = player.currentPortraitIndex;
+            SanitizeBuffs(Guild);
             Recount();
             SocialStore.Save();
             if (player.guildId != Guild.guildId)
@@ -129,7 +131,7 @@ namespace GarRevival
                 player.guildId = Guild.guildId;
                 PlayerState.Save();
             }
-            GameServer.Reply(conn, op, new Dictionary<byte, object> { { 218, DataSerialization.ProtoSerializeObjectCompressed(Guild) } });
+            GameServer.Reply(conn, op, new Dictionary<byte, object> { { 218, DataSerialization.ProtoSerializeObjectCompressed(ForClient(Guild)) } });
             if (withStatuses)
             {
                 GameServer.Event(conn, 160, new Dictionary<byte, object> { { 218, OnlineNames() } });
@@ -171,6 +173,7 @@ namespace GarRevival
             SocialStore.Guild = guild;
             SocialStore.GuildRevision = DateTime.UtcNow.Ticks;
             SocialStore.GuildExperience.Clear();
+            SocialStore.GuildBuffSpending.Clear();
             SocialStore.PendingGuildJoin = string.Empty;
             SocialStore.Save();
             player.guildId = guild.guildId;
@@ -601,6 +604,8 @@ namespace GarRevival
                 string name = r.ReadString();
                 earned[name] = Math.Max(0, r.ReadInt32());
             }
+            // Missing from older builds' copies.
+            List<GuildDonatorVO> spending = r.BaseStream.Position < r.BaseStream.Length ? SocialStore.ReadTallies(r) : new List<GuildDonatorVO>();
             if (incoming == null || incoming.guildId != guildId || !Sound(incoming))
             {
                 return;
@@ -626,9 +631,11 @@ namespace GarRevival
                     TakeRoster(incoming, revision);
                 }
                 MergeTallies(incoming, earned);
+                MergeBuffs(incoming, spending);
                 Recount();
                 SocialStore.Save();
                 ShowChanges(before, Guild, actor);
+                SyncBuffs();
             }
             else if (Guild == null && Find(incoming, Me) != null && Find(incoming, sender) != null && guildId.Length > 0
                 && (SocialStore.PendingGuildJoin == guildId || PlayerState.Current.guildId == guildId))
@@ -637,7 +644,9 @@ namespace GarRevival
                 SocialStore.Guild = incoming;
                 SocialStore.GuildRevision = revision;
                 SocialStore.GuildExperience.Clear();
+                SocialStore.GuildBuffSpending.Clear();
                 MergeTallies(incoming, earned);
+                MergeSpending(spending);
                 Recount();
                 SocialStore.PendingGuildJoin = string.Empty;
                 SocialStore.Save();
@@ -646,8 +655,10 @@ namespace GarRevival
                 RevivalLog.Info("Guild joined: " + incoming.name);
                 SocialOps.Event(166, new Dictionary<byte, object>
                 {
-                    { 218, DataSerialization.ProtoSerializeObjectCompressed(incoming) },
+                    { 218, DataSerialization.ProtoSerializeObjectCompressed(ForClient(incoming)) },
                     { 168, OnlineNames() },
+                    { 239, 0 },
+                    { 240, incoming.name },
                 });
                 SocialOps.AnnounceCard();
             }
@@ -683,10 +694,7 @@ namespace GarRevival
             {
                 return false;
             }
-            // There are no buff templates, so nothing can be unlocked or active.
-            guild.unlockedBuffs.Clear();
-            guild.activeBuffs.Clear();
-            guild.upgradingBuffs.Clear();
+            SanitizeBuffs(guild);
             guild.messageOfTheDay = SocialOps.Clip(guild.messageOfTheDay, MaxMessageOfTheDay);
             guild.maxPlayers = MemberLimit[guild.level - 1];
             return true;
@@ -763,7 +771,7 @@ namespace GarRevival
             }
         }
 
-        // Vault and experience follow from the tallies and the level.
+        // Vault and experience follow from the tallies, the level and the benefits.
         private static void Recount()
         {
             double spent = 0;
@@ -771,8 +779,8 @@ namespace GarRevival
             {
                 spent += UpgradeCredits[level - 1];
             }
-            Guild.credits = Math.Max(0, Guild.donations.Sum(d => d.credits) - spent);
-            Guild.premiumCredits = Guild.donations.Sum(d => d.premiumCredits);
+            Guild.credits = Math.Max(0, Guild.donations.Sum(d => d.credits) - spent - BuffCredits());
+            Guild.premiumCredits = Math.Max(0, Guild.donations.Sum(d => d.premiumCredits) - BuffSparks());
             Guild.experience = (int)Math.Min(int.MaxValue, SocialStore.GuildExperience.Values.Sum(v => (long)v));
         }
 
@@ -823,6 +831,7 @@ namespace GarRevival
                 w.Write(entry.Key);
                 w.Write(entry.Value);
             }
+            SocialStore.WriteTallies(w, SocialStore.GuildBuffSpending);
             w.Flush();
             return stream.ToArray();
         }
@@ -849,6 +858,7 @@ namespace GarRevival
             SocialStore.Guild = null;
             SocialStore.GuildRevision = 0;
             SocialStore.GuildExperience.Clear();
+            SocialStore.GuildBuffSpending.Clear();
             SocialStore.Save();
             PlayerState.Current.guildId = string.Empty;
             PlayerState.Save();
