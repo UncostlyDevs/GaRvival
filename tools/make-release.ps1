@@ -3,7 +3,8 @@
 #   .\tools\make-release.ps1 -Version 0.1.0
 # The zip holds only GAR Revival's own files, and no installer program: the
 # installer ships as source (installer\Program.cs) and install.cmd compiles it
-# with the C# compiler that comes with Windows. The packing fails if any file
+# with the C# compiler that comes with Windows; the master server likewise
+# (master\MasterServer.cs, compiled by start-master.cmd). The packing fails if any file
 # of the game would end up in it. SHA256SUMS.txt and BUILDINFO.txt let anyone
 # check the files (tools\verify-release.ps1 rebuilds and compares them).
 param([Parameter(Mandatory = $true)][string]$Version)
@@ -17,11 +18,12 @@ $dist = Join-Path $root 'dist'
 $stage = Join-Path $dist 'stage'
 $mod = Join-Path $stage 'GARRevival'
 Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Force (Join-Path $mod 'bin'), (Join-Path $mod 'installer') | Out-Null
+New-Item -ItemType Directory -Force (Join-Path $mod 'bin'), (Join-Path $mod 'installer'), (Join-Path $mod 'master') | Out-Null
 
 foreach ($f in 'GarRevival.dll', 'Mono.Cecil.dll') { Copy-Item (Join-Path $root "bin\$f") (Join-Path $mod 'bin') }
 Copy-Item (Join-Path $root 'src\Patcher\Program.cs') (Join-Path $mod 'installer\Program.cs')
-$topFiles = 'README.md', 'THIRD-PARTY-NOTICES.txt', 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd'
+Copy-Item (Join-Path $root 'master\MasterServer.cs') (Join-Path $mod 'master\MasterServer.cs')
+$topFiles = 'README.md', 'THIRD-PARTY-NOTICES.txt', 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd', 'start-master.cmd'
 foreach ($f in $topFiles) { Copy-Item (Join-Path $root $f) $mod }
 Set-Content -Path (Join-Path $mod 'VERSION.txt') -Value "GAR Revival $Version" -Encoding ascii
 
@@ -47,7 +49,8 @@ $info = @(
     "GarRevival.dll built by build.ps1 with the .NET SDK $sdk (Roslyn, /deterministic):",
     "  the same commit built with the same SDK version gives the same bytes.",
     "Mono.Cecil.dll is the unchanged lib\net40 file of the NuGet package Mono.Cecil 0.11.6.",
-    "installer\Program.cs is src\Patcher\Program.cs of the same commit."
+    "installer\Program.cs is src\Patcher\Program.cs of the same commit.",
+    "master\MasterServer.cs (the master server, compiled by start-master.cmd) is master\MasterServer.cs of the same commit."
 )
 Set-Content -Path (Join-Path $mod 'BUILDINFO.txt') -Value $info -Encoding ascii
 

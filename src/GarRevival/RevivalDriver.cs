@@ -178,6 +178,7 @@ namespace GarRevival
         private void OnApplicationQuit()
         {
             RevivalLog.Info("Game is quitting (" + Time.realtimeSinceStartup.ToString("0") + "s after start)");
+            MasterClient.UnlistAll();
             Session.Leave(null);
             LocalWeb.Stop();
         }
@@ -193,6 +194,11 @@ namespace GarRevival
             WorkshopOps.Poll();
             DedicatedServer.Update();
             LocalWeb.Poll();
+            MasterHttp.Poll();
+            MasterClient.Update();
+            Joiner.Update();
+            Matchmaker.Update();
+            Pinger.Poll();
             if (_fireUntil > 0f)
             {
                 bool hold = Time.realtimeSinceStartup < _fireUntil;
@@ -401,6 +407,28 @@ namespace GarRevival
                     else
                     {
                         GameManager.Instance.garage.DoBattleQueueToRobotAssembyTransition();
+                    }
+                    break;
+                case "browser": // browser [internet|lan|steam|favourites]: open the server browser on that tab
+                    PlayScreen.ShowBrowser(words.Length > 1 ? words[1] : null);
+                    break;
+                case "rows": // log the server browser's rows (as filtered and sorted), with ping
+                    PlayScreen.LogBrowserRows();
+                    break;
+                case "joinrow": // joinrow <index>: join a row of the server browser, as double-clicking it does
+                    if (!PlayScreen.JoinBrowserRow(int.Parse(words[1], CultureInfo.InvariantCulture)))
+                    {
+                        RevivalLog.Info("joinrow: no row " + words[1]);
+                    }
+                    break;
+                case "findmatch": // findmatch [mode|any|cancel]: the FIND MATCH button
+                    if (words.Length > 1 && words[1] == "cancel")
+                    {
+                        Matchmaker.Cancel();
+                    }
+                    else
+                    {
+                        Matchmaker.Begin(words.Length > 1 ? words[1] : "any");
                     }
                     break;
                 case "log": // log <text>: a marker in the log

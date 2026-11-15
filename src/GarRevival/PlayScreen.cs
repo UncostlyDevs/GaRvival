@@ -11,19 +11,19 @@ namespace GarRevival
     //   HOST GAME  - open a lobby on the local network or Steam
     //   JOIN GAME  - games found on the local network, on Steam, or by address
     // In a lobby it shows the players; the host sets the match and starts it.
-    public sealed class PlayScreen : MonoBehaviour
+    public sealed partial class PlayScreen : MonoBehaviour
     {
         private enum Tab { Bots, Host, Join }
 
-        private const int DefaultPort = 27015;
+        internal const int DefaultPort = 27015;
         // Robots per team. The arenas were built for 5 against 5.
         private const int MaxTeam = 5;
         private const float PanelWidth = 860f;
         private const float PanelHeight = 540f;
-        private static readonly string[] MapIds = { "random", "Western", "WesternNight", "Laundry", "Pirates", "Medieval", "DragonTemple", "Pompei", "Dungeon" };
-        private static readonly string[] MapNames = { "Random", "Western", "Western (night)", "Suburbia", "Pirates", "Medieval", "Dragon Temple", "Pompeii", "Dungeon" };
-        private static readonly GameModeType[] Modes = { GameModeType.TeamDeadmach, GameModeType.CaptureTheFlag, GameModeType.DestoryBase };
-        private static readonly string[] ModeNames = { "Team Deathmatch", "Capture the Batteries", "Base Destruction" };
+        internal static readonly string[] MapIds = { "random", "Western", "WesternNight", "Laundry", "Pirates", "Medieval", "DragonTemple", "Pompei", "Dungeon" };
+        internal static readonly string[] MapNames = { "Random", "Western", "Western (night)", "Suburbia", "Pirates", "Medieval", "Dragon Temple", "Pompeii", "Dungeon" };
+        internal static readonly GameModeType[] Modes = { GameModeType.TeamDeadmach, GameModeType.CaptureTheFlag, GameModeType.DestoryBase };
+        internal static readonly string[] ModeNames = { "Team Deathmatch", "Capture the Batteries", "Base Destruction" };
 
         private static PlayScreen _instance;
         private static float _startRequestedAt = -100f;
@@ -61,6 +61,7 @@ namespace GarRevival
             _show = !_show;
             if (_show)
             {
+                _browser = false;
                 _settings = OfflineBattle.LoadSettings();
                 LanDiscovery.Listening = true;
                 if (SteamNet.Available && Session.Role == Session.Roles.None)
@@ -124,18 +125,14 @@ namespace GarRevival
 
         public static void JoinAddress(string address)
         {
-            string host = address.Trim();
-            int port = DefaultPort;
-            int colon = host.LastIndexOf(':');
-            if (colon > 0 && int.TryParse(host.Substring(colon + 1), out port))
+            if (ServerEntry.TryParseAddress(address, out string host, out int port))
             {
-                host = host.Substring(0, colon);
+                Session.JoinTcp(host, port);
             }
             else
             {
-                port = DefaultPort;
+                Session.Status = "Not an address: " + address;
             }
-            Session.JoinTcp(host, port);
         }
 
         // ---- frame ----
@@ -150,7 +147,11 @@ namespace GarRevival
             {
                 _show = false;
             }
-            bool visible = _show && InGarage;
+            if (_show && _browser)
+            {
+                UpdateBrowser();
+            }
+            bool visible = InGarage && (_show || (Matchmaker.Visible && OverStrip()));
             if (visible != _uiBlocked)
             {
                 // Clicks on this screen must not also land on the garage UI behind it.
@@ -169,7 +170,7 @@ namespace GarRevival
 
         private void OnGUI()
         {
-            if (!_show || !InGarage)
+            if (!InGarage || (!_show && !Matchmaker.Visible))
             {
                 return;
             }
@@ -179,17 +180,34 @@ namespace GarRevival
             Matrix4x4 old = GUI.matrix;
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(scale, scale, 1f));
             float width = Screen.width / scale;
+            if (!_show)
+            {
+                DrawMatchStrip(width);
+                GUI.matrix = old;
+                return;
+            }
             Rect panel = new Rect((width - PanelWidth) / 2f, (720f - PanelHeight) / 2f, PanelWidth, PanelHeight);
             GUI.DrawTexture(new Rect(0f, 0f, width, 720f), _dark);
             GUI.DrawTexture(panel, _panel);
             GUI.DrawTexture(new Rect(panel.x, panel.y, panel.width, 48f), _bar);
-            GUI.Label(new Rect(panel.x + 20f, panel.y + 6f, 400f, 40f), Session.Role == Session.Roles.None ? "PLAY" : "LOBBY", _title);
+            GUI.Label(new Rect(panel.x + 20f, panel.y + 6f, 400f, 40f), _browser ? "SERVER BROWSER" : Session.Role == Session.Roles.None ? "PLAY" : "LOBBY", _title);
             if (GUI.Button(new Rect(panel.xMax - 44f, panel.y + 8f, 32f, 32f), "X", _tabOff))
             {
-                _show = false;
+                if (_browser)
+                {
+                    _browser = false;
+                }
+                else
+                {
+                    _show = false;
+                }
             }
             GUILayout.BeginArea(new Rect(panel.x + 20f, panel.y + 60f, panel.width - 40f, panel.height - 76f));
-            if (Session.Role == Session.Roles.None)
+            if (_browser)
+            {
+                DrawBrowser();
+            }
+            else if (Session.Role == Session.Roles.None)
             {
                 DrawTabs();
                 switch (_tab)
@@ -272,7 +290,18 @@ namespace GarRevival
 
         private void DrawJoin()
         {
-            _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.Height(300f));
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("SERVER BROWSER", _button, GUILayout.Width(200f), GUILayout.Height(36f)))
+            {
+                OpenBrowser(BrowserTab.Internet);
+            }
+            GUILayout.Space(10f);
+            FindMatchButton(200f);
+            GUILayout.Space(10f);
+            GUILayout.Label(MasterClient.Configured ? "Internet servers, filters, favourites; or join the best server for you." : MasterClient.NoMasterHint, _dim);
+            GUILayout.EndHorizontal();
+            GUILayout.Space(8f);
+            _listScroll = GUILayout.BeginScrollView(_listScroll, GUILayout.Height(250f));
             GUILayout.Label("LOCAL NETWORK GAMES", _header);
             if (LanDiscovery.Games.Count == 0)
             {
@@ -352,6 +381,10 @@ namespace GarRevival
                 {
                     GUILayout.Label(address + ":" + Session.TcpPort, _label);
                 }
+            }
+            if (host && MasterClient.Status.Length > 0)
+            {
+                GUILayout.Label(MasterClient.Status, _dim);
             }
             GUILayout.EndVertical();
 

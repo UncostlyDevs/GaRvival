@@ -8,7 +8,7 @@
 #   - every file matches SHA256SUMS.txt
 #   - GarRevival.dll is byte for byte what this source builds into
 #   - Mono.Cecil.dll is the unchanged file from the NuGet package
-#   - the installer source and the scripts are the ones in this checkout
+#   - the installer and master server sources and the scripts are the ones in this checkout
 param([Parameter(Mandatory = $true)][string]$Zip)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -47,7 +47,8 @@ try {
 
     # 4. Installer source and scripts.
     Check "installer\Program.cs is src\Patcher\Program.cs" ((Sha (Join-Path $root 'src\Patcher\Program.cs')) -eq (Sha (Join-Path $mod 'installer\Program.cs'))) $null
-    foreach ($f in 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd') {
+    Check "master\MasterServer.cs is this checkout's" ((Sha (Join-Path $root 'master\MasterServer.cs')) -eq (Sha (Join-Path $mod 'master\MasterServer.cs'))) $null
+    foreach ($f in 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd', 'start-master.cmd') {
         Check "$f is this checkout's" ((Sha (Join-Path $root $f)) -eq (Sha (Join-Path $mod $f))) $null
     }
     $exes = Get-ChildItem $mod -Recurse -Include *.exe, *.bat, *.ps1, *.vbs, *.js

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GarRevival
 {
@@ -21,6 +22,12 @@ namespace GarRevival
         public const float UnlimitedCreditsAmount = 10000000f;
         public const float UnlimitedPremiumAmount = 100000f;
 
+        // Keys newer than DefaultConfig; appended to files that lack them.
+        private static readonly string[][] AddedKeys =
+        {
+            CfgFile.Key("master", string.Empty, "Master servers (server browser, FIND MATCH), comma-separated, e.g.\nmaster=http://master.example.org:27090"),
+        };
+
         private static Dictionary<string, string> _values;
 
         public static bool UnlimitedCredits
@@ -34,6 +41,39 @@ namespace GarRevival
             get { return !string.Equals(Get("skiptutorial"), "false", StringComparison.OrdinalIgnoreCase); }
         }
 
+        // Master servers for the server browser, FIND MATCH and public games:
+        // comma-separated http:// URLs. Empty hides the internet list.
+        public static string[] Masters
+        {
+            get { return ParseMasters(Get("master")); }
+        }
+
+        public static string[] ParseMasters(string value)
+        {
+            return (value ?? string.Empty).Split(',').Select(u => u.Trim().TrimEnd('/'))
+                .Where(u => u.Length <= 200 && u.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && u.Length > 7).Distinct().Take(4).ToArray();
+        }
+
+        private static string ConfigPath
+        {
+            get { return Path.Combine(RevivalLog.Folder, "settings.cfg"); }
+        }
+
+        // Changes one setting in settings.cfg, keeping the rest of the file.
+        public static void Set(string key, string value)
+        {
+            try
+            {
+                CfgFile.Set(ConfigPath, key, value);
+                Get(key);
+                _values[key.ToLowerInvariant()] = value;
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Could not write settings.cfg", ex);
+            }
+        }
+
         private static string Get(string key)
         {
             if (_values == null)
@@ -41,20 +81,12 @@ namespace GarRevival
                 _values = new Dictionary<string, string>();
                 try
                 {
-                    string path = Path.Combine(RevivalLog.Folder, "settings.cfg");
-                    if (!File.Exists(path))
+                    if (!File.Exists(ConfigPath))
                     {
-                        File.WriteAllText(path, DefaultConfig);
+                        File.WriteAllText(ConfigPath, DefaultConfig);
                     }
-                    foreach (string raw in File.ReadAllLines(path))
-                    {
-                        string line = raw.Trim();
-                        int eq = line.IndexOf('=');
-                        if (!line.StartsWith("#") && eq > 0)
-                        {
-                            _values[line.Substring(0, eq).Trim().ToLowerInvariant()] = line.Substring(eq + 1).Trim();
-                        }
-                    }
+                    CfgFile.AddMissing(ConfigPath, AddedKeys);
+                    _values = CfgFile.Read(ConfigPath);
                 }
                 catch (Exception ex)
                 {

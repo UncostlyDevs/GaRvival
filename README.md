@@ -11,13 +11,13 @@ it can be undone.
 
 | Works | Not yet |
 | --- | --- |
-| Launching past the "servers are being shut down" notice | A central server with matchmaking (players host instead) |
-| Garage, UI, portraits | Ammo (every weapon is an energy weapon for now) |
-| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | Real part stats (placeholders, see below) |
-| Buying and selling, credits, sparks exchange | Part skins (none ship with the game) |
-| A starter robot, robot builder, module editor | Guild buffs |
-| **Test Run** in the training ground | The ladder table (it was a web page on the dead site) |
-| **Bot matches**: Team Deathmatch, Capture the Batteries, Base Destruction | A server browser beyond the LAN list and Steam lobbies |
+| Launching past the "servers are being shut down" notice | Ammo (every weapon is an energy weapon for now) |
+| Garage, UI, portraits | Real part stats (placeholders, see below) |
+| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | Part skins (none ship with the game) |
+| Buying and selling, credits, sparks exchange | Guild buffs |
+| A starter robot, robot builder, module editor | The in-game ladder table (the master server keeps a ladder; the game does not show it yet) |
+| **Test Run** in the training ground | |
+| **Bot matches**: Team Deathmatch, Capture the Batteries, Base Destruction | |
 | Battle rewards (credits, XP, levels, lifetime stats, loot drops) | |
 | Battle wear and repairs (manual or auto repair); consumable boosts in battle | |
 | Part upgrades and tech levels, timed boosts, VIP, inventory slots, renting | |
@@ -32,6 +32,8 @@ it can be undone.
 | Redeem codes (Menu > Redeem Code) from `codes.cfg` | |
 | Watch Tutorial (the official video, in the Steam overlay) | |
 | The garage arcade machine's shooting gallery | |
+| A master server anyone can run (`start-master.cmd`): internet server list, FIND MATCH, a ladder | |
+| Server browser: internet, LAN, Steam and favourites, with ping, filters, sorting, direct connect | |
 
 Building modules and robots by drag and drop is implemented on the server side
 but has only been checked through the UI screens, not by hand. Please report
@@ -95,8 +97,9 @@ running it.
 
 | File | What it is | How to check it |
 | --- | --- | --- |
-| `install.cmd`, `uninstall.cmd`, `build-installer.cmd`, `start-server.cmd`, `stop-server.cmd` | Plain-text scripts | Open them in Notepad |
+| `install.cmd`, `uninstall.cmd`, `build-installer.cmd`, `start-server.cmd`, `stop-server.cmd`, `start-master.cmd` | Plain-text scripts | Open them in Notepad |
 | `installer\Program.cs` | The installer, as source code (about 300 lines of C#) | Read it; `install.cmd` compiles exactly this file with Windows' own C# compiler |
+| `master\MasterServer.cs` | The optional master server, as source code | Read it; `start-master.cmd` compiles exactly this file the same way |
 | `bin\GarRevival.dll` | The mod itself, a .NET library | Not obfuscated: open it in [ILSpy](https://github.com/icsharpcode/ILSpy) or [dnSpy](https://github.com/dnSpyEx/dnSpy) to read it as C#, or rebuild it from this repository (below) |
 | `bin\Mono.Cecil.dll` | The open-source library the installer uses to edit the game's DLLs | Identical to `lib/net40/Mono.Cecil.dll` in the [NuGet package Mono.Cecil 0.11.6](https://www.nuget.org/packages/Mono.Cecil/0.11.6) |
 | `README.md`, `THIRD-PARTY-NOTICES.txt`, `VERSION.txt`, `BUILDINFO.txt`, `SHA256SUMS.txt` | Text | Read them |
@@ -119,7 +122,12 @@ There is no `.exe` anywhere in the download.
 - Its own small web server on `127.0.0.1` (this PC only), which stands in for
   the game's dead website (see "How it works").
 - Other players, only when you host or join a game: a direct connection to the
-  address you typed or found on your LAN, or a Steam lobby. While you host a
+  address you typed or found on your LAN or a master server's list, or a Steam
+  lobby. The server browser measures ping by opening (and closing) a TCP
+  connection to each listed game's port.
+- Master servers, only the ones you put in `settings.cfg` (`master=`, empty by
+  default) or `dedicated.cfg`: plain HTTP requests for the server list and, if
+  you list your game, its heartbeat. While you host a
   LAN game it announces itself on your local network (UDP port 27016) so the
   Play screen's LAN list can find it.
 - Nothing else: no telemetry, no update checks, no downloads. (Checked with the
@@ -216,6 +224,30 @@ Each player's garage, profile and unlocks stay on their own PC; their built-in
 server keeps answering those operations. The session carries only what is
 shared. Unlocks are therefore not verified by the host, by design.
 
+### Server browser and FIND MATCH
+
+JOIN GAME has two more buttons:
+
+- **SERVER BROWSER** lists games in four tabs: INTERNET (from the master
+  servers), LAN, STEAM and FAVOURITES. Columns: name, mode, map, players,
+  ping, version; click a header to sort by it. Filters: mode, hide full, hide
+  other versions. Double-click a row (or select it and press JOIN) to join;
+  `+` adds a game to the favourites (`save/favourites.txt`). DIRECT CONNECT
+  joins `host:port`. Ping is the time a TCP connection to the game's port
+  takes; Steam games show "Steam". A game behind the same router is joined at
+  its LAN address first.
+- **FIND MATCH** asks the master server for the best servers for the chosen
+  mode (same version, room, most players, dedicated first) and joins the first
+  one that lets you in; a full server or one that does not answer moves on to
+  the next. A strip at the bottom shows progress and CANCEL; the garage stays
+  usable. Once joined, the server starts the next match as usual.
+
+Both need a master server in `settings.cfg` (the INTERNET tab can save it):
+
+```
+master=http://master.example.org:27090   # several: comma-separated; http only
+```
+
 ### Server rules
 
 A host can run its own economy. `server.cfg` (created the first time you host,
@@ -231,7 +263,13 @@ startingCredits=20000  # for new server profiles
 startingSparks=0
 creditRewards=1        # multipliers for what battles pay on this server
 experienceRewards=1
+maxPlayers=10          # players let in at once, you included; more are told "The server is full."
+public=0               # 1 lists your hosted game on the master servers in settings.cfg
+                       # (everyone can then see your public IP address)
 ```
+
+Files made by an older version get the new keys appended, with their comments,
+the next time hosting starts; existing values are left alone.
 
 With `profiles=server`, a player's game switches to
 `save/servers/<id>/profile.dat` when they join (the garage reloads) and back to
@@ -327,7 +365,15 @@ host=tcp          # tcp: LAN and the internet (forward the port), or steam: a St
 port=27015
 minPlayers=1      # players needed before a match is announced
 matchDelay=30     # seconds from the announcement to the start
+maxPlayers=10     # players let in at once (the server does not count itself)
+master=           # master servers to list it on, e.g. http://master.example.org:27090
 ```
+
+With `master=` set, the server registers when it starts hosting, sends a
+heartbeat every 20 seconds (sooner when players come or go), registers again if
+the master forgot it, and reports each match's winners and losers for the
+ladder. `stop-server.cmd` ends it without saying goodbye, so its entry stays
+listed until the master's `serverTimeout`.
 
 Over TCP the server shows up in the Play screen's LAN list; players outside
 your network join by address (forward TCP `port` on the router). A Steam-hosted
@@ -339,6 +385,53 @@ hosted, announced and started two matches in a row (one through `!start`), its
 bots fought, and the player got their rewards and wear each time. Not tested:
 Steam hosting, players from another PC, several players at once, running for
 hours.
+
+### Master server
+
+`start-master.cmd` compiles `master\MasterServer.cs` with the C# compiler that
+is part of Windows (into `master\bin`, no download) and runs it; Ctrl+C stops
+it. It needs no game install. On Linux or macOS with mono:
+`mcs -out:master/bin/GarRevival.Master.exe master/MasterServer.cs` then
+`mono master/bin/GarRevival.Master.exe master`. It writes `master\master.cfg`
+on the first start:
+
+```
+port=27090              # TCP; allow it through the firewall / forward it
+publicAddress=          # given to players for servers that register from the master's
+                        # own PC or LAN (their observed address is private)
+serverTimeout=60        # seconds without a heartbeat before a server is dropped
+maxServers=1000
+maxServersPerIp=16
+requestsPerMinute=600   # per IP; a LAN party shares one
+registersPerMinute=60
+resultsPerMinute=60
+maxConnections=64       # requests handled at once
+ladderFile=master-ladder.txt
+```
+
+HTTP/1.1 + JSON, GET and POST only, plain http:
+
+| Request | What it does |
+| --- | --- |
+| `POST /v1/servers` | register: `name, port, mode, map, players, maxPlayers, version, rules, dedicated, transport (tcp/steam), steamLobby, lan, address`; answers `id`, `token` (secret) and the address players are given |
+| `POST /v1/servers/{id}/beat` | heartbeat with `token` and any changed fields; 404 means register again |
+| `POST /v1/servers/{id}/remove` | unlist, with `token` |
+| `GET /v1/servers?mode=&version=&notFull=1` | the list |
+| `GET /v1/match?mode=&version=` | up to 10 servers with room, best first: same version, most players, dedicated, not mid-battle |
+| `POST /v1/results` | a dedicated server's match: `id, token, mode, map, seconds, winningTeam (-1 = draw), winners, losers` (full player names) |
+| `GET /v1/ladder?mode=&top=&name=` | ratings per mode and overall (`any`); `name` adds your own row |
+| `GET /v1/info` | servers, players and ladder size |
+
+The address a server is listed under is the one its requests come from, so a
+server cannot list someone else's machine; only a registrant on the master's
+own network may name its public address. Every field is checked and
+size-limited (8 KB bodies, 5 s per request, per-IP rate limits); nothing a
+request carries is executed or used as a file name. The ladder is team Elo
+(start 1000, K 40 for the first 10 matches, then 24), rated only when both
+sides have players; it is honour-based, since there are no accounts and a
+server could report anything. `tools\test-master.ps1` compiles the master,
+runs it on a spare port and checks every endpoint (including bad input,
+oversize bodies, slow clients and rate limits) with curl.
 
 ## Garage extras
 
@@ -532,13 +625,20 @@ GARRevival/
     SteamNet.cs       Steam lobby + peer-to-peer transport
     PlayScreen.cs     the Play screen: bot match, host, join, lobby
     LanDiscovery.cs   finding LAN games (UDP broadcast)
+    PlayScreen.Browser.cs  the server browser and the FIND MATCH strip
+    ServerList.cs     browser entries, join targets, favourites
+    MasterClient.cs   listing on master servers, lists, results; MasterHttp.cs, MiniJson.cs
+    Matchmaker.cs     FIND MATCH; Joiner.cs tries targets in turn; Pinger.cs TCP ping
+    CfgFile.cs        reading and updating the .cfg files, keeping comments
     Settings.cs       settings.cfg; Instance.cs: -garprofile
     RevivalDriver.cs  screenshots and test scripts
   src/Patcher/      installer / uninstaller (Mono.Cecil)
+  master/           the master server (one C# 5 file; start-master.cmd builds and runs it)
   protocol/         network protocol manifest (.proto schema, message catalogue)
   tools/            asset bundle readers; ProtoSchema and protocol_extract.py
                     generate the protocol manifest; check.ps1 (compile only),
-                    testrun.ps1 / testrun2.ps1 (scripted one- and two-player runs)
+                    testrun.ps1 / testrun2.ps1 (scripted one- and two-player runs),
+                    test-master.ps1 (master server endpoints)
   build.ps1         builds both into bin/
 ```
 
@@ -563,6 +663,9 @@ game's assemblies used for compiling. **Don't share that folder.**
   - `call <Method> <args>` (a `PhotonNetwork` method by name, simple arguments,
     `_` for spaces), `op <code> <key>=<i|b|s|f|B>:<value>` (a raw operation)
   - `server enter`, `server exit` (apply `server.cfg` without hosting)
+  - `browser [internet|lan|steam|favourites]` (open the server browser),
+    `rows` (log its rows with ping), `joinrow <index>` (join one),
+    `findmatch [TeamDeadmach|CaptureTheFlag|DestoryBase|any|cancel]`
   - `shot <name>`
 
   Delete it afterwards, or every launch will run it.

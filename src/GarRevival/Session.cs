@@ -15,7 +15,7 @@ namespace GarRevival
     {
         public enum Roles { None, Host, Client }
 
-        private const byte ProtocolVersion = 3;
+        public const byte ProtocolVersion = 3;
         private const byte MsgHello = 1;    // client -> host: version, full name
         private const byte MsgWelcome = 2;  // host -> client: host name, server rules, roster
         private const byte MsgRejected = 3; // host -> client: reason
@@ -47,6 +47,12 @@ namespace GarRevival
         private static Link _host; // client only
 
         public static Roles Role = Roles.None;
+
+        // Client: the host has let us in.
+        public static bool Welcomed;
+
+        // Why the last attempt to join ended before the host let us in; null while it is running.
+        public static string LastJoinError;
 
         // The port a LAN game is hosted on, or 0.
         public static int TcpPort;
@@ -109,6 +115,12 @@ namespace GarRevival
         public static IList<string> Roster
         {
             get { return Names; }
+        }
+
+        // Players in the session; a dedicated server does not count itself.
+        public static int PlayerCount
+        {
+            get { return Math.Max(0, Names.Count - (Instance.Dedicated && Role == Roles.Host ? 1 : 0)); }
         }
 
         // ---- starting and leaving ----
@@ -176,7 +188,13 @@ namespace GarRevival
         public static void JoinSteam(CSteamID lobby)
         {
             Leave(null);
-            SetStatus(SteamNet.Join(lobby) ? "Joining Steam lobby..." : "Steam is not available");
+            if (SteamNet.Join(lobby))
+            {
+                SetStatus("Joining Steam lobby...");
+                return;
+            }
+            SetStatus("Steam is not available");
+            LastJoinError = Status;
         }
 
         public static void OnSteamJoinResult(Link host, string error)
@@ -184,6 +202,7 @@ namespace GarRevival
             if (host == null)
             {
                 SetStatus(error);
+                LastJoinError = error;
                 return;
             }
             BeginJoin(host, "Connecting to " + host.Label + "...");
@@ -193,6 +212,7 @@ namespace GarRevival
         {
             Role = Roles.Client;
             _host = host;
+            Welcomed = false;
             SetStatus(status);
             _host.Send(Pack(MsgHello, w =>
             {
@@ -207,6 +227,11 @@ namespace GarRevival
             {
                 return;
             }
+            if (Role == Roles.Client && !Welcomed && reason != null)
+            {
+                LastJoinError = reason;
+            }
+            Welcomed = false;
             foreach (Member member in Members)
             {
                 member.Link.Close();
@@ -337,6 +362,7 @@ namespace GarRevival
                 string problem = version != ProtocolVersion ? "This server runs a different GAR Revival version."
                     : name.Length == 0 || name.Length > 64 ? "Invalid player name."
                     : Names.Contains(name) ? "A player called " + name + " is already here."
+                    : ServerRules.Active != null && PlayerCount >= ServerRules.Active.MaxPlayers ? "The server is full."
                     : null;
                 if (problem != null)
                 {
@@ -400,6 +426,7 @@ namespace GarRevival
                         Names.Add(r.ReadString());
                     }
                     Names.Add(LocalName);
+                    Welcomed = true;
                     SetStatus("In " + hostName + "'s session");
                     GameServer.Notice("You joined " + hostName + "'s session (" + Names.Count + " players).");
                     ServerRules.Enter(ServerRules.Unpack(rules));

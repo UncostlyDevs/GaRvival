@@ -25,3 +25,8 @@ web-requests*.log
 codes.cfg
 redeemed.txt
 VERSION.txt
+# The master server's build and runtime files
+master/bin/
+master/master.cfg
+master/master*.log*
+master/master-ladder.txt*

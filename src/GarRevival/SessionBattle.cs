@@ -52,6 +52,10 @@ namespace GarRevival
         public static int LocalTeam = 1;
 
         private static readonly Dictionary<string, int> ActorOf = new Dictionary<string, int>(); // host: member -> actor
+        private static readonly Dictionary<string, int> TeamOf = new Dictionary<string, int>();  // host: member -> team
+        private static string _matchMap;
+        private static GameModeType _matchMode;
+        private static float _matchStartedAt;
         private static readonly Queue<Action> Pending = new Queue<Action>();                     // client: until the arena is up
         private static MessengerListenerContainer _listeners;
         private static bool _applyingRemote;
@@ -109,6 +113,7 @@ namespace GarRevival
             OfflineBattle.Settings settings = OfflineBattle.LoadSettings();
             List<PlayerStartData> players = new List<PlayerStartData>();
             ActorOf.Clear();
+            TeamOf.Clear();
 
             // Humans first: the host is actor 0 on team 1, like a solo battle.
             int nextId = 0;
@@ -126,7 +131,9 @@ namespace GarRevival
             }
             foreach (KeyValuePair<string, ActorVO> reply in _replies)
             {
-                ActorOf[reply.Key] = addHuman(reply.Value).playerID;
+                PlayerStartData human = addHuman(reply.Value);
+                ActorOf[reply.Key] = human.playerID;
+                TeamOf[reply.Key] = human.vo.team;
             }
             if (DedicatedServer.Enabled && ActorOf.Count == 0)
             {
@@ -149,6 +156,9 @@ namespace GarRevival
             }
 
             string map = OfflineBattle.PickMap(settings);
+            _matchMap = map;
+            _matchMode = settings.Mode;
+            _matchStartedAt = Time.realtimeSinceStartup;
             object[] roster = players.Select(p => (object)new object[] { p.playerID, p.vo.team, p.isBot, DataSerialization.ProtoSerializeObject(p.vo) }).ToArray();
             foreach (KeyValuePair<string, int> member in ActorOf)
             {
@@ -813,6 +823,19 @@ namespace GarRevival
                     Session.SendBattleTo(member.Key, message);
                 }
             }
+            if (DedicatedServer.Enabled && results.Count > 0 && TeamOf.Count > 0)
+            {
+                ReportResult(results.Values.First().winningTeam);
+            }
+        }
+
+        // Dedicated server: the ladder on the master servers. -1 is a draw.
+        private static void ReportResult(int winningTeam)
+        {
+            int first = winningTeam < 0 ? 1 : winningTeam;
+            List<string> winners = TeamOf.Where(t => t.Value == first).Select(t => t.Key).ToList();
+            List<string> losers = TeamOf.Where(t => t.Value != first).Select(t => t.Key).ToList();
+            MasterClient.ReportResult(_matchMode.ToString(), _matchMap, (int)(Time.realtimeSinceStartup - _matchStartedAt), winningTeam, winners, losers);
         }
 
         // Hook on OfflineServerEmulator.PublishStartCountdownEvent: a client's

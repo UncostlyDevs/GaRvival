@@ -28,7 +28,21 @@ namespace GarRevival
             public int Port = 27015;
             public int MinPlayers = 1;
             public float MatchDelay = 30f;
+            // Players let in at once; a dedicated server does not count itself.
+            public int MaxPlayers = 10;
+            // A player-hosted game is listed on the settings.cfg master servers.
+            public bool Public;
+            // A dedicated server lists itself on these master servers.
+            public string[] Masters = new string[0];
         }
+
+        // Keys newer than the file Write() makes; appended to files that lack them.
+        private static readonly string[][] AddedKeys =
+        {
+            CfgFile.Key("maxPlayers", "10", "players let in at once, the host included (a dedicated server does not count itself)"),
+            CfgFile.Key("public", "0", "player-hosted games: 1 lists your game on the master servers in settings.cfg (master=);\nthe list shows your public IP address to everyone"),
+            CfgFile.Key("master", string.Empty, "dedicated server: master servers to list it on, comma-separated, e.g. http://master.example.org:27090"),
+        };
 
         private static Rules _hosted;
         private static float _reloadAt;
@@ -93,6 +107,9 @@ namespace GarRevival
                             case "port": rules.Port = Mathf.Clamp((int)Number(value), 1, 65535); break;
                             case "minplayers": rules.MinPlayers = Mathf.Clamp((int)Number(value), 1, 9); break;
                             case "matchdelay": rules.MatchDelay = Mathf.Clamp(Number(value), 5f, 3600f); break;
+                            case "maxplayers": rules.MaxPlayers = Mathf.Clamp((int)Number(value), 1, 64); break;
+                            case "public": rules.Public = value == "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase); break;
+                            case "master": rules.Masters = Settings.ParseMasters(value); break;
                         }
                     }
                     catch (Exception ex)
@@ -101,9 +118,17 @@ namespace GarRevival
                     }
                 }
             }
-            if (!hasId)
+            try
             {
-                Write(rules);
+                if (!hasId)
+                {
+                    Write(rules);
+                }
+                CfgFile.AddMissing(ConfigPath, AddedKeys);
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Could not write " + ConfigPath, ex);
             }
             return rules;
         }
