@@ -79,6 +79,7 @@ namespace GarRevival.Patcher
                 H("OfflineArenaCombatant", "ExecuteConsumableBoost", new[] { "System.Int32" }, "CombatantExecuteConsumableBoost"),
                 H("PlaformIntegration.Steam.SteamPurchaseService", "InitCurrencyPurchase", new[] { "System.Int32" }, "SteamPurchaseServiceInitCurrencyPurchase"),
                 H("AssemblyMouseManager", "SelectGrageInteractiveObject", new string[0], "AssemblyMouseManagerSelectGrageInteractiveObject"),
+                H("JunkWars.Client.ResourcesManager", "LoadPartPrefab", new[] { Str }, "ResourcesManagerLoadPartPrefab"),
                 H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "HandlePickPickableOperation", new[] { "System.Int32", "System.Int32" }, "EmulatorHandlePick"),
                 H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "HandleGameModeEvent", new[] { "System.Int32", "System.Collections.Hashtable" }, "EmulatorHandleGameModeEvent"),
                 H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishStartCountdownEvent", new string[0], "EmulatorPublishStartCountdown"),

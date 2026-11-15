@@ -1,61 +1,39 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JunkWars.Client;
 using JunkWars.Common.Init;
 using JunkWars.Common.Inventory;
 using JunkWars.Common.Packages;
 using JunkWars.Common.Player.ValueObjects;
 using JunkWars.Common.Robot.Templates;
-using UnityEngine;
 
 namespace GarRevival
 {
-    // Startup data for the cosmetics screens. Skins come from the part prefabs
-    // shipped with the game; the palette, loot tables, rewards and store packs
-    // are built from CosmeticsDesign because they only ever lived on the server.
+    // Startup data for the cosmetics screens. Skins come from SkinCatalog; the
+    // palette, loot tables, rewards and store packs are built from
+    // CosmeticsDesign because they only ever lived on the server.
     internal static partial class CosmeticsOps
     {
         // ---- part skins (operation 152) ----
 
         private static Dictionary<string, PartSkinsTemplate> _skins;
 
-        // What each part prefab says about its own skins. A skin is the prefab
-        // "<part prefab>_s<index>" in the same bundle.
+        // Every part template sells every skin in SkinCatalog; the client draws
+        // them itself (SkinPainter). None ship with the game.
         public static Dictionary<string, PartSkinsTemplate> PartSkins()
         {
             if (_skins != null)
             {
                 return _skins;
             }
-            Dictionary<string, PartSkinsTemplate> skins = new Dictionary<string, PartSkinsTemplate>();
-            BundleLoader loader = DataFactory.PartsBundle();
-            if (loader == null)
+            if (!DataFactory.PartsReady())
             {
                 RevivalLog.Info("Part skins asked for before the Parts bundle was loaded");
-                return skins;
+                return new Dictionary<string, PartSkinsTemplate>();
             }
             Catalog.EnsureBuilt();
-            AssetBundle bundle = loader.Bundle;
-            foreach (string asset in bundle.GetAllAssetNames())
-            {
-                GameObject go = bundle.LoadAsset<GameObject>(asset);
-                PartPrefab prefab = go == null ? null : go.GetComponent<PartPrefab>();
-                if (prefab == null || !prefab.includeInExport || prefab.skinsData == null)
-                {
-                    continue;
-                }
-                string indent = string.IsNullOrEmpty(prefab.indent) ? go.name : prefab.indent;
-                // Index 0 is the part's own look.
-                PartSkinData[] usable = prefab.skinsData.Where(s => s != null && s.index > 0).ToArray();
-                if (usable.Length == 0 || !Catalog.Parts.ContainsKey(indent) || skins.ContainsKey(indent))
-                {
-                    continue;
-                }
-                skins[indent] = new PartSkinsTemplate { partIndent = indent, skins = usable, lifetimeDays = prefab.partSkinsLifetimeDays };
-            }
-            RevivalLog.Info("Part skins: " + skins.Count + " parts have skins (" + skins.Values.Sum(s => s.skins.Length) + " skins)");
-            _skins = skins;
+            _skins = Catalog.Parts.Keys.ToDictionary(indent => indent, indent => new PartSkinsTemplate { partIndent = indent, skins = SkinCatalog.SkinData(), lifetimeDays = 0 });
+            RevivalLog.Info("Part skins: " + SkinCatalog.All.Length + " skins for each of " + _skins.Count + " parts");
             return _skins;
         }
 
