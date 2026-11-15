@@ -47,8 +47,10 @@ anything that misbehaves (see Debugging).
 4. Double-click `GARRevival\install.cmd`.
 5. Start Guns and Robots from Steam as usual.
 
-Nothing else is needed: the installer runs on the .NET Framework that comes
-with Windows 10 and 11. It changes two of the game's files
+Nothing else is needed, and there is no installer program in the download:
+`install.cmd` compiles the installer from its source (`installer\Program.cs`)
+with the C# compiler that is part of Windows 10 and 11 (.NET Framework 4), runs
+it and deletes it again. The installer changes two of the game's files
 (`Assembly-CSharp.dll`, `Photon3Unity3D.dll`), keeps the originals next to them
 (`*.garrevival-orig`) and adds `GarRevival.dll`. Running it again is safe; it
 always re-patches from the saved originals. If Steam ever verifies or updates
@@ -75,11 +77,81 @@ Delete it if you don't want that.
 ```
 
 builds everything and writes `dist\GARRevival-0.1.0.zip` (about 300 KB): the
-mod, the installer, Mono.Cecil (MIT, see `THIRD-PARTY-NOTICES.txt`), the
-scripts and this README. It compares every file against the game's own files
-and refuses to pack any of them. Never commit or upload `build/` (copies of the
+mod, the installer's source, Mono.Cecil (MIT, see `THIRD-PARTY-NOTICES.txt`),
+the scripts, this README, `SHA256SUMS.txt` and `BUILDINFO.txt` (source commit
+and .NET SDK version). It prints the zip's own SHA-256 for the release notes.
+It compares every file against the game's own files and refuses to pack any of
+them. Commit before packing, so `BUILDINFO.txt` names a commit others can
+check out. Never commit or upload `build/` (copies of the
 game's assemblies used for compiling) or `bin/` from a source checkout; the
 `.gitignore` keeps them out.
+
+## Checking that it's safe
+
+GAR Revival is built so that anyone can see exactly what it does before
+running it.
+
+**What is in the download**
+
+| File | What it is | How to check it |
+| --- | --- | --- |
+| `install.cmd`, `uninstall.cmd`, `build-installer.cmd`, `start-server.cmd`, `stop-server.cmd` | Plain-text scripts | Open them in Notepad |
+| `installer\Program.cs` | The installer, as source code (about 300 lines of C#) | Read it; `install.cmd` compiles exactly this file with Windows' own C# compiler |
+| `bin\GarRevival.dll` | The mod itself, a .NET library | Not obfuscated: open it in [ILSpy](https://github.com/icsharpcode/ILSpy) or [dnSpy](https://github.com/dnSpyEx/dnSpy) to read it as C#, or rebuild it from this repository (below) |
+| `bin\Mono.Cecil.dll` | The open-source library the installer uses to edit the game's DLLs | Identical to `lib/net40/Mono.Cecil.dll` in the [NuGet package Mono.Cecil 0.11.6](https://www.nuget.org/packages/Mono.Cecil/0.11.6) |
+| `README.md`, `THIRD-PARTY-NOTICES.txt`, `VERSION.txt`, `BUILDINFO.txt`, `SHA256SUMS.txt` | Text | Read them |
+
+There is no `.exe` anywhere in the download.
+
+**What installing changes**
+
+- Only files inside the game folder: `GAR_Data\Managed\Assembly-CSharp.dll` and
+  `Photon3Unity3D.dll` get small hook calls added (the list of hooks is at the
+  top of `installer\Program.cs`); the originals are kept next to them as
+  `*.garrevival-orig`; `GarRevival.dll` is added.
+- No administrator rights, nothing in the registry, no services, nothing that
+  starts with Windows, nothing outside the game folder.
+- `uninstall.cmd`, or Steam's "Verify integrity of game files", puts the game
+  back exactly as it was.
+
+**What it connects to**
+
+- Its own small web server on `127.0.0.1` (this PC only), which stands in for
+  the game's dead website (see "How it works").
+- Other players, only when you host or join a game: a direct connection to the
+  address you typed or found on your LAN, or a Steam lobby. While you host a
+  LAN game it announces itself on your local network (UDP port 27016) so the
+  Play screen's LAN list can find it.
+- Nothing else: no telemetry, no update checks, no downloads. (Checked with the
+  game running in the garage: its only open connection was the local web
+  server.)
+
+**Checking a release**
+
+- `SHA256SUMS.txt` lists the SHA-256 of every file in the zip; the release
+  notes give the SHA-256 of the zip itself.
+- Each release is scanned on [VirusTotal](https://www.virustotal.com) and the
+  report is linked from the release notes. A tool that edits other programs'
+  files can trip a "patcher" heuristic in one or two scanners; say so in an
+  issue if you see more than that.
+- `GarRevival.dll` is reproducible: building the commit named in
+  `BUILDINFO.txt` with the same .NET SDK version gives byte-identical output.
+  With the game installed and the .NET SDK:
+
+  ```powershell
+  git clone https://github.com/UncostlyDevs/GaRvival GARRevival   # inside the game folder
+  cd GARRevival
+  git checkout <commit from BUILDINFO.txt>
+  .\tools\verify-release.ps1 -Zip <path to the downloaded zip>
+  ```
+
+  It checks every checksum, rebuilds the mod and compares it, compares
+  Mono.Cecil with the NuGet package's copy and the installer source and
+  scripts with the checkout's.
+
+(The build needs the game's own DLLs to compile against, which can't be put on
+GitHub, so releases can't be built by GitHub Actions; the reproducible build
+above is the substitute.)
 
 ## Battles
 

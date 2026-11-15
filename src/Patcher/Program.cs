@@ -38,7 +38,8 @@ namespace GarRevival.Patcher
 
         private static readonly Dictionary<string, HookSpec[]> Targets = new Dictionary<string, HookSpec[]>
         {
-            ["Photon3Unity3D.dll"] = new[]
+            {
+                "Photon3Unity3D.dll", new[]
             {
                 H(Peer, "Connect", new[] { Str, Str }, "PeerConnect2"),
                 H(Peer, "Connect", new[] { Str, Str, U8 }, "PeerConnect3"),
@@ -54,8 +55,10 @@ namespace GarRevival.Patcher
                 H(Peer, "get_PeerState", new string[0], "PeerGetPeerState"),
                 H(Peer, "get_IsEncryptionAvailable", new string[0], "PeerGetIsEncryptionAvailable"),
                 H(Peer, "get_ServerTimeInMilliSeconds", new string[0], "PeerGetServerTime"),
+            }
             },
-            ["Assembly-CSharp.dll"] = new[]
+            {
+                "Assembly-CSharp.dll", new[]
             {
                 H("SteamDeployLogin", "Start", new string[0], "SteamDeployLoginStart"),
                 H("JunkWars.Client.Player", "SetPlayerData", new[] { "JunkWars.Common.Player.ValueObjects.PlayerVO" }, "PlayerSetPlayerData"),
@@ -81,6 +84,7 @@ namespace GarRevival.Patcher
                 H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishStartCountdownEvent", new string[0], "EmulatorPublishStartCountdown"),
                 H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishEndGameEvent", new[] { "System.Object" }, "EmulatorPublishEndGame"),
                 H("JunkWars.Client.Arena.OfflineArena", "OnEndGame", new[] { "DataMessage" }, "OfflineArenaOnEndGame"),
+            }
             },
         };
 
@@ -203,9 +207,17 @@ namespace GarRevival.Patcher
 
                 foreach (HookSpec spec in hooks)
                 {
-                    TypeDefinition type = module.GetType(spec.Type) ?? throw new InvalidOperationException("Type not found: " + spec.Type);
-                    MethodDefinition method = type.Methods.SingleOrDefault(m => m.Name == spec.Method && m.Parameters.Select(p => p.ParameterType.FullName).SequenceEqual(spec.Params))
-                        ?? throw new InvalidOperationException("Method not found: " + spec.Type + "." + spec.Method + "(" + string.Join(", ", spec.Params) + ")");
+                    HookSpec s = spec;
+                    TypeDefinition type = module.GetType(s.Type);
+                    if (type == null)
+                    {
+                        throw new InvalidOperationException("Type not found: " + s.Type);
+                    }
+                    MethodDefinition method = type.Methods.SingleOrDefault(m => m.Name == s.Method && m.Parameters.Select(p => p.ParameterType.FullName).SequenceEqual(s.Params));
+                    if (method == null)
+                    {
+                        throw new InvalidOperationException("Method not found: " + s.Type + "." + s.Method + "(" + string.Join(", ", s.Params) + ")");
+                    }
                     InsertPrefix(module, method, hooksType, spec.Hook);
                 }
 
