@@ -68,7 +68,7 @@ namespace GarRevival
                 case 206: // Prices; built from the Parts bundle, so wait for it
                     ReplyWhenReady(conn, op, DataFactory.PartsReady, () => new Dictionary<byte, object> { { 231, DataSerialization.ProtoSerializeObjectHighCompressed(DataFactory.Prices()) } });
                     break;
-                case 202: // Ammo
+                case 202: // Ammo templates
                     Reply(conn, op, new Dictionary<byte, object> { { 231, DataSerialization.ProtoSerializeObjectHighCompressed(DataFactory.Ammo()) } });
                     break;
                 case 219: // Shop templates
@@ -156,12 +156,10 @@ namespace GarRevival
                     SetRobotFlag(conn, op, (byte)request[236], (bool)request[218]);
                     break;
                 case 200: // Ammo distribution
-                    PlayerState.Current.ammoDistribution = DataSerialization.ProtoDeserializeObject<AmmoDistributionVO>((byte[])request[218]);
-                    PlayerState.Save();
-                    Reply(conn, op);
+                    AmmoOps.SetDistribution(conn, request);
                     break;
-                case 201: // Buy ammo: every weapon is an energy weapon for now
-                    Reply(conn, op, new Dictionary<byte, object> { { 218, DataSerialization.ProtoSerializeObject(PlayerState.Current.ownedAmmo) } });
+                case 201: // Buy ammo
+                    AmmoOps.Buy(conn, request);
                     break;
                 case 198: // Set portrait
                 case 199: // Unlock portrait (all are free)
@@ -229,6 +227,7 @@ namespace GarRevival
             MissionsOps.OnItemBought(id, type, price);
             AddItems(conn, parts, modules);
             ChangeCredits(conn, -price, ItemAddedReason.Buy);
+            AmmoOps.OnPartsBought(conn, parts);
             PlayerState.Save();
             Reply(conn, op);
         }
@@ -258,6 +257,7 @@ namespace GarRevival
             player.ownedParts.RemoveAll(p => partIds.Contains(p.partID));
             RemoveItems(conn, partIds, moduleIds);
             ChangeCredits(conn, refund, ItemAddedReason.Buy);
+            AmmoOps.Resync(conn);
             PlayerState.Save();
             Reply(conn, op);
         }
@@ -273,6 +273,7 @@ namespace GarRevival
             player.lastUsedModuleID = module.moduleID;
             player.ownedModuleAssemblies.Add(module);
             AddItems(conn, new List<PartVO>(), new List<ModuleAssemblyVO> { module });
+            AmmoOps.Resync(conn);
             PlayerState.Save();
             Reply(conn, op);
         }
@@ -281,6 +282,7 @@ namespace GarRevival
         {
             PlayerState.Current.ownedModuleAssemblies.RemoveAll(m => m.moduleID == id);
             RemoveItems(conn, new List<int>(), new List<int> { id });
+            AmmoOps.Resync(conn);
             PlayerState.Save();
             Reply(conn, op);
         }
@@ -297,6 +299,7 @@ namespace GarRevival
             }
             modules[index] = module;
             Event(conn, 216, new Dictionary<byte, object> { { 232, DataSerialization.ProtoSerializeObject(new List<ModuleAssemblyVO> { module }) } });
+            AmmoOps.Resync(conn);
             PlayerState.Save();
             Reply(conn, op);
         }
@@ -323,6 +326,7 @@ namespace GarRevival
             }
             robots[index] = robot;
             Event(conn, 214, new Dictionary<byte, object> { { 236, DataSerialization.ProtoSerializeObject(robot) } });
+            AmmoOps.Resync(conn);
             PlayerState.Save();
             Reply(conn, op);
         }
@@ -343,6 +347,11 @@ namespace GarRevival
                 PlayerState.Save();
             }
             Reply(conn, op);
+            if (op == 203 && state)
+            {
+                // The toggle does not resupply by itself; the event makes the client buy what is missing.
+                AmmoOps.Resync(conn, true);
+            }
         }
 
         // ---- events ----

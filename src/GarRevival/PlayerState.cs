@@ -111,8 +111,11 @@ namespace GarRevival
                     _player.credits = _serverCredits;
                     _player.premiumCredits = _serverSparks;
                 }
-                Save();
                 RevivalLog.Info("Created new profile with a starter robot" + (_server == null ? string.Empty : " for server " + _server));
+            }
+            if (AmmoOps.PrepareProfile(_player) || !File.Exists(SavePath))
+            {
+                Save();
             }
             if (Settings.SkipTutorial && _player.tutorialState != TutorialCompleted)
             {
@@ -277,6 +280,7 @@ namespace GarRevival
                 assemblyID = player.lastUsedRobotID,
                 assemblyName = "Robot " + player.lastUsedRobotID,
                 rootPartID = -1,
+                autoResupply = true,
                 dockingPointToModuleLinks = new List<RobotAssemblyChildVO>(),
             };
         }

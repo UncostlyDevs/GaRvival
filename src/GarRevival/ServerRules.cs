@@ -23,6 +23,7 @@ namespace GarRevival
             public float StartingSparks = 0f;
             public float CreditRewards = 1f;
             public float ExperienceRewards = 1f;
+            public bool Ammo = true;
             // Used only by a dedicated server (-garserver).
             public bool Steam;
             public int Port = 27015;
@@ -103,6 +104,7 @@ namespace GarRevival
                             case "startingsparks": rules.StartingSparks = Number(value); break;
                             case "creditrewards": rules.CreditRewards = Mathf.Clamp(Number(value), 0f, 100f); break;
                             case "experiencerewards": rules.ExperienceRewards = Mathf.Clamp(Number(value), 0f, 100f); break;
+                            case "ammo": rules.Ammo = !string.Equals(value, "off", StringComparison.OrdinalIgnoreCase); break;
                             case "host": rules.Steam = string.Equals(value, "steam", StringComparison.OrdinalIgnoreCase); break;
                             case "port": rules.Port = Mathf.Clamp((int)Number(value), 1, 65535); break;
                             case "minplayers": rules.MinPlayers = Mathf.Clamp((int)Number(value), 1, 9); break;
@@ -150,6 +152,8 @@ namespace GarRevival
                 "# multipliers for what battles on this server pay out",
                 "creditRewards=" + r.CreditRewards.ToString(CultureInfo.InvariantCulture),
                 "experienceRewards=" + r.ExperienceRewards.ToString(CultureInfo.InvariantCulture),
+                "# on = ammo used in battles is paid for; off = every battle starts fully loaded",
+                "ammo=" + (r.Ammo ? "on" : "off"),
                 "# only for a dedicated server (GAR.exe -garserver):",
                 "# host = tcp (LAN or port-forwarded, on the port below) or steam (a Steam lobby)",
                 "host=" + (r.Steam ? "steam" : "tcp"),
@@ -190,6 +194,7 @@ namespace GarRevival
                 r.Id, r.Name.Replace('|', ' '), r.ServerProfiles ? "1" : "0",
                 r.StartingCredits.ToString(CultureInfo.InvariantCulture), r.StartingSparks.ToString(CultureInfo.InvariantCulture),
                 r.CreditRewards.ToString(CultureInfo.InvariantCulture), r.ExperienceRewards.ToString(CultureInfo.InvariantCulture),
+                r.Ammo ? "1" : "0",
             });
         }
 
@@ -209,6 +214,7 @@ namespace GarRevival
                 StartingSparks = Number(p[4]),
                 CreditRewards = Mathf.Clamp(Number(p[5]), 0f, 100f),
                 ExperienceRewards = Mathf.Clamp(Number(p[6]), 0f, 100f),
+                Ammo = p.Length < 8 || p[7] != "0",
             };
         }
 
@@ -223,7 +229,7 @@ namespace GarRevival
             }
             Active = rules;
             RevivalLog.Info("Server rules: \"" + rules.Name + "\" (" + rules.Id + "), profiles=" + (rules.ServerProfiles ? "server" : "own") +
-                ", rewards x" + rules.CreditRewards + " credits, x" + rules.ExperienceRewards + " experience");
+                ", rewards x" + rules.CreditRewards + " credits, x" + rules.ExperienceRewards + " experience, ammo " + (rules.Ammo ? "on" : "off"));
             if (rules.ServerProfiles)
             {
                 PlayerState.UseServerProfile(rules.Id, rules.StartingCredits, rules.StartingSparks);

@@ -11,15 +11,16 @@ it can be undone.
 
 | Works | Not yet |
 | --- | --- |
-| Launching past the "servers are being shut down" notice | Ammo (every weapon is an energy weapon for now) |
-| Garage, UI, portraits | Real part stats (placeholders, see below) |
-| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | Part skins (none ship with the game) |
-| Buying and selling, credits, sparks exchange | Guild buffs |
-| A starter robot, robot builder, module editor | The in-game ladder table (the master server keeps a ladder; the game does not show it yet) |
+| Launching past the "servers are being shut down" notice | Real part stats (placeholders, see below) |
+| Garage, UI, portraits | Part skins (none ship with the game) |
+| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | Guild buffs |
+| Buying and selling, credits, sparks exchange | The in-game ladder table (the master server keeps a ladder; the game does not show it yet) |
+| A starter robot, robot builder, module editor | |
 | **Test Run** in the training ground | |
 | **Bot matches**: Team Deathmatch, Capture the Batteries, Base Destruction | |
 | Battle rewards (credits, XP, levels, lifetime stats, loot drops) | |
 | Battle wear and repairs (manual or auto repair); consumable boosts in battle | |
+| Ammo weapons: ammo types, buying, loading, auto resupply, use and pickups in battle | |
 | Part upgrades and tech levels, timed boosts, VIP, inventory slots, renting | |
 | Paint colours, crates and keys, daily login rewards | |
 | Daily missions, achievements, ladder rating and league badge | |
@@ -266,6 +267,7 @@ experienceRewards=1
 maxPlayers=10          # players let in at once, you included; more are told "The server is full."
 public=0               # 1 lists your hosted game on the master servers in settings.cfg
                        # (everyone can then see your public IP address)
+ammo=on                # off: battles start fully loaded and use no ammo
 ```
 
 Files made by an older version get the new keys appended, with their comments,
@@ -333,8 +335,7 @@ social screens by hand (the tests called the same operations the buttons do).
 Known gaps: only the host can start a battle; a player who loads slower than
 the host misses part of the countdown; a player who leaves mid-battle leaves an
 idle robot behind. Sprinting is now sent with the position updates but has not
-been watched from the other screen. Hosted battles log "Missing Ammo node" once
-per robot; it has no effect while every weapon is an energy weapon.
+been watched from the other screen.
 
 `GAR.exe -garprofile <name>` runs a second, separate player on the same PC
 (own save, log and test script), which is how the above was tested.
@@ -433,6 +434,26 @@ server could report anything. `tools\test-master.ps1` compiles the master,
 runs it on a spare port and checks every endpoint (including bad input,
 oversize bodies, slow clients and rate limits) with curl.
 
+### Ammo
+
+Weapons that fire projectiles use ammo, as in the original. On the Supply
+screen's Resupply tab each barrel has an ammo type and a load; OK/Buy buys
+what the loads need, and **Auto Resupply** (on for every robot by default)
+tops them up whenever you enter the garage, with a "You spent X credits for
+resupply" notice. The two free types (`Ammo_Bullet_Free`, `Ammo_Stone_Free`)
+are always topped up. A battle takes the rounds you fired from your stock; an
+empty weapon cannot fire until it picks up ammo (arenas have ammo pickups; the
+training ground is always fully loaded). Bots go looking for ammo when they run
+low.
+
+New profiles start with two loads for each ammo weapon, existing profiles get
+the same once, and a bought barrel comes with one load.
+
+`ammo=off` in `settings.cfg` makes every battle start fully loaded and use
+nothing up. In a hosted game the host's `server.cfg` decides with the same key
+(`ammo=on|off`, default on): the host decides every robot's load and tells each
+player what their battle used.
+
 ## Garage extras
 
 - **Redeem codes** (Menu > Redeem Code) used to be checked by the website. They
@@ -518,10 +539,15 @@ What the numbers are built from instead (`src/GarRevival/Catalog.cs` and
 
 Other choices:
 
-- Every weapon is an energy weapon: `AmmoPerShot 0`, `MaxAmmo -1`,
-  `CurrentAmmo 0`. All three matter: the client refuses to fire if
-  `AmmoPerShot > CurrentAmmo`, and the bot AI sums `CurrentAmmo` to decide
-  whether to go looking for ammo instead of fighting.
+- **Ammo** (`AmmoDesign.cs`): the localisation table still names 30 ammo
+  families as `Ammo_<Family>_<Variant>` (Base, Dmg, SpDmg, SpR, Spd, Free) with
+  descriptions that match the barrels. 26 barrels fire them; the five whose
+  description says energy (Ant Killer, Pewpew, Death Ray, Blaster,
+  Necrotron) stay energy weapons (`AmmoPerShot 0`, `MaxAmmo -1`). Variants
+  give +15% to one stat (Free: -10% damage). Capacity comes from weight class
+  and rate of fire (30 to 900 rounds); a round costs about 3% of the damage it
+  does, in whole eighths of a credit; ammo weapons use 60% of the energy per
+  shot.
 - Weapon behaviour: matched to the game's 60 weapon actions by name, with a
   short override table for the rest.
 - Head, hat, eyewear and device modules use the original `Mod_<part id>`
@@ -555,6 +581,9 @@ The patcher (Mono.Cecil) inserts hook calls into:
   them unchanged.
 - `PhotonNetwork.JoinRandomBattle` starts an offline match instead of
   matchmaking, and `OfflineArena.OnEndGame` hands the result to the server.
+- `RobotAvatar.AddFullAmmo`, so a robot enters a battle with the rounds it
+  loaded, and energy weapons with 0 rounds instead of -1 (which made bots
+  hunt for ammo pickups all the time).
 - `Player.SetPlayerData`, `Player.AddItemValueObjects`,
   `Player.UpdateItemValueObjects`, `Player.UpdateRobotValueObjects` and
   `DataManager.OnShopData`, to fill in empty lists that protobuf drops in
@@ -577,7 +606,11 @@ Garage operations and the events the server answers with:
 | 217 | sell part/module | 218 remove items, 220 credits |
 | 216 / 214 / 215 | create / update / destroy module | 217 / 216 / 218 |
 | 213 / 212 | create / update robot | 215 / 214 robot slot |
-| 209, 204, 203, 200 | select robot, auto repair/resupply, ammo distribution | - |
+| 209, 204 | select robot, auto repair | - |
+| 203 | auto resupply (on: resend the ammo state so the client buys) | 192 ammo |
+| 202 / 201 | ammo templates / buy ammo (213 = credits spent, as a float, for auto resupply) | 220 credits |
+| 200 | ammo distribution: checked against the catalog and the stock, never refused | 192 ammo, when the server corrected it |
+| 212 / 214-216 / 217-218 | after robot, module, buy and sell events | 192 ammo, when a barrel's node changed |
 
 ## Protocol manifest (for a community server)
 
@@ -616,6 +649,7 @@ GARRevival/
     RedeemCodes.cs    Menu > Redeem Code from codes.cfg
     BattleHud.cs      match timer and start countdown
     BattleUpkeep.cs   battle wear, consumable boosts in battle
+    AmmoDesign.cs     ammo types, capacities, prices; AmmoOps.cs: stock, loads, battle use
     ArenaSpawns.cs    spawn points for oversized teams
     OfflineLogin.cs   replacement for the shutdown popup
     OfflineBattle.cs  BATTLE button -> offline match, rewards
@@ -666,6 +700,8 @@ game's assemblies used for compiling. **Don't share that folder.**
   - `browser [internet|lan|steam|favourites]` (open the server browser),
     `rows` (log its rows with ping), `joinrow <index>` (join one),
     `findmatch [TeamDeadmach|CaptureTheFlag|DestoryBase|any|cancel]`
+  - `ammo` (log stock and loads, and in battle the robot's rounds), `ammo buy
+    <type> <tier> <qty>`, `ammo max` (Max load all + OK/Buy), `ammo auto on|off`
   - `shot <name>`
 
   Delete it afterwards, or every launch will run it.

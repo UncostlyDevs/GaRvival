@@ -177,6 +177,20 @@ namespace GarRevival
             return true;
         }
 
+        public static bool RobotAvatarAddFullAmmo(object self)
+        {
+            try
+            {
+                AmmoOps.OnAddFullAmmo((RobotAvatar)self);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Ammo load failed; using the game's full ammo", ex);
+                return false;
+            }
+        }
+
         // Robots driven from another PC have no local controller; the offline
         // arena assumes every robot has one.
         public static bool RobotAvatarSetFreeLook(object self, bool freeLook)
