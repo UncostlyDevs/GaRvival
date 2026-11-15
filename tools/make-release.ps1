@@ -40,7 +40,7 @@ Get-ChildItem $stage -Recurse -File | ForEach-Object {
 # How it was built, so a rebuild can be compared byte for byte.
 $commit = (& git -C $root rev-parse HEAD 2>$null)
 $dirty = (& git -C $root status --porcelain 2>$null)
-$sdk = (& dotnet --list-sdks | Select-Object -Last 1)
+$sdk = ((& dotnet --list-sdks | Select-Object -Last 1) -replace ' [.*]$', '')
 $info = @(
     "GAR Revival $Version",
     "Source commit: $commit$(if ($dirty) { ' (with uncommitted changes)' })",
