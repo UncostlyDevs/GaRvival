@@ -18,7 +18,7 @@ New-Item -ItemType Directory -Force (Join-Path $mod 'bin'), (Join-Path $mod 'ins
 foreach ($f in 'GarRevival.dll', 'Mono.Cecil.dll') { Copy-Item (Join-Path $root "bin\$f") (Join-Path $mod 'bin') }
 Copy-Item (Join-Path $root 'src\Patcher\Program.cs') (Join-Path $mod 'installer\Program.cs')
 Copy-Item (Join-Path $root 'master\MasterServer.cs') (Join-Path $mod 'master\MasterServer.cs')
-$topFiles = 'README.md', 'THIRD-PARTY-NOTICES.txt', 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd', 'start-master.cmd'
+$topFiles = 'README.md', 'THIRD-PARTY-NOTICES.txt', 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd', 'start-master.cmd', 'edit-settings.pyw'
 foreach ($f in $topFiles) { Copy-Item (Join-Path $root $f) $mod }
 Set-Content -Path (Join-Path $mod 'VERSION.txt') -Value "GAR Revival $Version" -Encoding ascii
 

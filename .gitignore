@@ -32,3 +32,6 @@ master/master*.log*
 master/master-ladder.txt*
 battle.cfg.user
 skins-dump/
+part-stats.csv
+part-overrides.csv
+__pycache__/

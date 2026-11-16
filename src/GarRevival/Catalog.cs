@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -97,10 +98,39 @@ internal static class Catalog
         {
             RevivalLog.Info("generated-templates.txt not written: " + ex.Message);
         }
+        WritePartStats();
         RevivalLog.Info($"Catalog: {Parts.Count} part templates, {Modules.Count} module templates (" +
             string.Join(", ", Parts.Values.GroupBy(p => p.type).Select(g => g.Key + " " + g.Count()).ToArray()) + ")");
         RevivalLog.Info("Weight budget, heaviest two-armed build / lowest chassis limit: " +
             string.Join(", ", new[] { WeightType.Light, WeightType.Medium, WeightType.Heavy }.Select(WeightBudget).ToArray()));
+    }
+
+    // part-stats.csv: every part's tier-0 values, for tools/edit-settings.pyw and part-overrides.csv.
+    private static void WritePartStats()
+    {
+        var csv = new StringBuilder("partId,type,class,origin,durability,weight,speed,weightLimit,damage,splash,rateOfFire,capacity,regen,price\n");
+        foreach (var p in Parts.Values.OrderBy(p => p.type).ThenBy(p => p.indent))
+        {
+            var s = p.partTierableStatistics[0];
+            var d = s.partSpesificData;
+            string F(float? v) => v is float f ? f.ToString("0.###", CultureInfo.InvariantCulture) : string.Empty;
+            float? speed = d is ChassisCaseVO c ? c.Speed * GlobalConstants.visualiseSpeedMod : d is ChassisEngineVO e ? e.SpeedModifier * GlobalConstants.visualiseSpeedMod : null;
+            float? limit = d is ChassisCaseVO c2 ? c2.WeightLimit : d is ChassisEngineVO e2 ? e2.WeightLimit : null;
+            var barrel = d as WeaponBarrelVO;
+            var battery = d as BatteryCaseVO;
+            csv.Append(string.Join(",", [p.indent, p.type.ToString(), p.weightType.ToString(), Origin(p),
+                F(s.statistics.Durability.maxValue), F(s.statistics.Weight.maxValue), F(speed), F(limit),
+                F(barrel?.Damage), F(barrel?.SpashDamage), F(barrel == null ? null : 1f / barrel.RateOfFire),
+                F(battery?.EnergyCapacity), F(battery?.EnergyRegeneration), F(BuyPrice(p.indent, 0))])).Append('\n');
+        }
+        try
+        {
+            File.WriteAllText(Path.Combine(RevivalLog.Folder, "part-stats.csv"), csv.ToString());
+        }
+        catch (IOException ex)
+        {
+            RevivalLog.Info("part-stats.csv not written: " + ex.Message);
+        }
     }
 
     // A two-weapon body of the class with its heaviest chassis, engine, battery and head,
@@ -187,6 +217,10 @@ internal static class Catalog
 
     private static float Hundredths(float value) => Mathf.Round(value * 100f) / 100f;
 
+    // An override is a tier-0 value; higher tiers follow the durability curve.
+    private static float Tiered(PartTemplate template, string stat, int tier, float builtIn) =>
+        PartOverrides.Get(template.indent, stat) is float v ? v * StatTable.DurabilityCurve(tier) : builtIn;
+
     private static int WeaponSlots(PartTemplate template) =>
         template.dockingPoints.Count(d => d.isAssemblyRoot && d.possibleDockingTypes.Contains(LogicalType.Weapon));
 
@@ -221,8 +255,8 @@ internal static class Catalog
                 mass = 25.2f * m;
                 specific = new ChassisCaseVO
                 {
-                    Speed = row.SpeedKmh / GlobalConstants.visualiseSpeedMod,
-                    WeightLimit = row.WeightLimit,
+                    Speed = PartOverrides.Or(template.indent, "speed", row.SpeedKmh) / GlobalConstants.visualiseSpeedMod,
+                    WeightLimit = PartOverrides.Or(template.indent, "weightLimit", row.WeightLimit),
                     EnergyConsumption = 0.001f,
                     // Guide terrain rating: good, average, poor.
                     TerrainPenaltyNegate = row.Terrain > 0 ? 1f : row.Terrain == 0 ? 0.5f : 0.1f,
@@ -235,8 +269,8 @@ internal static class Catalog
                 var engine = Design.Engines.TryGetValue(template.indent, out var e) ? e : new Design.EngineTraits();
                 durability = 20f * t;
                 mass = 3f;
-                float speedKmh = StatTable.EngineSpeedKmh.TryGetValue(template.indent, out var measuredSpeed) ? measuredSpeed : engine.Speed;
-                float weightLimit = StatTable.EngineWeightLimit.TryGetValue(template.indent, out var measuredLimit) ? measuredLimit : 40f * engine.WeightLimit;
+                float speedKmh = PartOverrides.Or(template.indent, "speed", StatTable.EngineSpeedKmh.TryGetValue(template.indent, out var measuredSpeed) ? measuredSpeed : engine.Speed);
+                float weightLimit = PartOverrides.Or(template.indent, "weightLimit", StatTable.EngineWeightLimit.TryGetValue(template.indent, out var measuredLimit) ? measuredLimit : 40f * engine.WeightLimit);
                 specific = new ChassisEngineVO { SpeedModifier = speedKmh / GlobalConstants.visualiseSpeedMod, EnergyConsumption = 0.001f, WeightLimit = weightLimit };
                 break;
             }
@@ -258,8 +292,8 @@ internal static class Catalog
                 mass = 1f;
                 specific = new BatteryCaseVO
                 {
-                    EnergyCapacity = 270f * battery.Quality * t * (battery.HighCapacity ? 1f : 0.6f),
-                    EnergyRegeneration = 335f * battery.Quality * t * (battery.HighCapacity ? 0.5f : 1f),
+                    EnergyCapacity = Tiered(template, "capacity", tier, 270f * battery.Quality * t * (battery.HighCapacity ? 1f : 0.6f)),
+                    EnergyRegeneration = Tiered(template, "regen", tier, 335f * battery.Quality * t * (battery.HighCapacity ? 0.5f : 1f)),
                 };
                 break;
             }
@@ -300,6 +334,8 @@ internal static class Catalog
                 mass = 1f;
                 break;
         }
+        durability = Mathf.Round(Tiered(template, "durability", tier, durability));
+        mass = PartOverrides.Or(template.indent, "weight", mass);
         return new PartTierableStatistics
         {
             statistics = new BaseStatistics { Durability = Stat(durability), Weight = Stat(mass) },
@@ -324,9 +360,9 @@ internal static class Catalog
     {
         var traits = TraitsOf(template.indent, template.keywords);
         var row = RowOf(StatTable.Barrels, template, "LW_B_Flintlock", "MW_B_Laser", "HW_B_Fragunov");
-        float shotDamage = Hundredths(row.Damage * StatTable.DamageCurve(tier));
-        float splash = Hundredths(row.Splash * StatTable.DamageCurve(tier));
-        float shotsPerSecond = row.ShotsPerSecond;
+        float shotDamage = Hundredths(PartOverrides.Or(template.indent, "damage", row.Damage) * StatTable.DamageCurve(tier));
+        float splash = Hundredths(PartOverrides.Or(template.indent, "splash", row.Splash) * StatTable.DamageCurve(tier));
+        float shotsPerSecond = PartOverrides.Or(template.indent, "rateOfFire", row.ShotsPerSecond);
         float range = template.weightType == WeightType.Light ? 110f : template.weightType == WeightType.Heavy ? 200f : 150f;
         string[] ammo = AmmoDesign.TypesFor(template.indent);
         bool usesAmmo = ammo.Length > 0;
@@ -421,6 +457,7 @@ internal static class Catalog
             LogicalType.DeviceCase => 2500f,
             _ => 500f,
         };
+        basePrice = PartOverrides.Or(template.indent, "price", basePrice);
         return new PriceTemplate
         {
             indent = template.indent,

@@ -119,6 +119,7 @@ running it.
 | File | What it is | How to check it |
 | --- | --- | --- |
 | `install.cmd`, `uninstall.cmd`, `build-installer.cmd`, `start-server.cmd`, `stop-server.cmd`, `start-master.cmd` | Plain-text scripts | Open them in Notepad |
+| `edit-settings.pyw` | The settings editor, Python source | Open it in Notepad; it only reads and writes the mod's own settings files |
 | `installer\Program.cs` | The installer, as source code (about 300 lines of C#) | Read it; `install.cmd` compiles exactly this file with Windows' own C# compiler |
 | `master\MasterServer.cs` | The optional master server, as source code | Read it; `start-master.cmd` compiles exactly this file the same way |
 | `bin\GarRevival.dll` | The mod itself, a .NET library | Not obfuscated: open it in [ILSpy](https://github.com/icsharpcode/ILSpy) or [dnSpy](https://github.com/dnSpyEx/dnSpy) to read it as C#, or rebuild it from this repository (below) |
@@ -534,6 +535,30 @@ nothing up. In a hosted game the host's `server.cfg` decides with the same key
 (`ammo=on|off`, default on): the host decides every robot's load and tells each
 player what their battle used.
 
+## Settings editor
+
+`edit-settings.pyw` (double-click; needs [Python 3](https://www.python.org/),
+nothing else) edits everything the mod lets you change, with a help line next
+to each setting and checks on every value:
+
+- **General** (`settings.cfg`), **Hosting** (`server.cfg`), **Dedicated
+  server** (`dedicated.cfg`), **Match** and **Dedicated match** (`battle.cfg`,
+  `dedicated-battle.cfg`), **Master server** (`master\master.cfg`).
+- **Redeem codes** (`codes.cfg`): add, change and remove codes.
+- **Part stats**: every part's tier-0 durability, weight, speed, weight
+  limit, damage, splash, rate of fire, battery capacity and regeneration, and
+  price, as the game built them (the game writes `part-stats.csv` at each
+  start). Changes go to `part-overrides.csv` (`partId,stat,value`), which the
+  game applies at startup: no code changes or rebuild. Tiered stats keep
+  growing with the tier from the new tier-0 value. Delete the file (or Clear
+  part) to go back to the built-in numbers.
+
+Comments in the files are kept; only changed lines are rewritten. Changes apply
+the next time the game starts (`server.cfg`: the next time you host). Part
+overrides are local: in a hosted game, players with different files may see
+different numbers, so a server that wants the same stats for everyone shares
+its `part-overrides.csv` with its players.
+
 ## Garage extras
 
 - **Redeem codes** (Menu > Redeem Code) used to be checked by the website. They
@@ -821,6 +846,7 @@ GARRevival/
     Matchmaker.cs     FIND MATCH; Joiner.cs tries targets in turn; Pinger.cs TCP ping
     CfgFile.cs        reading and updating the .cfg files, keeping comments
     Settings.cs       settings.cfg; Instance.cs: -garprofile
+    PartOverrides.cs  part-overrides.csv, applied when the catalog is built
     RevivalDriver.cs  screenshots and test scripts
   src/Patcher/      installer / uninstaller (Mono.Cecil)
   master/           the master server (one C# 5 file; start-master.cmd builds and runs it)
@@ -832,6 +858,7 @@ GARRevival/
                     test-master.ps1 (master server endpoints),
                     infer_stats.py (the stat model; writes StatTable.g.cs)
   data/stats/       surviving numbers with sources, patch history, economy, validation
+  edit-settings.pyw the settings editor (Python 3, tkinter)
   build.ps1         builds both into bin/
 ```
 

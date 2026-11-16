@@ -42,7 +42,7 @@ try {
     # 4. Installer source and scripts.
     Check "installer\Program.cs is src\Patcher\Program.cs" ((Sha (Join-Path $root 'src\Patcher\Program.cs')) -eq (Sha (Join-Path $mod 'installer\Program.cs'))) $null
     Check "master\MasterServer.cs is this checkout's" ((Sha (Join-Path $root 'master\MasterServer.cs')) -eq (Sha (Join-Path $mod 'master\MasterServer.cs'))) $null
-    foreach ($f in 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd', 'start-master.cmd') {
+    foreach ($f in 'install.cmd', 'uninstall.cmd', 'build-installer.cmd', 'start-server.cmd', 'stop-server.cmd', 'start-master.cmd', 'edit-settings.pyw') {
         Check "$f is this checkout's" ((Sha (Join-Path $root $f)) -eq (Sha (Join-Path $mod $f))) $null
     }
     $exes = Get-ChildItem $mod -Recurse -Include *.exe, *.bat, *.ps1, *.vbs, *.js
