@@ -29,6 +29,9 @@ namespace GarRevival
             public string[] Words;
         }
 
+        // "_" is a space, "__" a literal underscore.
+        private static string Spaces(string word) => word.Replace("__", "\u0001").Replace('_', ' ').Replace('\u0001', '_');
+
         private static RevivalDriver _instance;
         private static PlayScreen _overlay;
         private readonly List<Step> _steps = new List<Step>();
@@ -584,7 +587,7 @@ namespace GarRevival
             foreach (string word in words.Skip(2))
             {
                 int eq = word.IndexOf('=');
-                string value = word.Substring(eq + 3).Replace('_', ' ');
+                string value = Spaces(word.Substring(eq + 3));
                 object boxed;
                 switch (word[eq + 1])
                 {

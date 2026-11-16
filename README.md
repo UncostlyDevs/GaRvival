@@ -809,7 +809,7 @@ game's assemblies used for compiling. **Don't share that folder.**
   - `goto flag|delivery|bomb|base|enemy`, `plant` (move my robot onto an objective
     or next to an enemy), `boost <slot>`, `repair`
   - `call <Method> <args>` (a `PhotonNetwork` method by name, simple arguments,
-    `_` for spaces), `op <code> <key>=<i|b|s|f|B>:<value>` (a raw operation)
+    `_` for spaces), `op <code> <key>=<i|b|s|f|B>:<value>` (a raw operation; `_` is a space, `__` an underscore)
   - `server enter`, `server exit` (apply `server.cfg` without hosting)
   - `browser [internet|lan|steam|favourites]` (open the server browser),
     `rows` (log its rows with ping), `joinrow <index>` (join one),
