@@ -235,6 +235,11 @@ namespace GarRevival
             return o != null && o.TryGetValue(key, out object v) && v is double d && d >= int.MinValue && d <= int.MaxValue ? (int)d : 0;
         }
 
+        public static double Num(this Dictionary<string, object> o, string key)
+        {
+            return o != null && o.TryGetValue(key, out object v) && v is double d && !double.IsNaN(d) && !double.IsInfinity(d) ? d : 0;
+        }
+
         public static bool Bool(this Dictionary<string, object> o, string key)
         {
             return o != null && o.TryGetValue(key, out object v) && v is bool f && f;
