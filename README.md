@@ -28,7 +28,7 @@ This is an unofficial fan project, not affiliated with Masthead Studios.
 | Works | Not yet |
 | --- | --- |
 | Launching past the "servers are being shut down" notice | Original stats for engines, batteries, heads, weapon cases and devices: no source survives, so they are designed (see below) |
-| Garage, UI, portraits | |
+| Garage, UI, portraits | Steam achievements: the 69 match the in-game ones, but Steam lets only the original server unlock them (tested: it refuses the game). In-game achievements work. |
 | Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | |
 | Real stats for 28 chassis, 21 bodies and 26 barrels (the 2017 live balance), the other chassis, bodies and barrels inferred from them, tiers 0-10 (see below) | |
 | Buying and selling, credits, sparks exchange | |
