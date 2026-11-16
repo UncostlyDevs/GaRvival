@@ -548,10 +548,11 @@ in game. Steam does not let it unlock them on your profile. Tried in November
   progress achievement tied to a stat.
 - From the game (`SteamUserStats.SetAchievement`, `SetStat`): refused.
   `IndicateAchievementProgress` is accepted but only shows a pop-up.
-- As a Steam game server in the same process (logged on anonymously, the
-  player authenticated with a session ticket, stats requested): Steam accepts
-  `SetUserAchievement`, but the store never completes and the achievement stays
-  locked. Only servers Masthead registered as official may write them.
+- As a Steam game server in the same process, logged on anonymously and again
+  with a game server login token for app 293540 (the player authenticated with
+  a session ticket, stats requested): Steam accepts `SetUserAchievement`, but
+  the store never completes and the achievement stays locked. Only servers
+  Masthead registered as official may write them.
 - The Web API (`ISteamUserStats/SetUserStatsForGame`) needs Masthead's
   publisher key.
 
