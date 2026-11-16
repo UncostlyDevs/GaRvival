@@ -1,11 +1,27 @@
 # GAR Revival
 
-A community patch that brings **Guns and Robots** back after the official
-servers shut down: the garage, the store, robot building and the offline Test
-Run all work again. It runs entirely on your PC; no game files are
-redistributed. The patcher modifies your own install and keeps the originals so
-it can be undone.
+A free, open-source community mod that makes **Guns and Robots** (Masthead
+Studios, Steam app 293540) playable again after its official servers shut
+down. The game's online services are rebuilt inside the mod, so your garage,
+unlocks and progress live on your own PC, and multiplayer runs on servers that
+players host.
 
+- **Everything in the garage**: the store with every part and module, robot
+  building, upgrades, paint, part skins, ammo, crates, missions, achievements.
+- **Battles**: bot matches in all three modes, and matches with other players
+  on hosted or dedicated servers.
+- **Find games**: a server browser (internet, LAN, Steam, favourites) and FIND
+  MATCH, through a master server that ships with the mod and that anyone can
+  run.
+- **Community**: chat, friends, squads, guilds with guild benefits, and the
+  ladder.
+
+**[Download the latest release](https://github.com/UncostlyDevs/GaRvival/releases/latest)**
+and follow [Install](#install). You need your own copy of the game from Steam:
+no game files are included. The installer ships as readable source, every
+release has checksums and a VirusTotal scan, and the mod can be rebuilt byte
+for byte from this repository (see [Checking that it's safe](#checking-that-its-safe)).
+This is an unofficial fan project, not affiliated with Masthead Studios.
 
 ## Status
 
@@ -790,6 +806,7 @@ GARRevival/
     PlayScreen.Browser.cs  the server browser and the FIND MATCH strip
     ServerList.cs     browser entries, join targets, favourites
     MasterClient.cs   listing on master servers, lists, results; MasterHttp.cs, MiniJson.cs
+    MasterLauncher.cs starts the bundled master on this PC
     Matchmaker.cs     FIND MATCH; Joiner.cs tries targets in turn; Pinger.cs TCP ping
     CfgFile.cs        reading and updating the .cfg files, keeping comments
     Settings.cs       settings.cfg; Instance.cs: -garprofile
@@ -797,6 +814,7 @@ GARRevival/
   src/Patcher/      installer / uninstaller (Mono.Cecil)
   master/           the master server (one C# 5 file; start-master.cmd builds and runs it)
   protocol/         network protocol manifest (.proto schema, message catalogue)
+                    and the master server API (MASTER-API.md)
   tools/            asset bundle readers; ProtoSchema and protocol_extract.py
                     generate the protocol manifest; check.ps1 (compile only),
                     testrun.ps1 / testrun2.ps1 (scripted one- and two-player runs),
@@ -804,7 +822,8 @@ GARRevival/
   build.ps1         builds both into bin/
 ```
 
-Build with `.\build.ps1` (needs the .NET SDK). `build/refs` holds copies of the
+Build with `.\build.ps1` (needs the .NET 10 SDK: the mod is C# 14; the installer
+and the master stay C# 5 so Windows' own compiler builds them on players' PCs). `build/refs` holds copies of the
 game's assemblies used for compiling. **Don't share that folder.**
 
 ## Debugging
