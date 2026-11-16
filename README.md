@@ -28,7 +28,7 @@ This is an unofficial fan project, not affiliated with Masthead Studios.
 | Works | Not yet |
 | --- | --- |
 | Launching past the "servers are being shut down" notice | Original stats for engines, batteries, heads, weapon cases and devices: no source survives, so they are designed (see below) |
-| Garage, UI, portraits | Steam achievements: the 69 match the in-game ones, but Steam lets only the original server unlock them (tested: it refuses the game). In-game achievements work. |
+| Garage, UI, portraits | Steam achievements: only the original servers could unlock them (see "Steam achievements" below). In-game achievements work. |
 | Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | |
 | Real stats for 28 chassis, 21 bodies and 26 barrels (the 2017 live balance), the other chassis, bodies and barrels inferred from them, tiers 0-10 (see below) | |
 | Buying and selling, credits, sparks exchange | |
@@ -534,6 +534,28 @@ the same once, and a bought barrel comes with one load.
 nothing up. In a hosted game the host's `server.cfg` decides with the same key
 (`ammo=on|off`, default on): the host decides every robot's load and tells each
 player what their battle used.
+
+## Steam achievements
+
+The game's 69 Steam achievements use the same names as its in-game ones
+(`Ach_FromSmallBeginnings`, `Ach_Pacifist`, ...), and the mod completes those
+in game. Steam does not let it unlock them on your profile. Tried in November
+2026, on a real account:
+
+- Steam's own schema for the game (`appcache/stats/UserGameStatsSchema_293540.bin`)
+  marks all 69 achievements and the game's only stat with permission 2:
+  official game servers or the publisher's Web API key only. None is a
+  progress achievement tied to a stat.
+- From the game (`SteamUserStats.SetAchievement`, `SetStat`): refused.
+  `IndicateAchievementProgress` is accepted but only shows a pop-up.
+- As a Steam game server in the same process (logged on anonymously, the
+  player authenticated with a session ticket, stats requested): Steam accepts
+  `SetUserAchievement`, but the store never completes and the achievement stays
+  locked. Only servers Masthead registered as official may write them.
+- The Web API (`ISteamUserStats/SetUserStatsForGame`) needs Masthead's
+  publisher key.
+
+So only Masthead (or Valve) could make them unlockable again.
 
 ## Settings editor
 
