@@ -1,5 +1,4 @@
-# Compile check only: builds src\GarRevival\*.cs plus any extra .cs files or
-# folders given as arguments into a throwaway DLL. Nothing is installed.
+# Compile check only: builds src\GarRevival\*.cs plus any extra .cs files or folders into a throwaway DLL.
 #   .\tools\check.ps1 src\Staging\Workshop
 param([string[]]$Extra = @())
 $ErrorActionPreference = 'Stop'

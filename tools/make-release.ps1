@@ -1,12 +1,7 @@
-# Builds the mod and packs what players download: dist\GARRevival-<version>.zip.
-# Players extract it into the Guns and Robots folder and run GARRevival\install.cmd.
+# Builds the mod and packs dist\GARRevival-<version>.zip (players extract it into the game folder, run install.cmd).
 #   .\tools\make-release.ps1 -Version 0.1.0
-# The zip holds only GAR Revival's own files, and no installer program: the
-# installer ships as source (installer\Program.cs) and install.cmd compiles it
-# with the C# compiler that comes with Windows; the master server likewise
-# (master\MasterServer.cs, compiled by start-master.cmd). The packing fails if any file
-# of the game would end up in it. SHA256SUMS.txt and BUILDINFO.txt let anyone
-# check the files (tools\verify-release.ps1 rebuilds and compares them).
+# Only GAR Revival's own files: installer and master ship as source, compiled by Windows' csc on the player's PC.
+# SHA256SUMS.txt and BUILDINFO.txt let tools\verify-release.ps1 rebuild and compare a release.
 param([Parameter(Mandatory = $true)][string]$Version)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -27,8 +22,7 @@ $topFiles = 'README.md', 'THIRD-PARTY-NOTICES.txt', 'install.cmd', 'uninstall.cm
 foreach ($f in $topFiles) { Copy-Item (Join-Path $root $f) $mod }
 Set-Content -Path (Join-Path $mod 'VERSION.txt') -Value "GAR Revival $Version" -Encoding ascii
 
-# Nothing of the game's may be in a release: compare every file against the
-# game's own files by content and by name.
+# No game file may be in a release: compare by content and by name.
 $gameHashes = @{}
 Get-ChildItem (Join-Path $game 'GAR_Data\Managed') -File | ForEach-Object { $gameHashes[(Get-FileHash $_.FullName).Hash] = $_.Name }
 foreach ($f in @('GAR.exe', 'steam_api.dll')) { $p = Join-Path $game $f; if (Test-Path $p) { $gameHashes[(Get-FileHash $p).Hash] = $f } }
@@ -39,7 +33,7 @@ Get-ChildItem $stage -Recurse -File | ForEach-Object {
     if ($gameNames -contains $_.Name) { throw "$($_.Name) has the name of a game file; not packing it" }
 }
 
-# How it was built, so a rebuild can be compared byte for byte.
+# For a byte-for-byte rebuild.
 $commit = (& git -C $root rev-parse HEAD 2>$null)
 $dirty = (& git -C $root status --porcelain 2>$null)
 $sdk = ((& dotnet --list-sdks | Select-Object -Last 1) -replace ' \[.*\]$', '')
@@ -61,8 +55,7 @@ Set-Content -Path (Join-Path $mod 'SHA256SUMS.txt') -Value $sums -Encoding ascii
 
 $zip = Join-Path $dist "GARRevival-$Version.zip"
 Remove-Item $zip -ErrorAction SilentlyContinue
-# Entries are written by hand: Windows PowerShell's ZipFile names them with
-# backslashes, which some unzip tools do not treat as folders.
+# Entries by hand: Windows PowerShell's ZipFile writes backslashes, which some unzip tools do not take as folders.
 Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
 $archive = [System.IO.Compression.ZipFile]::Open($zip, 'Create')
 try {

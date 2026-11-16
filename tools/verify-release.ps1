@@ -1,14 +1,8 @@
-# Checks a GAR Revival release zip against this source checkout:
+# Checks a release zip against this checkout (first: git checkout <commit from its BUILDINFO.txt>).
 #   .\tools\verify-release.ps1 -Zip GARRevival-0.1.3.zip
-# Needs Guns and Robots installed one folder up (build.ps1 compiles against the
-# game's own assemblies) and the .NET SDK. Check out the commit named in the
-# zip's BUILDINFO.txt first (git checkout <commit>).
-#
-# It checks that:
-#   - every file matches SHA256SUMS.txt
-#   - GarRevival.dll is byte for byte what this source builds into
-#   - Mono.Cecil.dll is the unchanged file from the NuGet package
-#   - the installer and master server sources and the scripts are the ones in this checkout
+# Needs the game one folder up (build.ps1 compiles against its assemblies) and the .NET SDK.
+# Checks SHA256SUMS.txt, a byte-identical GarRevival.dll rebuild, the NuGet Mono.Cecil.dll,
+# and that the installer, master and scripts match this checkout.
 param([Parameter(Mandatory = $true)][string]$Zip)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent

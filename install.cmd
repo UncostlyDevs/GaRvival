@@ -1,11 +1,8 @@
 @echo off
 rem Installs GAR Revival into the Guns and Robots folder this folder sits in.
-rem Safe to run again, for example after Steam has verified or updated the game.
-rem
-rem There is no installer program in the download. This script compiles the
-rem installer from its source, installer\Program.cs (read it first if you like),
-rem with the C# compiler that comes with Windows (.NET Framework 4), runs it,
-rem and deletes it again.
+rem Safe to run again, e.g. after Steam verified or updated the game.
+rem The installer ships as source (installer\Program.cs, read it if you like): this compiles it
+rem with the C# compiler that comes with Windows, runs it and deletes it again.
 call "%~dp0build-installer.cmd" || goto failed
 echo Installing GAR Revival...
 "%~dp0bin\GarRevival.Installer.exe" "%~dp0.."

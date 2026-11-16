@@ -1,5 +1,4 @@
-# Development aid: runs two scripted game instances (profiles h and c) on this
-# PC, for host/join tests. The user's battle.cfg is restored afterwards.
+# Host/join test: two scripted game instances (profiles h and c); restores the user's battle.cfg afterwards.
 #   .\tools\testrun2.ps1 -HostAutorun <file> -ClientAutorun <file> [-Battle <file>] [-Build] [-Seconds 150]
 #   -Dedicated [-Headless] runs the host as a dedicated server (-garserver), with -ServerCfg as its dedicated.cfg
 param([string]$HostAutorun, [string]$ClientAutorun, [string]$Battle, [switch]$Build, [int]$Seconds = 150, [switch]$Dedicated, [string]$ServerCfg, [switch]$Headless)
