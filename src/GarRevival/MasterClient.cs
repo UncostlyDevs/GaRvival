@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GarRevival;
 
-// Master server client: keeps a hosted game listed, fetches server lists and match candidates, reports dedicated results.
+// A dedicated server lists itself on dedicated.cfg's masters (empty = this PC's); a player's game only with public=1 in server.cfg.
 // A dedicated server lists itself when dedicated.cfg has master=; a player's game only with public=1 in server.cfg.
 internal static class MasterClient
 {
@@ -23,6 +23,7 @@ internal static class MasterClient
         public string Token;
         public bool Busy;
         public float NextAt;
+        public int Failures;
         public string Status = "registering...";
     }
 
@@ -113,10 +114,12 @@ internal static class MasterClient
             if (!r.Ok)
             {
                 l.Status = $"could not list ({r.Error})";
-                l.NextAt = Now + RetryInterval;
+                // 5, 10, 20, 40, then 60 s: a master the game just started needs a few seconds to compile.
+                l.NextAt = Now + Mathf.Min(RetryInterval, 5f * (1 << Mathf.Min(l.Failures++, 4)));
                 RevivalLog.Info($"Master {l.Url}: {l.Status}");
                 return;
             }
+            l.Failures = 0;
             l.Id = r.Json.Str("id");
             l.Token = r.Json.Str("token");
             l.Status = $"listed as {r.Json.Str("address")}:{r.Json.Int("port")}";
