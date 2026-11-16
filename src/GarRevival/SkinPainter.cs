@@ -299,7 +299,8 @@ namespace GarRevival
         {
             RenderTexture target = RenderTexture.GetTemporary(w, h, 0, RenderTextureFormat.ARGB32, linear ? RenderTextureReadWrite.Linear : RenderTextureReadWrite.Default);
             RenderTexture previous = RenderTexture.active;
-            Texture2D readback = new Texture2D(w, h, TextureFormat.RGBA32, false);
+            // Unity 5.4 ReadPixels accepts only ARGB32/RGB24 targets.
+            Texture2D readback = new Texture2D(w, h, TextureFormat.ARGB32, false);
             try
             {
                 Graphics.Blit(texture, target);
