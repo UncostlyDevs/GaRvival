@@ -5,14 +5,12 @@ namespace GarRevival
 {
     // Per-part design traits, transcribed from each part's official in-game
     // description (<id>_Description in the localisation tables) and the
-    // official wiki (gar.fandom.com). The original numbers are lost; these
-    // keep every part's role relative to the others. Catalog.Stats() turns
-    // them into numbers on the original game's scale.
+    // official wiki (gar.fandom.com). They keep every part's role relative to
+    // the others where no real numbers survive (RealStats.cs covers chassis,
+    // bodies and barrels). Catalog.Stats() turns them into numbers.
     internal static class Design
     {
         // "Light Wheeler Chassis", "Heavy Tracker Chassis", ...
-        // Wheelers are fastest but handle terrain worst; hovers are slowest but
-        // ignore terrain; trackers are toughest; walkers carry the most.
         public static readonly Dictionary<string, ChassisType> Chassis = new Dictionary<string, ChassisType>
         {
             { "HC_AO", ChassisType.Tracked }, { "HC_Bahemoth", ChassisType.Walker }, { "HC_Bucephalas", ChassisType.Wheelled },
@@ -102,7 +100,8 @@ namespace GarRevival
         };
 
         // Barrel role relative to its weight class. Accuracy is absolute
-        // (0-1); Splash is a share of the original splash maximum.
+        // (0-1). Damage, RateOfFire and Splash scale a barrel without a real
+        // row from its RealStats sibling; RateOfFire and Splash also size ammo loads.
         public sealed class BarrelTraits
         {
             public float Damage = 1f;
