@@ -130,8 +130,9 @@ There is no `.exe` anywhere in the download.
   address you typed or found on your LAN or a master server's list, or a Steam
   lobby. The server browser measures ping by opening (and closing) a TCP
   connection to each listed game's port.
-- Master servers, only the ones you put in `settings.cfg` (`master=`, empty by
-  default) or `dedicated.cfg`: plain HTTP requests for the server list, the
+- Master servers: by default the one the game starts on this PC (listening on
+  127.0.0.1 only), plus any you put in `settings.cfg` (`master=`) or
+  `dedicated.cfg`: plain HTTP requests for the server list, the
   ladder table and, if you list your game, its heartbeat. While you host a
   LAN game it announces itself on your local network (UDP port 27016) so the
   Play screen's LAN list can find it.
@@ -247,11 +248,20 @@ JOIN GAME has two more buttons:
   the next. A strip at the bottom shows progress and CANCEL; the garage stays
   usable. Once joined, the server starts the next match as usual.
 
-Both need a master server in `settings.cfg` (the INTERNET tab can save it):
+Both use the master servers in `settings.cfg` (the INTERNET tab can save it):
 
 ```
-master=http://master.example.org:27090   # several: comma-separated; http only
+master=              # empty: the master on this PC, which the game starts
+                     # or http://master.example.org:27090 (several: comma-separated; http only)
+                     # or off
+masterAutoStart=on   # off: never start the bundled master
 ```
+
+With `master=` empty the game starts the bundled master itself (compiled from
+`master\MasterServer.cs` as `start-master.cmd` does, listening on this PC only)
+and it exits with the game. Every install then has a working server list, FIND
+MATCH and ladder for games on this PC and LAN. To play over the internet,
+everyone points `master=` at one shared master.
 
 ### Server rules
 
@@ -418,9 +428,10 @@ minPlayers=1      # players needed before a match is announced
 matchDelay=30     # seconds from the announcement to the start
 maxPlayers=10     # players let in at once (the server does not count itself)
 master=           # master servers to list it on, e.g. http://master.example.org:27090
+                  # (empty: the master on this PC)
 ```
 
-With `master=` set, the server registers when it starts hosting, sends a
+The server registers when it starts hosting, sends a
 heartbeat every 20 seconds (sooner when players come or go), registers again if
 the master forgot it, and reports each match's winners and losers for the
 ladder. `stop-server.cmd` ends it without saying goodbye, so its entry stays
@@ -441,7 +452,9 @@ hours.
 
 `start-master.cmd` compiles `master\MasterServer.cs` with the C# compiler that
 is part of Windows (into `master\bin`, no download) and runs it; Ctrl+C stops
-it. It needs no game install. On Linux or macOS with mono:
+it. `--local` listens on 127.0.0.1 only and `--parent <pid>` exits with that
+process (how the game runs its own). Anyone can run a public one, change it,
+or build a different server against the same HTTP API. It needs no game install. On Linux or macOS with mono:
 `mcs -out:master/bin/GarRevival.Master.exe master/MasterServer.cs` then
 `mono master/bin/GarRevival.Master.exe master`. It writes `master\master.cfg`
 on the first start:
