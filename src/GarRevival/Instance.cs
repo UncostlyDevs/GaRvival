@@ -1,71 +1,60 @@
 using System;
 
-namespace GarRevival
+namespace GarRevival;
+
+// "GAR.exe -garprofile <name>" runs a separate player with its own save, log and test script.
+internal static class Instance
 {
-    // "GAR.exe -garprofile <name>" runs the game as a separate player with its
-    // own save, log and test script, so two copies can run on one PC (for
-    // testing multiplayer, or for a second person sharing the computer).
-    internal static class Instance
+    private static bool _read;
+    private static string _profile;
+    private static bool _dedicated;
+
+    // null for the default player.
+    public static string Profile
     {
-        private static bool _read;
-        private static string _profile;
-
-        // null for the normal, default player.
-        public static string Profile
+        get
         {
-            get
-            {
-                Read();
-                return _profile;
-            }
+            Read();
+            return _profile;
         }
+    }
 
-        // "-garserver": a dedicated server (DedicatedServer.cs). It plays as
-        // the profile "server" unless -garprofile names another.
-        public static bool Dedicated
+    // "-garserver": dedicated server; plays as profile "server" unless -garprofile names another.
+    public static bool Dedicated
+    {
+        get
         {
-            get
-            {
-                Read();
-                return _dedicated;
-            }
+            Read();
+            return _dedicated;
         }
+    }
 
-        private static bool _dedicated;
+    // "" or "-<profile>", appended to per-player file and folder names.
+    public static string Suffix => Profile == null ? string.Empty : "-" + Profile;
 
-        private static void Read()
+    private static void Read()
+    {
+        if (_read) return;
+        _read = true;
+        var args = Environment.GetCommandLineArgs();
+        for (int i = 0; i < args.Length; i++)
         {
-            if (_read)
+            if (string.Equals(args[i], "-garserver", StringComparison.OrdinalIgnoreCase))
             {
-                return;
+                _dedicated = true;
             }
-            _read = true;
-            string[] args = Environment.GetCommandLineArgs();
-            for (int i = 0; i < args.Length; i++)
+            if (i + 1 < args.Length && string.Equals(args[i], "-garprofile", StringComparison.OrdinalIgnoreCase))
             {
-                if (string.Equals(args[i], "-garserver", StringComparison.OrdinalIgnoreCase))
+                _profile = new string(Array.FindAll(args[i + 1].ToCharArray(), char.IsLetterOrDigit));
+                if (_profile.Length == 0)
                 {
-                    _dedicated = true;
-                }
-                if (i + 1 < args.Length && string.Equals(args[i], "-garprofile", StringComparison.OrdinalIgnoreCase))
-                {
-                    _profile = new string(Array.FindAll(args[i + 1].ToCharArray(), char.IsLetterOrDigit));
-                    if (_profile.Length == 0)
-                    {
-                        _profile = null;
-                    }
+                    _profile = null;
                 }
             }
-            if (_dedicated && _profile == null)
-            {
-                _profile = "server";
-            }
         }
-
-        // "" or "-<profile>", appended to per-player file and folder names.
-        public static string Suffix
+        if (_dedicated && _profile == null)
         {
-            get { return Profile == null ? string.Empty : "-" + Profile; }
+            _profile = "server";
         }
     }
 }
