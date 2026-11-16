@@ -166,6 +166,13 @@ namespace GarRevival
                 "# a match starts matchDelay seconds after at least minPlayers players are in",
                 "minPlayers=" + r.MinPlayers,
                 "matchDelay=" + r.MatchDelay.ToString(CultureInfo.InvariantCulture),
+                "# players let in at once, the host included (a dedicated server does not count itself)",
+                "maxPlayers=" + r.MaxPlayers,
+                "# player-hosted games: 1 lists your game on the master servers in settings.cfg (master=);",
+                "# the list shows your public IP address to everyone",
+                "public=" + (r.Public ? "1" : "0"),
+                "# dedicated server: master servers to list it on, comma-separated, e.g. http://master.example.org:27090",
+                "master=" + string.Join(",", r.Masters),
                 string.Empty,
             }));
         }
