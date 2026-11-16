@@ -47,6 +47,7 @@ namespace GarRevival
         public const byte GuildState = 32;
         public const byte GuildGone = 33;
         public const byte GuildRefused = 34;
+        public const byte LadderCard = 40;       // my ladder standing (LadderTable)
 
         // What others need to show me in their lists.
         internal sealed class Card
@@ -158,6 +159,7 @@ namespace GarRevival
             Session.PlayerAppeared = OnAppeared;
             Session.PlayerGone = OnGone;
             Session.Polled = OnPolled;
+            PlayerState.ProfileChanged += AnnounceLadder;
             if (Session.Role != Session.Roles.None)
             {
                 foreach (string name in new List<string>(Session.Roster))
@@ -345,12 +347,19 @@ namespace GarRevival
                 case GuildRefused:
                     SocialGuild.OnMessage(sender, kind, r);
                     break;
+                case LadderCard:
+                    LadderTable.Note(sender, r.ReadDouble(), r.ReadInt32(), r.ReadDouble(), r.ReadString());
+                    break;
             }
         }
 
         private static void OnAppeared(string name)
         {
             SendHello(name);
+            if (!Instance.Dedicated)
+            {
+                Session.SendSocial(name, Pack(LadderCard, WriteLadder));
+            }
             SocialFriends.OnAppeared(name);
             SocialGuild.OnAppeared(name);
         }
@@ -358,6 +367,7 @@ namespace GarRevival
         private static void OnGone(string name)
         {
             Cards.Remove(name);
+            LadderTable.Forget(name);
             SocialFriends.OnGone(name);
             SocialParty.OnGone(name);
             SocialGuild.OnGone(name);
@@ -381,6 +391,32 @@ namespace GarRevival
         internal static void AnnounceCard()
         {
             Session.BroadcastSocial(Pack(Hello, SocialGuild.WriteHello));
+        }
+
+        // After a rated battle or a profile switch. A dedicated server's
+        // placeholder profile is not a standing.
+        internal static void AnnounceLadder()
+        {
+            try
+            {
+                if (_attached && !Instance.Dedicated && Session.Role != Session.Roles.None)
+                {
+                    Session.BroadcastSocial(Pack(LadderCard, WriteLadder));
+                }
+            }
+            catch (Exception ex)
+            {
+                RevivalLog.Error("Could not announce the ladder standing", ex);
+            }
+        }
+
+        private static void WriteLadder(BinaryWriter w)
+        {
+            PlayerVO player = PlayerState.Current;
+            w.Write(player.ladderRating);
+            w.Write(player.seasonBattles);
+            w.Write(LadderOps.LastChange);
+            w.Write(LadderTable.Profile);
         }
 
         // ---- shared helpers ----

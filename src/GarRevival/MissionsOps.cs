@@ -339,6 +339,7 @@ namespace GarRevival
                 ", accuracy " + (int)facts.Accuracy + "%, modules " + facts.Modules + "); " + changed.Count + " mission(s) moved, ladder " + (int)player.ladderRating + " league " + LadderOps.League(player));
             PushProgress(changed, null);
             LadderOps.Announce(Garage(), leagueChange);
+            SocialOps.AnnounceLadder();
         }
 
         private static void AdvanceDaily(BattleFacts facts, List<MissionProgress> changed)

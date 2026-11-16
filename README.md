@@ -13,7 +13,7 @@ it can be undone.
 | --- | --- |
 | Launching past the "servers are being shut down" notice | Real part stats (placeholders, see below) |
 | Garage, UI, portraits | Guild buffs |
-| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | The in-game ladder table (the master server keeps a ladder; the game does not show it yet) |
+| Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | |
 | Buying and selling, credits, sparks exchange | |
 | A starter robot, robot builder, module editor | |
 | **Test Run** in the training ground | |
@@ -25,6 +25,7 @@ it can be undone.
 | Paint colours, crates and keys, daily login rewards | |
 | Part skins: 12 camo, stripe and metal patterns drawn by the mod (SKINS button or F8) | |
 | Daily missions, achievements, ladder rating and league badge | |
+| Ladder table (Stats > Ladder): your league among the players in your session, and the master server's ladder | |
 | Profile saved between sessions | |
 | Hosting and joining sessions (Steam or direct), shared garage chat | |
 | Friends, whispers, squads and guilds among players in a session | |
@@ -128,8 +129,8 @@ There is no `.exe` anywhere in the download.
   lobby. The server browser measures ping by opening (and closing) a TCP
   connection to each listed game's port.
 - Master servers, only the ones you put in `settings.cfg` (`master=`, empty by
-  default) or `dedicated.cfg`: plain HTTP requests for the server list and, if
-  you list your game, its heartbeat. While you host a
+  default) or `dedicated.cfg`: plain HTTP requests for the server list, the
+  ladder table and, if you list your game, its heartbeat. While you host a
   LAN game it announces itself on your local network (UDP port 27016) so the
   Play screen's LAN list can find it.
 - Nothing else: no telemetry, no update checks, no downloads. (Checked with the
@@ -294,6 +295,25 @@ Tested: two copies of the game on one PC over a direct connection (join,
 roster, chat both ways, leave); creating a Steam lobby and finding it in the
 search. **Not tested:** two Steam accounts actually connecting through Steam,
 which needs a second PC and account with the game.
+
+### Ladder table
+
+Stats > Ladder shows the game's own table (`LadderTable.cs`), served by the
+local web server. Your rating and league are the ones of the league badge
+(ladder points from every battle, placed after 5 battles).
+
+- **Own league**: you and the players in your session who are in the same
+  league, by points; the arrow shows whether their last battle won or lost
+  points. Players send their standing when they meet and after each rated
+  battle; on a server with its own profiles only those profiles are compared.
+- **Master league**: with `master=` in `settings.cfg`, the first master
+  server's overall ladder (top 100 by Elo, rated from dedicated servers'
+  matches; see "Master server"). Without a master, or if it does not answer
+  within 4 seconds, the Master league players of your session. A Master league
+  player has no Master tab, so their own league shows the master's ladder.
+
+Only dedicated servers report matches, so games hosted from the Play screen
+count for the badge but not for the master's ladder.
 
 ### Battles together
 
@@ -594,9 +614,11 @@ The patcher (Mono.Cecil) inserts hook calls into:
 - The game's website addresses (`play-gar.com`, its S3 storage): `LocalWeb.cs`
   points them at a small web server the mod runs on `127.0.0.1:27080`, because
   that domain no longer belongs to the game and some requests carry player
-  names and Steam ids. It answers friends' online status from the session and
-  logs every request to `web-requests.log`; anything else gets a 404, which the
-  game treats like the site being down. No request leaves the PC.
+  names and Steam ids. It answers friends' online status from the session, the
+  ladder table and redeem codes, and logs every request to `web-requests.log`;
+  anything else gets a 404, which the game treats like the site being down. No
+  request leaves the PC, except that the ladder table asks a master server set
+  in `settings.cfg` for its ladder.
 - `ExitGames.Client.Photon.PhotonPeer` (connect, send, dispatch, state).
   Instead of opening sockets, every operation goes to a **loopback server**
   inside `GarRevival.dll`, which answers with proper `OperationResponse`s and
@@ -664,8 +686,8 @@ GARRevival/
     Workshop*.cs      part upgrades, tech levels, boosts, repairs, slots, renting
     Cosmetics*.cs     paint colours, crates, loot, daily login rewards
     Skin*.cs          part skins: catalog, patterns, texture baking, SKINS screen
-    Mission*.cs, LadderOps.cs, MessageBoxOps.cs
-                      daily missions, achievements, ladder rating
+    Mission*.cs, Ladder*.cs, MessageBoxOps.cs
+                      daily missions, achievements, ladder rating and table
     Social*.cs        friends, whispers, squads, guilds
     ServerRules.cs    server.cfg: server profiles and reward rates
     DedicatedServer.cs  -garserver: hosting without playing, automatic matches
@@ -725,6 +747,8 @@ game's assemblies used for compiling. **Don't share that folder.**
   - `browser [internet|lan|steam|favourites]` (open the server browser),
     `rows` (log its rows with ping), `joinrow <index>` (join one),
     `findmatch [TeamDeadmach|CaptureTheFlag|DestoryBase|any|cancel]`
+  - `ladder mine|master` (the Stats > Ladder table request; the log says
+    `Ladder table: <tab> rows=<n> source=local|master`)
   - `ammo` (log stock and loads, and in battle the robot's rounds), `ammo buy
     <type> <tier> <qty>`, `ammo max` (Max load all + OK/Buy), `ammo auto on|off`
   - `skins` (the SKINS screen), `skin <part id|first> <skin>` (buy if needed and

@@ -379,6 +379,9 @@ namespace GarRevival
                 case "redeem": // redeem <code>: the Redeem Code window's request, through the game's own code
                     RedeemPromoCode.Redeem(words[1], r => RevivalLog.Info("redeem " + words[1] + ": " + r));
                     break;
+                case "ladder": // ladder mine|master: the Stats > Ladder table request, through the game's own code
+                    LadderDataHelper.SendLadderRequest(null, 0, LadderDataHelper.LadderSortOrder.ByPosition, 0, 100, words.Length > 1 && words[1] == "master");
+                    break;
                 case "arcade2": // arcade on|off: the new arcade mode, as clicking the machine / LEAVE ARCADE does
                     if (words[1] == "on")
                     {

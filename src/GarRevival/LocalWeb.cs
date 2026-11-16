@@ -22,12 +22,15 @@ namespace GarRevival
     {
         private const int FirstPort = 27080;
         private const float RequestTimeout = 5f;
+        private const string LadderPath = "/garphpapi/ladder/index.php";
 
         private sealed class Pending
         {
             public TcpClient Client;
             public MemoryStream Data = new MemoryStream();
             public float Started;
+            public string Method, Target, Body; // set once the whole request is in
+            public LadderTable.Job Ladder;     // may wait for the master server
         }
 
         private static TcpListener _listener;
@@ -136,14 +139,21 @@ namespace GarRevival
             {
                 RevivalLog.Error("Local web server accept failed", ex);
             }
+            // The client reads each ladder answer with the tab of its latest
+            // request, so ladder answers go out in request order.
+            bool ladderAhead = false;
             foreach (Pending p in Open.ToArray())
             {
                 try
                 {
-                    if (Step(p))
+                    if (Step(p, ladderAhead))
                     {
                         Open.Remove(p);
                         p.Client.Close();
+                    }
+                    else
+                    {
+                        ladderAhead |= p.Ladder != null;
                     }
                 }
                 catch (Exception ex)
@@ -156,7 +166,38 @@ namespace GarRevival
         }
 
         // True when the request is finished with.
-        private static bool Step(Pending p)
+        private static bool Step(Pending p, bool ladderAhead)
+        {
+            if (p.Method == null && !Read(p))
+            {
+                return Time.realtimeSinceStartup - p.Started > RequestTimeout;
+            }
+            if (p.Ladder != null && (ladderAhead || !p.Ladder.Ready))
+            {
+                return false;
+            }
+            int status = 200;
+            string answer = p.Ladder != null ? p.Ladder.Finish() : Answer(p.Method, p.Target, p.Body, out status);
+            Record(p.Method, p.Target, p.Body, status);
+            byte[] content = Encoding.UTF8.GetBytes(answer ?? string.Empty);
+            byte[] head = Encoding.ASCII.GetBytes("HTTP/1.1 " + status + (status == 200 ? " OK" : " Not Found") + "\r\n" +
+                "Content-Type: " + ContentType(answer ?? string.Empty) + "; charset=utf-8\r\n" +
+                "Content-Length: " + content.Length + "\r\nConnection: close\r\n\r\n");
+            NetworkStream stream = p.Client.GetStream();
+            stream.Write(head, 0, head.Length);
+            stream.Write(content, 0, content.Length);
+            stream.Flush();
+            return true;
+        }
+
+        private static string ContentType(string answer)
+        {
+            return answer.StartsWith("[") || answer.StartsWith("{") ? "application/json" : answer.StartsWith("\n<") ? "text/xml" : "text/plain";
+        }
+
+        // Takes in what has arrived; true once the request is complete (or
+        // its body is overdue) and parsed into p.
+        private static bool Read(Pending p)
         {
             NetworkStream stream = p.Client.GetStream();
             byte[] buffer = new byte[8192];
@@ -173,7 +214,7 @@ namespace GarRevival
             int headerEnd = text.IndexOf("\r\n\r\n", StringComparison.Ordinal);
             if (headerEnd < 0)
             {
-                return Time.realtimeSinceStartup - p.Started > RequestTimeout;
+                return false;
             }
             string[] lines = text.Substring(0, headerEnd).Split(new[] { "\r\n" }, StringSplitOptions.None);
             int length = 0;
@@ -189,21 +230,19 @@ namespace GarRevival
                 return false;
             }
             string[] first = lines[0].Split(' ');
-            string method = first[0];
-            string target = first.Length > 1 ? first[1] : "/";
-            string body = text.Substring(headerEnd + 4);
-
-            int status;
-            string answer = Answer(method, target, body, out status);
-            Record(method, target, body, status);
-            byte[] content = Encoding.UTF8.GetBytes(answer ?? string.Empty);
-            byte[] head = Encoding.ASCII.GetBytes("HTTP/1.1 " + status + (status == 200 ? " OK" : " Not Found") + "\r\n" +
-                "Content-Type: " + (answer != null && answer.StartsWith("[") || answer != null && answer.StartsWith("{") ? "application/json" : "text/plain") + "; charset=utf-8\r\n" +
-                "Content-Length: " + content.Length + "\r\nConnection: close\r\n\r\n");
-            stream.Write(head, 0, head.Length);
-            stream.Write(content, 0, content.Length);
-            stream.Flush();
+            p.Target = first.Length > 1 ? first[1] : "/";
+            p.Body = text.Substring(headerEnd + 4);
+            p.Method = first[0];
+            if (PathOf(p.Target) == LadderPath)
+            {
+                p.Ladder = LadderTable.Begin(Query(p.Target));
+            }
             return true;
+        }
+
+        private static string PathOf(string target)
+        {
+            return target.Split('?')[0].ToLowerInvariant();
         }
 
         private static Dictionary<string, string> Query(string target)
@@ -228,7 +267,7 @@ namespace GarRevival
         // treats like the site being down (as it has been since 2021).
         private static string Answer(string method, string target, string body, out int status)
         {
-            string path = target.Split('?')[0].ToLowerInvariant();
+            string path = PathOf(target);
             status = 200;
             if (path == "/garphpapi/utils/usersstatus.php")
             {

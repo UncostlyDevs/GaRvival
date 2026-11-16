@@ -144,6 +144,12 @@ namespace GarRevival
             actor.name = player.playerName;
             actor.fullName = player.fullName;
             actor.level = player.level;
+            // The client's PlayerVO is the copy from login; the ladder has moved on since.
+            PlayerVO current = PlayerState.Current;
+            actor.ladderRating = current.ladderRating;
+            actor.gamesCount = current.seasonBattles;
+            actor.league = LadderOps.League(current);
+            actor.leaguePosition = LadderOps.Position(current);
             actor.battleInventoryItems = BattleUpkeep.BattleInventory();
             AmmoOps.LoadActor(actor);
             return actor;
