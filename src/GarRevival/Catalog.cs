@@ -161,6 +161,12 @@ namespace GarRevival
             }
         }
 
+        // Share of a stat's top-tier value at each tier.
+        private static float TierScale(int tier)
+        {
+            return 0.7f + 0.075f * tier;
+        }
+
         private static Statistic Stat(float value)
         {
             return new Statistic { maxValue = value, currentValue = value, modifier = 0f };
@@ -175,7 +181,7 @@ namespace GarRevival
         private static PartTierableStatistics Stats(PartTemplate template, GameObject go, int tier)
         {
             float c = ClassScale(template.weightType);
-            float t = 0.7f + 0.075f * tier;
+            float t = TierScale(tier);
             float durability;
             float mass;
             AbstractPartSpesificData specific = null;
@@ -198,8 +204,8 @@ namespace GarRevival
                     mass = 25f * c;
                     specific = new ChassisCaseVO
                     {
-                        // Light chassis are the fastest class.
-                        Speed = (template.weightType == WeightType.Light ? 23f : template.weightType == WeightType.Medium ? 19f : 15f) * (0.85f + 0.0375f * tier) * speed,
+                        // Light chassis are the fastest class (km/h; the client wants m/s).
+                        Speed = (template.weightType == WeightType.Light ? 23f : template.weightType == WeightType.Medium ? 19f : 15f) * (0.85f + 0.0375f * tier) * speed / GlobalConstants.visualiseSpeedMod,
                         WeightLimit = 450f * c * t * carry,
                         EnergyConsumption = 0.001f,
                         TerrainPenaltyNegate = terrain,
@@ -216,7 +222,7 @@ namespace GarRevival
                     }
                     durability = 20f * t;
                     mass = 3f;
-                    specific = new ChassisEngineVO { SpeedModifier = engine.Speed * t, EnergyConsumption = 0.001f, WeightLimit = 40f * engine.WeightLimit * t };
+                    specific = new ChassisEngineVO { SpeedModifier = engine.Speed * t / GlobalConstants.visualiseSpeedMod, EnergyConsumption = 0.001f, WeightLimit = 40f * engine.WeightLimit * t };
                     break;
                 }
                 case LogicalType.BodyCase:
@@ -257,7 +263,7 @@ namespace GarRevival
                     // Case values multiply the barrel's (WeaponBarrel.GetDamage etc.).
                     specific = new WeaponCaseVO
                     {
-                        fireDelay = mechanism.RateOfFire,
+                        fireDelay = mechanism.FireDelay,
                         accuracyModidifer = mechanism.Accuracy,
                         damageModidifer = mechanism.Damage,
                         splashDamageModidifer = mechanism.Splash,
@@ -270,12 +276,12 @@ namespace GarRevival
                 case LogicalType.WeaponMuzzle:
                     durability = 240f * c * t;
                     mass = 25f * c;
-                    specific = Barrel(template, t);
+                    specific = Barrel(template, tier);
                     break;
                 case LogicalType.DeviceCase:
                     durability = 10f;
                     mass = 1f;
-                    specific = Device(template.indent, t);
+                    specific = Device(template.indent, tier);
                     break;
                 case LogicalType.HeadCase:
                     durability = 360f * t;
@@ -301,8 +307,9 @@ namespace GarRevival
         // skips ammo distribution). CurrentAmmo must not be negative: the bot
         // AI sums it to decide whether to go looking for ammo instead of
         // fighting. Light weapons fire fast, heavy ones hit hard and reach further.
-        private static WeaponBarrelVO Barrel(PartTemplate template, float t)
+        private static WeaponBarrelVO Barrel(PartTemplate template, int tier)
         {
+            float t = TierScale(tier);
             Design.BarrelTraits traits;
             if (!Design.Barrels.TryGetValue(template.indent, out traits))
             {
@@ -318,7 +325,6 @@ namespace GarRevival
                 case WeightType.Heavy: damage = 96f; rate = 1f; range = 200f; break;
                 default: damage = 58f; rate = 1.8f; range = 150f; break;
             }
-            int tier = (int)Math.Round((t - 0.7f) / 0.075f);
             float shotDamage = damage * traits.Damage * t;
             string[] ammo = AmmoDesign.TypesFor(template.indent);
             bool usesAmmo = ammo.Length > 0;
@@ -328,9 +334,10 @@ namespace GarRevival
                 AdditionalEffects = new AdditionalGemaPlayActions[0],
                 MaxAmmo = usesAmmo ? AmmoDesign.Capacity(template.weightType, traits) : -1f,
                 CurrentAmmo = 0f,
-                // Original UI maxima: accuracy 1, rate of fire 5, range 200.
+                // Original UI maxima: accuracy 1, rate of fire 5/s, range 200.
+                // RateOfFire is the delay between shots in seconds (WeaponBarrel.GetRateOfFire).
                 Accuracy = Mathf.Min(1f, traits.Accuracy + 0.0125f * tier),
-                RateOfFire = Mathf.Min(5f, rate * traits.RateOfFire),
+                RateOfFire = 1f / Mathf.Min(5f, rate * traits.RateOfFire),
                 Damage = shotDamage,
                 Range = Mathf.Min(200f, range * traits.Range),
                 SpashDamage = 26.88f * traits.Splash * t,
@@ -387,8 +394,9 @@ namespace GarRevival
             return new string(s.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
         }
 
-        private static DeviceCaseVO Device(string indent, float t)
+        private static DeviceCaseVO Device(string indent, int tier)
         {
+            float t = TierScale(tier);
             DeviceActions action;
             AbstractDeviceSpesificData data;
             switch (indent)

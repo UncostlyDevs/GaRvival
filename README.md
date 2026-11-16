@@ -554,9 +554,9 @@ What the numbers are built from instead (`src/GarRevival/Catalog.cs` and
 - **Each part's official description**, transcribed into `Design.cs`:
   chassis type (wheeler/walker/tracker/hover) for all 30 chassis, body class
   and 2 vs 4 arms, battery quality and capacity-vs-regen, engine trade-offs,
-  firing mechanism modifiers (including the stated 63%/50% damage for
-  multi-barrel Chimaera and Triceratops), and every barrel's role (sniper,
-  rapid fire, cone, splash). Plus the wiki's rules: wheelers fastest but worst
+  firing mechanism modifiers (the stated 63%/50% damage for multi-barrel
+  Chimaera and Triceratops is applied by the client itself), and every
+  barrel's role (sniper, rapid fire, cone, splash). Plus the wiki's rules: wheelers fastest but worst
   on terrain, hovers slowest but ignore terrain, trackers toughest, walkers
   carry the most, 2-armed bodies tougher than 4-armed.
 

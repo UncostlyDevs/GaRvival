@@ -32,6 +32,7 @@ namespace GarRevival
         public static readonly Dictionary<string, WeightType> ClassOverrides = new Dictionary<string, WeightType>
         {
             { "MB_Headlight", WeightType.Heavy }, // "Heavy body: Accepts 4 Weapons and 2 Batteries"
+            { "LW_B_Bertha", WeightType.Heavy },  // Rocket Launcher: prefab hw_b_bertha, keyword HWeapon
         };
 
         // "A basic high-capacity, low-regen battery" ... basic 0.6, balanced
@@ -53,7 +54,7 @@ namespace GarRevival
         };
 
         // Additive speed and weight threshold, as a share of the original
-        // maxima (+1 m/s, +-40 weight).
+        // maxima (+-1 km/h, +-40 weight).
         public sealed class EngineTraits
         {
             public float Speed;
@@ -71,10 +72,12 @@ namespace GarRevival
             { "Engine_Maximus_Power", new EngineTraits() },
         };
 
-        // Firing mechanism multipliers on the barrels it holds.
+        // Firing mechanism multipliers on the barrels it holds. FireDelay
+        // multiplies the delay between shots; the garage shows
+        // Floor((1/FireDelay - 1) * 100)%, so 0.769 reads +30%, 0.833 +20%.
         public sealed class MechanismTraits
         {
-            public float RateOfFire = 1f;
+            public float FireDelay = 1f;
             public float Accuracy = 1f;
             public float Damage = 1f;
             public float Energy = 1f;
@@ -86,16 +89,16 @@ namespace GarRevival
         {
             { "HW_C_Ballistic", new MechanismTraits() },                                                     // basic heavy launcher
             { "HW_C_Cannon", new MechanismTraits { Damage = 1.15f, ProjectileSpeed = 1.2f, Splash = 1.15f } }, // missile speed + impact damage
-            { "LW_C_Hiccs", new MechanismTraits { RateOfFire = 1.3f, Accuracy = 0.8f } },                   // semi-auto, less accurate
+            { "LW_C_Hiccs", new MechanismTraits { FireDelay = 0.769f, Accuracy = 0.8f } },                  // semi-auto, less accurate
             { "LW_C_Injector", new MechanismTraits() },                                                     // basic small arms
-            { "LW_C_Revolver", new MechanismTraits { RateOfFire = 1.2f } },                                 // +ROF
-            { "LW_C_Trigun", new MechanismTraits { Damage = 0.5f } },                                       // 3 barrels, "50% DMG for 3 Barrels"
-            { "MW_C_Aeroblaster", new MechanismTraits { Damage = 0.63f } },                                 // 2 barrels, "63% DMG each"
+            { "LW_C_Revolver", new MechanismTraits { FireDelay = 0.833f } },                                // +ROF
+            { "LW_C_Trigun", new MechanismTraits() },                                                       // 3 barrels; the client applies the 50% itself
+            { "MW_C_Aeroblaster", new MechanismTraits() },                                                  // 2 barrels; the client applies the 62.5% itself
             { "MW_C_Arclight", new MechanismTraits { Damage = 1.15f, Energy = 1.1f } },                     // +damage, +energy use
             { "MW_C_Lancer", new MechanismTraits() },                                                       // basic assault
             { "MW_C_Maximus_Arm", new MechanismTraits() },
-            { "MW_C_Maximus_Braclet", new MechanismTraits { RateOfFire = 1.2f } },
-            { "MW_C_Staccato", new MechanismTraits { RateOfFire = 1.3f, Accuracy = 0.9f } },                // fully automatic
+            { "MW_C_Maximus_Braclet", new MechanismTraits { FireDelay = 0.833f } },
+            { "MW_C_Staccato", new MechanismTraits { FireDelay = 0.769f, Accuracy = 0.9f } },               // fully automatic
         };
 
         // Barrel role relative to its weight class. Accuracy is absolute
