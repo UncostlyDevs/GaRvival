@@ -19,7 +19,7 @@ $sdkLine = (& dotnet --list-sdks | Select-Object -Last 1)
 if ($sdkLine -notmatch '^(\S+) \[(.+)\]$') { throw "No .NET SDK found" }
 $csc = Join-Path (Join-Path $Matches[2] $Matches[1]) 'Roslyn\bincore\csc.dll'
 
-$cscArgs = @('/noconfig', '/nostdlib+', '/target:library', '/langversion:7.3', '/optimize+', '/deterministic', '/nologo',
+$cscArgs = @('/noconfig', '/nostdlib+', '/target:library', '/langversion:14', '/optimize+', '/deterministic', '/nologo',
              "/out:$(Join-Path $bin 'GarRevival.dll')")
 $cscArgs += $refNames | ForEach-Object { "/reference:$(Join-Path $refs "$_.dll")" }
 $cscArgs += Get-ChildItem (Join-Path $root 'src\GarRevival') -Filter *.cs | ForEach-Object { $_.FullName }
