@@ -7,10 +7,8 @@ using Mono.Cecil.Cil;
 
 namespace GarRevival.Patcher
 {
-    // Installs the GAR Revival mod into a Guns and Robots install by inserting
-    // hook calls into two game assemblies. Originals are kept next to the
-    // patched files (*.garrevival-orig) and every install re-patches from
-    // them, so running it twice is safe and --uninstall restores the game.
+    // Inserts the mod's hook calls into two game assemblies. Originals are kept as *.garrevival-orig and
+    // every install re-patches from them, so reinstalling is safe and --uninstall restores the game.
     internal static class Program
     {
         private const string ModAssemblyName = "GarRevival";
@@ -40,53 +38,53 @@ namespace GarRevival.Patcher
         {
             {
                 "Photon3Unity3D.dll", new[]
-            {
-                H(Peer, "Connect", new[] { Str, Str }, "PeerConnect2"),
-                H(Peer, "Connect", new[] { Str, Str, U8 }, "PeerConnect3"),
-                H(Peer, "Disconnect", new string[0], "PeerDisconnect"),
-                H(Peer, "StopThread", new string[0], "PeerStopThread"),
-                H(Peer, "FetchServerTimestamp", new string[0], "PeerFetchServerTimestamp"),
-                H(Peer, "EstablishEncryption", new string[0], "PeerEstablishEncryption"),
-                H(Peer, "SendOutgoingCommands", new string[0], "PeerSendOutgoingCommands"),
-                H(Peer, "DispatchIncomingCommands", new string[0], "PeerDispatchIncomingCommands"),
-                H(Peer, "OpCustom", new[] { U8, ParamDict, Bool, U8 }, "PeerOpCustom4"),
-                H(Peer, "OpCustom", new[] { U8, ParamDict, Bool, U8, Bool }, "PeerOpCustom5"),
-                H(Peer, "OpCustom", new[] { "ExitGames.Client.Photon.OperationRequest", Bool, U8, Bool }, "PeerOpCustomRequest"),
-                H(Peer, "get_PeerState", new string[0], "PeerGetPeerState"),
-                H(Peer, "get_IsEncryptionAvailable", new string[0], "PeerGetIsEncryptionAvailable"),
-                H(Peer, "get_ServerTimeInMilliSeconds", new string[0], "PeerGetServerTime"),
-            }
+                {
+                    H(Peer, "Connect", new[] { Str, Str }, "PeerConnect2"),
+                    H(Peer, "Connect", new[] { Str, Str, U8 }, "PeerConnect3"),
+                    H(Peer, "Disconnect", new string[0], "PeerDisconnect"),
+                    H(Peer, "StopThread", new string[0], "PeerStopThread"),
+                    H(Peer, "FetchServerTimestamp", new string[0], "PeerFetchServerTimestamp"),
+                    H(Peer, "EstablishEncryption", new string[0], "PeerEstablishEncryption"),
+                    H(Peer, "SendOutgoingCommands", new string[0], "PeerSendOutgoingCommands"),
+                    H(Peer, "DispatchIncomingCommands", new string[0], "PeerDispatchIncomingCommands"),
+                    H(Peer, "OpCustom", new[] { U8, ParamDict, Bool, U8 }, "PeerOpCustom4"),
+                    H(Peer, "OpCustom", new[] { U8, ParamDict, Bool, U8, Bool }, "PeerOpCustom5"),
+                    H(Peer, "OpCustom", new[] { "ExitGames.Client.Photon.OperationRequest", Bool, U8, Bool }, "PeerOpCustomRequest"),
+                    H(Peer, "get_PeerState", new string[0], "PeerGetPeerState"),
+                    H(Peer, "get_IsEncryptionAvailable", new string[0], "PeerGetIsEncryptionAvailable"),
+                    H(Peer, "get_ServerTimeInMilliSeconds", new string[0], "PeerGetServerTime"),
+                }
             },
             {
                 "Assembly-CSharp.dll", new[]
-            {
-                H("SteamDeployLogin", "Start", new string[0], "SteamDeployLoginStart"),
-                H("JunkWars.Client.Player", "SetPlayerData", new[] { "JunkWars.Common.Player.ValueObjects.PlayerVO" }, "PlayerSetPlayerData"),
-                H("JunkWars.Client.Player", "AddItemValueObjects", new[] { "JunkWars.Client.ItemToAddPack" }, "PlayerAddItemValueObjects"),
-                H("JunkWars.Client.Player", "UpdateItemValueObjects", new[] { "JunkWars.Client.ItemToUpdatePack" }, "PlayerUpdateItemValueObjects"),
-                H("JunkWars.Client.Player", "UpdateRobotValueObjects", new[] { "JunkWars.Common.Robot.ValueObjects.RobotAssemblyVO" }, "PlayerUpdateRobotValueObjects"),
-                H("JunkWars.Client.DataManager", "OnShopData", new[] { "DataMessage" }, "DataManagerOnShopData"),
-                H("PhotonNetwork", "JoinRandomBattle", new string[0], "PhotonNetworkJoinRandomBattle"),
-                H("EntryPoint", "StartAntiCheatEngine", new string[0], "EntryPointStartAntiCheatEngine"),
-                H("JunkWars.Client.Arena.BaseArena", "GetSpawingPoint", new[] { "JunkWars.Common.Player.ValueObjects.ActorVO" }, "BaseArenaGetSpawingPoint"),
-                H("JunkWars.Client.Garage.UI.GarageInfoScreenSubmenu", "Start", new string[0], "GarageInfoScreenSubmenuStart"),
-                H("JunkWars.Client.Arena.OfflineArena", "AddRobots", new string[0], "OfflineArenaAddRobots"),
-                H("JunkWars.Client.Robot.RobotAvatar", "SetFreeLook", new[] { "System.Boolean" }, "RobotAvatarSetFreeLook"),
-                H("JunkWars.Client.Robot.RobotAvatar", "AddFullAmmo", new string[0], "RobotAvatarAddFullAmmo"),
-                H("OfflineArenaCombatant", "ExecuteShoot", new[] { "System.Int32", "System.Int32", "System.Int32", "System.Int16", "System.Nullable`1<System.Byte>", "System.Nullable`1<System.Byte>", "JunkWars.Client.Robot.WeaponHitPoint[]", "UnityEngine.Vector3", "System.Object[]" }, "CombatantExecuteShoot"),
-                H("OfflineArenaCombatant", "ExecuteHit", new[] { "System.Int32", "System.Int32", "System.Int32", "System.Int16", "System.Nullable`1<System.Byte>", "JunkWars.Client.Robot.WeaponHitPoint[]", "UnityEngine.Vector3", "System.Object[]" }, "CombatantExecuteHit"),
-                H("OfflineArenaCombatant", "ExecuteDeviceActivate", new[] { "System.Int32", "UnityEngine.Vector3", "UnityEngine.Quaternion" }, "CombatantExecuteDeviceActivate"),
-                H("OfflineArenaCombatant", "ExecuteDeviceDeactivate", new[] { "System.Int32", "System.Byte" }, "CombatantExecuteDeviceDeactivate"),
-                H("OfflineArenaCombatant", "ExecuteConsumableBoost", new[] { "System.Int32" }, "CombatantExecuteConsumableBoost"),
-                H("PlaformIntegration.Steam.SteamPurchaseService", "InitCurrencyPurchase", new[] { "System.Int32" }, "SteamPurchaseServiceInitCurrencyPurchase"),
-                H("AssemblyMouseManager", "SelectGrageInteractiveObject", new string[0], "AssemblyMouseManagerSelectGrageInteractiveObject"),
-                H("JunkWars.Client.ResourcesManager", "LoadPartPrefab", new[] { Str }, "ResourcesManagerLoadPartPrefab"),
-                H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "HandlePickPickableOperation", new[] { "System.Int32", "System.Int32" }, "EmulatorHandlePick"),
-                H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "HandleGameModeEvent", new[] { "System.Int32", "System.Collections.Hashtable" }, "EmulatorHandleGameModeEvent"),
-                H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishStartCountdownEvent", new string[0], "EmulatorPublishStartCountdown"),
-                H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishEndGameEvent", new[] { "System.Object" }, "EmulatorPublishEndGame"),
-                H("JunkWars.Client.Arena.OfflineArena", "OnEndGame", new[] { "DataMessage" }, "OfflineArenaOnEndGame"),
-            }
+                {
+                    H("SteamDeployLogin", "Start", new string[0], "SteamDeployLoginStart"),
+                    H("JunkWars.Client.Player", "SetPlayerData", new[] { "JunkWars.Common.Player.ValueObjects.PlayerVO" }, "PlayerSetPlayerData"),
+                    H("JunkWars.Client.Player", "AddItemValueObjects", new[] { "JunkWars.Client.ItemToAddPack" }, "PlayerAddItemValueObjects"),
+                    H("JunkWars.Client.Player", "UpdateItemValueObjects", new[] { "JunkWars.Client.ItemToUpdatePack" }, "PlayerUpdateItemValueObjects"),
+                    H("JunkWars.Client.Player", "UpdateRobotValueObjects", new[] { "JunkWars.Common.Robot.ValueObjects.RobotAssemblyVO" }, "PlayerUpdateRobotValueObjects"),
+                    H("JunkWars.Client.DataManager", "OnShopData", new[] { "DataMessage" }, "DataManagerOnShopData"),
+                    H("PhotonNetwork", "JoinRandomBattle", new string[0], "PhotonNetworkJoinRandomBattle"),
+                    H("EntryPoint", "StartAntiCheatEngine", new string[0], "EntryPointStartAntiCheatEngine"),
+                    H("JunkWars.Client.Arena.BaseArena", "GetSpawingPoint", new[] { "JunkWars.Common.Player.ValueObjects.ActorVO" }, "BaseArenaGetSpawingPoint"),
+                    H("JunkWars.Client.Garage.UI.GarageInfoScreenSubmenu", "Start", new string[0], "GarageInfoScreenSubmenuStart"),
+                    H("JunkWars.Client.Arena.OfflineArena", "AddRobots", new string[0], "OfflineArenaAddRobots"),
+                    H("JunkWars.Client.Robot.RobotAvatar", "SetFreeLook", new[] { "System.Boolean" }, "RobotAvatarSetFreeLook"),
+                    H("JunkWars.Client.Robot.RobotAvatar", "AddFullAmmo", new string[0], "RobotAvatarAddFullAmmo"),
+                    H("OfflineArenaCombatant", "ExecuteShoot", new[] { "System.Int32", "System.Int32", "System.Int32", "System.Int16", "System.Nullable`1<System.Byte>", "System.Nullable`1<System.Byte>", "JunkWars.Client.Robot.WeaponHitPoint[]", "UnityEngine.Vector3", "System.Object[]" }, "CombatantExecuteShoot"),
+                    H("OfflineArenaCombatant", "ExecuteHit", new[] { "System.Int32", "System.Int32", "System.Int32", "System.Int16", "System.Nullable`1<System.Byte>", "JunkWars.Client.Robot.WeaponHitPoint[]", "UnityEngine.Vector3", "System.Object[]" }, "CombatantExecuteHit"),
+                    H("OfflineArenaCombatant", "ExecuteDeviceActivate", new[] { "System.Int32", "UnityEngine.Vector3", "UnityEngine.Quaternion" }, "CombatantExecuteDeviceActivate"),
+                    H("OfflineArenaCombatant", "ExecuteDeviceDeactivate", new[] { "System.Int32", "System.Byte" }, "CombatantExecuteDeviceDeactivate"),
+                    H("OfflineArenaCombatant", "ExecuteConsumableBoost", new[] { "System.Int32" }, "CombatantExecuteConsumableBoost"),
+                    H("PlaformIntegration.Steam.SteamPurchaseService", "InitCurrencyPurchase", new[] { "System.Int32" }, "SteamPurchaseServiceInitCurrencyPurchase"),
+                    H("AssemblyMouseManager", "SelectGrageInteractiveObject", new string[0], "AssemblyMouseManagerSelectGrageInteractiveObject"),
+                    H("JunkWars.Client.ResourcesManager", "LoadPartPrefab", new[] { Str }, "ResourcesManagerLoadPartPrefab"),
+                    H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "HandlePickPickableOperation", new[] { "System.Int32", "System.Int32" }, "EmulatorHandlePick"),
+                    H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "HandleGameModeEvent", new[] { "System.Int32", "System.Collections.Hashtable" }, "EmulatorHandleGameModeEvent"),
+                    H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishStartCountdownEvent", new string[0], "EmulatorPublishStartCountdown"),
+                    H("JunkWars.Client.Arena.Offline.OfflineServerEmulator", "PublishEndGameEvent", new[] { "System.Object" }, "EmulatorPublishEndGame"),
+                    H("JunkWars.Client.Arena.OfflineArena", "OnEndGame", new[] { "DataMessage" }, "OfflineArenaOnEndGame"),
+                }
             },
         };
 
@@ -207,9 +205,8 @@ namespace GarRevival.Patcher
                 module.AssemblyReferences.Add(modRef);
                 TypeReference hooksType = new TypeReference(ModAssemblyName, "Hooks", module, modRef);
 
-                foreach (HookSpec spec in hooks)
+                foreach (HookSpec s in hooks)
                 {
-                    HookSpec s = spec;
                     TypeDefinition type = module.GetType(s.Type);
                     if (type == null)
                     {
@@ -220,7 +217,7 @@ namespace GarRevival.Patcher
                     {
                         throw new InvalidOperationException("Method not found: " + s.Type + "." + s.Method + "(" + string.Join(", ", s.Params) + ")");
                     }
-                    InsertPrefix(module, method, hooksType, spec.Hook);
+                    InsertPrefix(module, method, hooksType, s.Hook);
                 }
 
                 asm.Write(destination);
@@ -228,8 +225,7 @@ namespace GarRevival.Patcher
         }
 
         // Prepends: if (Hooks.<hook>(this, args..., ref result)) return result;
-        // Game-defined class types are passed as object so the mod's hook
-        // signatures stay simple; mscorlib types and value types keep their type.
+        // Game-defined class types are passed as object; mscorlib types and value types keep their type.
         private static void InsertPrefix(ModuleDefinition module, MethodDefinition method, TypeReference hooksType, string hookName)
         {
             MethodReference hook = new MethodReference(hookName, module.TypeSystem.Boolean, hooksType) { HasThis = false };
