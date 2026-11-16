@@ -469,6 +469,8 @@ namespace GarRevival
                             Buffer.BlockCopy(message, 2, bytes, 0, bytes.Length);
                             ActorVO vo = DataSerialization.ProtoDeserializeObject<ActorVO>(bytes);
                             VoNormalizer.FillNullCollections(vo);
+                            vo.activeGuildBuffs = SocialGuild.ActorBuffs(vo.activeGuildBuffs);
+                            OfflineBattle.LogGuildBuffs(vo);
                             _replies[name] = vo;
                         }
                         break;

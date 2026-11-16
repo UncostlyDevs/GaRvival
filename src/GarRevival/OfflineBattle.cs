@@ -145,8 +145,18 @@ namespace GarRevival
             actor.fullName = player.fullName;
             actor.level = player.level;
             actor.battleInventoryItems = BattleUpkeep.BattleInventory();
+            actor.activeGuildBuffs = SocialGuild.BattleBuffs();
+            LogGuildBuffs(actor);
             AmmoOps.LoadActor(actor);
             return actor;
+        }
+
+        internal static void LogGuildBuffs(ActorVO actor)
+        {
+            if (actor.activeGuildBuffs.Count > 0)
+            {
+                RevivalLog.Info("Battle: " + actor.fullName + " guild benefits " + string.Join(", ", actor.activeGuildBuffs.ToArray()));
+            }
         }
 
         internal static string PickMap(Settings settings)

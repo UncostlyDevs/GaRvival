@@ -110,7 +110,7 @@ namespace GarRevival
                     Reply(conn, op, new Dictionary<byte, object>
                     {
                         { 232, DataSerialization.ProtoSerializeObjectHighCompressed(SocialGuild.Upgrades()) },
-                        { 231, DataSerialization.ProtoSerializeObjectHighCompressed(DataFactory.GuildBuffs()) },
+                        { 231, DataSerialization.ProtoSerializeObjectHighCompressed(SocialGuild.BuffTemplates()) },
                     });
                     break;
                 case 211: // General chat (the other chat types are SocialOps'). 237 sender, 240 text, 168 guild

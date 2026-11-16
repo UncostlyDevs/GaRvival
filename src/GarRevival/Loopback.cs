@@ -39,9 +39,11 @@ namespace GarRevival
             return conn;
         }
 
-        public static void Enqueue(VirtualConnection conn, string label, Action<IPhotonPeerListener> deliver, Func<bool> isReady = null)
+        public static Delivery Enqueue(VirtualConnection conn, string label, Action<IPhotonPeerListener> deliver, Func<bool> isReady = null)
         {
-            conn.Incoming.Enqueue(new Delivery { Label = label, Deliver = deliver, IsReady = isReady });
+            Delivery delivery = new Delivery { Label = label, Deliver = deliver, IsReady = isReady };
+            conn.Incoming.Enqueue(delivery);
+            return delivery;
         }
 
         public static bool Connect(PhotonPeer peer, string address)

@@ -24,6 +24,8 @@ namespace GarRevival
             public float CreditRewards = 1f;
             public float ExperienceRewards = 1f;
             public bool Ammo = true;
+            // Host only: players' guild benefits count in battles.
+            public bool GuildBuffs = true;
             // Used only by a dedicated server (-garserver).
             public bool Steam;
             public int Port = 27015;
@@ -105,6 +107,7 @@ namespace GarRevival
                             case "creditrewards": rules.CreditRewards = Mathf.Clamp(Number(value), 0f, 100f); break;
                             case "experiencerewards": rules.ExperienceRewards = Mathf.Clamp(Number(value), 0f, 100f); break;
                             case "ammo": rules.Ammo = !string.Equals(value, "off", StringComparison.OrdinalIgnoreCase); break;
+                            case "guildbuffs": rules.GuildBuffs = !string.Equals(value, "off", StringComparison.OrdinalIgnoreCase); break;
                             case "host": rules.Steam = string.Equals(value, "steam", StringComparison.OrdinalIgnoreCase); break;
                             case "port": rules.Port = Mathf.Clamp((int)Number(value), 1, 65535); break;
                             case "minplayers": rules.MinPlayers = Mathf.Clamp((int)Number(value), 1, 9); break;
@@ -154,6 +157,8 @@ namespace GarRevival
                 "experienceRewards=" + r.ExperienceRewards.ToString(CultureInfo.InvariantCulture),
                 "# on = ammo used in battles is paid for; off = every battle starts fully loaded",
                 "ammo=" + (r.Ammo ? "on" : "off"),
+                "# on or off: guild benefits (damage, speed, ...) count in battles here",
+                "guildBuffs=" + (r.GuildBuffs ? "on" : "off"),
                 "# only for a dedicated server (GAR.exe -garserver):",
                 "# host = tcp (LAN or port-forwarded, on the port below) or steam (a Steam lobby)",
                 "host=" + (r.Steam ? "steam" : "tcp"),
@@ -229,7 +234,8 @@ namespace GarRevival
             }
             Active = rules;
             RevivalLog.Info("Server rules: \"" + rules.Name + "\" (" + rules.Id + "), profiles=" + (rules.ServerProfiles ? "server" : "own") +
-                ", rewards x" + rules.CreditRewards + " credits, x" + rules.ExperienceRewards + " experience, ammo " + (rules.Ammo ? "on" : "off"));
+                ", rewards x" + rules.CreditRewards + " credits, x" + rules.ExperienceRewards + " experience, ammo " + (rules.Ammo ? "on" : "off")
+                + (rules.GuildBuffs ? string.Empty : ", guild benefits off"));
             if (rules.ServerProfiles)
             {
                 PlayerState.UseServerProfile(rules.Id, rules.StartingCredits, rules.StartingSparks);
