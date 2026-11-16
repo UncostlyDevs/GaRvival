@@ -17,8 +17,8 @@ namespace GarRevival
     // exported from the part prefabs. Identity, type, keywords and docking
     // points come from each prefab's PartPrefab / DockingPoint components;
     // names come from the game's localisation keys (<indent>_Name). Stats and
-    // prices never shipped with the client, so they are placeholders scaled by
-    // part type and weight class - see Stats() and PriceFor().
+    // prices never shipped with the client: chassis, body and barrel numbers
+    // come from RealStats, the rest are designed - see Stats() and PriceFor().
     internal static class Catalog
     {
         public const int MaxTier = 4;
@@ -74,7 +74,7 @@ namespace GarRevival
                         dockingPointToPartLinks = new List<TemplateDockingPointToPartLinks>(),
                     };
                 }
-                report.AppendLine(indent + " | " + template.type + " | " + template.weightType + " | " + Describe(template.partTierableStatistics[0].partSpesificData));
+                report.AppendLine(indent + " | " + template.type + " | " + template.weightType + " | " + Describe(template.partTierableStatistics[0].partSpesificData) + " | " + Origin(template));
             }
             foreach (KeyValuePair<string, PriceTemplate> ammo in AmmoDesign.Prices(Parts.Values.Where(p => p.type == LogicalType.WeaponMuzzle)))
             {
@@ -92,6 +92,27 @@ namespace GarRevival
             }
             RevivalLog.Info("Catalog: " + Parts.Count + " part templates, " + Modules.Count + " module templates (" +
                 string.Join(", ", Parts.Values.GroupBy(p => p.type).Select(g => g.Key + " " + g.Count()).ToArray()) + ")");
+            RevivalLog.Info("Weight budget, heaviest two-armed build / lowest chassis limit: " +
+                string.Join(", ", new[] { WeightType.Light, WeightType.Medium, WeightType.Heavy }.Select(WeightBudget).ToArray()));
+        }
+
+        // A body of the class with two single-barrel weapons, its heaviest
+        // chassis, engine, battery and head, against the class's lowest limit.
+        private static string WeightBudget(WeightType weight)
+        {
+            float build = Heaviest(p => p.type == LogicalType.BodyCase && p.weightType == weight && WeaponSlots(p) == 2)
+                + Heaviest(p => p.type == LogicalType.CassisCase && p.weightType == weight)
+                + Heaviest(p => p.type == LogicalType.Engine) + Heaviest(p => p.type == LogicalType.Battery) + Heaviest(p => p.type == LogicalType.HeadCase)
+                + 2f * (Heaviest(p => p.type == LogicalType.WeaponCase && p.weightType == weight) + Heaviest(p => p.type == LogicalType.WeaponMuzzle && p.weightType == weight));
+            float limit = Parts.Values.Where(p => p.type == LogicalType.CassisCase && p.weightType == weight)
+                .Select(p => p.partTierableStatistics[0].partSpesificData as ChassisCaseVO).Where(v => v != null)
+                .Select(v => v.WeightLimit).DefaultIfEmpty(0f).Min();
+            return weight + " " + Mathf.Round(build) + "/" + limit;
+        }
+
+        private static float Heaviest(Func<PartTemplate, bool> match)
+        {
+            return Parts.Values.Where(match).Select(p => p.partTierableStatistics[0].statistics.Weight.maxValue).DefaultIfEmpty(0f).Max();
         }
 
         public static bool IsSingleCaseModule(LogicalType type)
@@ -161,21 +182,75 @@ namespace GarRevival
             }
         }
 
+        // Share of the heavy maxima for chassis, weapon case and barrel mass,
+        // so a class's two-armed builds stay under its real weight limits.
+        private static float MassScale(WeightType weight)
+        {
+            switch (weight)
+            {
+                case WeightType.Light: return 0.3f;
+                case WeightType.Medium: return 0.6f;
+                default: return 1f;
+            }
+        }
+
+        // Top tier is 1.2 x tier 0: the bar maxima are 1.2 x the strongest real
+        // part (chassis 1200 = 1.2 x Warhawk, body 1122 = 1.2 x Mantis).
+        private const float TopTierGain = 0.2f;
+
+        private static float Up(int tier)
+        {
+            return 1f + TopTierGain * tier / MaxTier;
+        }
+
+        // Designed values are top-tier maxima, so their tier 0 sits at max/1.2 like the real rows.
+        private static float TierScale(int tier)
+        {
+            return Up(tier) / Up(MaxTier);
+        }
+
+        private static float Hundredths(float value)
+        {
+            return Mathf.Round(value * 100f) / 100f;
+        }
+
+        private static int WeaponSlots(PartTemplate template)
+        {
+            return template.dockingPoints.Count(d => d.isAssemblyRoot && d.possibleDockingTypes.Contains(LogicalType.Weapon));
+        }
+
         private static Statistic Stat(float value)
         {
             return new Statistic { maxValue = value, currentValue = value, modifier = 0f };
         }
 
-        // Placeholder balance anchored to the original game's scale: the
-        // garage's stat bars (GameplayDataExtactTools) hard-code each stat's
-        // maximum per part type, e.g. muzzle damage 96, range 200, rate of fire
-        // 5, chassis durability 1200, speed 23. Top tier of a heavy part gets
-        // the maximum; lighter classes and lower tiers get a share of it, and
-        // each part's described role (Design.cs) shifts it from there.
+        private static string RowOf(PartTemplate template)
+        {
+            return RealStats.RowId(template.indent, template.type, template.weightType);
+        }
+
+        private static string Origin(PartTemplate template)
+        {
+            if (!RealStats.Covers(template.type))
+            {
+                return "designed";
+            }
+            string row = RowOf(template);
+            return row == template.indent ? "real" : "real via " + row;
+        }
+
+        // Chassis, bodies and barrels use the real rows (RealStats). Everything
+        // else is designed on the garage's stat-bar scale: each stat's maximum
+        // per part type (GameplayDataExtactTools), e.g. weapon case durability
+        // 628, battery capacity 270, is a top-tier heavy part; lighter classes
+        // and lower tiers get a share of it, shifted by each part's described
+        // role (Design.cs). Real rows grow with tier only in durability,
+        // damage and splash; weights, limits, speeds and fire rates stay fixed.
         private static PartTierableStatistics Stats(PartTemplate template, GameObject go, int tier)
         {
             float c = ClassScale(template.weightType);
-            float t = 0.7f + 0.075f * tier;
+            float m = MassScale(template.weightType);
+            float t = TierScale(tier);
             float durability;
             float mass;
             AbstractPartSpesificData specific = null;
@@ -188,21 +263,15 @@ namespace GarRevival
                     {
                         kind = ChassisTypeOf(go);
                     }
-                    // Wheelers fastest, hovers slowest; trackers toughest;
-                    // walkers carry the most; hovers ignore terrain.
-                    float speed = kind == ChassisType.Wheelled ? 1f : kind == ChassisType.Hover ? 0.75f : 0.85f;
-                    float tough = kind == ChassisType.Tracked ? 1f : kind == ChassisType.Walker ? 0.85f : kind == ChassisType.Hover ? 0.8f : 0.75f;
-                    float carry = kind == ChassisType.Walker ? 1f : kind == ChassisType.Tracked ? 0.85f : 0.8f;
-                    float terrain = kind == ChassisType.Hover ? 1f : kind == ChassisType.Tracked ? 0.5f : kind == ChassisType.Walker ? 0.3f : 0.1f;
-                    durability = 1200f * c * t * tough;
-                    mass = 25f * c;
+                    RealStats.ChassisRow row = RealStats.Chassis[RowOf(template)];
+                    durability = Mathf.Round(row.Durability * Up(tier));
+                    mass = 25.2f * m;
                     specific = new ChassisCaseVO
                     {
-                        // Light chassis are the fastest class.
-                        Speed = (template.weightType == WeightType.Light ? 23f : template.weightType == WeightType.Medium ? 19f : 15f) * (0.85f + 0.0375f * tier) * speed,
-                        WeightLimit = 450f * c * t * carry,
+                        Speed = row.SpeedKmh / GlobalConstants.visualiseSpeedMod,
+                        WeightLimit = row.WeightLimit,
                         EnergyConsumption = 0.001f,
-                        TerrainPenaltyNegate = terrain,
+                        TerrainPenaltyNegate = row.TerrainPenaltyNegate,
                         chassisType = kind,
                     };
                     break;
@@ -216,15 +285,16 @@ namespace GarRevival
                     }
                     durability = 20f * t;
                     mass = 3f;
-                    specific = new ChassisEngineVO { SpeedModifier = engine.Speed * t, EnergyConsumption = 0.001f, WeightLimit = 40f * engine.WeightLimit * t };
+                    specific = new ChassisEngineVO { SpeedModifier = engine.Speed / GlobalConstants.visualiseSpeedMod, EnergyConsumption = 0.001f, WeightLimit = 40f * engine.WeightLimit };
                     break;
                 }
                 case LogicalType.BodyCase:
                 {
-                    // Four-armed bodies: more firepower, less durability, more energy use.
-                    bool fourArms = template.dockingPoints.Count(d => d.isAssemblyRoot && d.possibleDockingTypes.Contains(LogicalType.Weapon)) > 2;
-                    durability = 1122f * c * t * (fourArms ? 0.8f : 1f);
-                    mass = 200f * c;
+                    // Four-armed bodies use more energy per shot.
+                    bool fourArms = WeaponSlots(template) > 2;
+                    RealStats.BodyRow row = RealStats.Bodies[RowOf(template)];
+                    durability = Mathf.Round(row.Durability * Up(tier));
+                    mass = row.Weight;
                     specific = new BodyCaseVO { EnergyConsumption = fourArms ? 0.002f : 0.001f, EnergyPerShootModifier = fourArms ? 1.3f : 1f };
                     break;
                 }
@@ -253,11 +323,11 @@ namespace GarRevival
                         mechanism = new Design.MechanismTraits();
                     }
                     durability = 628f * c * t;
-                    mass = 25f * c;
+                    mass = 25.2f * m;
                     // Case values multiply the barrel's (WeaponBarrel.GetDamage etc.).
                     specific = new WeaponCaseVO
                     {
-                        fireDelay = mechanism.RateOfFire,
+                        fireDelay = mechanism.FireDelay,
                         accuracyModidifer = mechanism.Accuracy,
                         damageModidifer = mechanism.Damage,
                         splashDamageModidifer = mechanism.Splash,
@@ -269,13 +339,13 @@ namespace GarRevival
                 }
                 case LogicalType.WeaponMuzzle:
                     durability = 240f * c * t;
-                    mass = 25f * c;
-                    specific = Barrel(template, t);
+                    mass = 25.5f * m;
+                    specific = Barrel(template, tier);
                     break;
                 case LogicalType.DeviceCase:
                     durability = 10f;
                     mass = 1f;
-                    specific = Device(template.indent, t);
+                    specific = Device(template.indent, tier);
                     break;
                 case LogicalType.HeadCase:
                     durability = 360f * t;
@@ -295,31 +365,34 @@ namespace GarRevival
             };
         }
 
+        private static Design.BarrelTraits TraitsOf(string indent, string[] keywords)
+        {
+            Design.BarrelTraits traits;
+            if (Design.Barrels.TryGetValue(indent, out traits))
+            {
+                return traits;
+            }
+            bool rocket = keywords.Contains("Rocket");
+            return new Design.BarrelTraits { Splash = rocket ? 0.8f : 0f, SplashRange = rocket ? 4f : 0f };
+        }
+
         // Barrels whose description names projectiles fire ammo (AmmoDesign);
         // the rest are energy weapons: AmmoPerShot 0 (WeaponBarrel
         // .AreRequermentsMeet skips the ammo check) and MaxAmmo -1 (the garage
         // skips ammo distribution). CurrentAmmo must not be negative: the bot
         // AI sums it to decide whether to go looking for ammo instead of
-        // fighting. Light weapons fire fast, heavy ones hit hard and reach further.
-        private static WeaponBarrelVO Barrel(PartTemplate template, float t)
+        // fighting. Damage, splash and rate come from the barrel's real row; a
+        // sibling's row is scaled by the two barrels' Design traits.
+        private static WeaponBarrelVO Barrel(PartTemplate template, int tier)
         {
-            Design.BarrelTraits traits;
-            if (!Design.Barrels.TryGetValue(template.indent, out traits))
-            {
-                bool rocket = template.keywords.Contains("Rocket");
-                traits = new Design.BarrelTraits { Splash = rocket ? 0.8f : 0f, SplashRange = rocket ? 4f : 0f };
-            }
-            float damage;
-            float rate;
-            float range;
-            switch (template.weightType)
-            {
-                case WeightType.Light: damage = 34f; rate = 2.5f; range = 110f; break;
-                case WeightType.Heavy: damage = 96f; rate = 1f; range = 200f; break;
-                default: damage = 58f; rate = 1.8f; range = 150f; break;
-            }
-            int tier = (int)Math.Round((t - 0.7f) / 0.075f);
-            float shotDamage = damage * traits.Damage * t;
+            Design.BarrelTraits traits = TraitsOf(template.indent, template.keywords);
+            string rowId = RowOf(template);
+            RealStats.BarrelRow row = RealStats.Barrels[rowId];
+            Design.BarrelTraits rowTraits = TraitsOf(rowId, new string[0]);
+            float shotDamage = Hundredths(row.Damage * traits.Damage / rowTraits.Damage * Up(tier));
+            float splash = rowTraits.Splash > 0f ? Hundredths(row.Splash * traits.Splash / rowTraits.Splash * Up(tier)) : 0f;
+            float shotsPerSecond = row.ShotsPerSecond * traits.RateOfFire / rowTraits.RateOfFire;
+            float range = template.weightType == WeightType.Light ? 110f : template.weightType == WeightType.Heavy ? 200f : 150f;
             string[] ammo = AmmoDesign.TypesFor(template.indent);
             bool usesAmmo = ammo.Length > 0;
             return new WeaponBarrelVO
@@ -328,15 +401,16 @@ namespace GarRevival
                 AdditionalEffects = new AdditionalGemaPlayActions[0],
                 MaxAmmo = usesAmmo ? AmmoDesign.Capacity(template.weightType, traits) : -1f,
                 CurrentAmmo = 0f,
-                // Original UI maxima: accuracy 1, rate of fire 5, range 200.
+                // Original UI maxima: accuracy 1, rate of fire 5/s, range 200.
+                // RateOfFire is the delay between shots in seconds (WeaponBarrel.GetRateOfFire).
                 Accuracy = Mathf.Min(1f, traits.Accuracy + 0.0125f * tier),
-                RateOfFire = Mathf.Min(5f, rate * traits.RateOfFire),
+                RateOfFire = 1f / Mathf.Min(5f, shotsPerSecond),
                 Damage = shotDamage,
                 Range = Mathf.Min(200f, range * traits.Range),
-                SpashDamage = 26.88f * traits.Splash * t,
+                SpashDamage = splash,
                 SpashRange = traits.SplashRange,
                 AmmoPerShot = usesAmmo ? 1f : 0f,
-                // Heavier hits cost more energy per shot (original maximum 19.2).
+                // Heavier hits cost more energy per shot (original maximum 19.2 at damage 96).
                 EnergyConsumptionPerShoot = 19.2f * Mathf.Clamp(shotDamage / 96f, 0.15f, 1f) * (usesAmmo ? AmmoDesign.EnergyShare : 1f),
                 usableAmmoTypes = ammo,
             };
@@ -387,8 +461,9 @@ namespace GarRevival
             return new string(s.Where(char.IsLetterOrDigit).ToArray()).ToLowerInvariant();
         }
 
-        private static DeviceCaseVO Device(string indent, float t)
+        private static DeviceCaseVO Device(string indent, int tier)
         {
+            float t = TierScale(tier);
             DeviceActions action;
             AbstractDeviceSpesificData data;
             switch (indent)

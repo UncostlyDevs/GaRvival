@@ -11,9 +11,10 @@ it can be undone.
 
 | Works | Not yet |
 | --- | --- |
-| Launching past the "servers are being shut down" notice | Real part stats (placeholders, see below) |
+| Launching past the "servers are being shut down" notice | Original stats for engines, batteries, heads, weapon cases and devices (lost; designed, see below) |
 | Garage, UI, portraits | |
 | Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | |
+| Real stats for 28 chassis, 21 bodies and 26 barrels (the 2017 live balance, see below) | |
 | Buying and selling, credits, sparks exchange | |
 | A starter robot, robot builder, module editor | |
 | **Test Run** in the training ground | |
@@ -581,7 +582,7 @@ What survives in the client, and is used:
 - **Icons**: rendered from the 3D models at runtime by the game itself.
 - **Chassis hover flag**: `ChassisCasePrefab.hovering`.
 
-**The original per-part numbers are gone.** Checked and ruled out:
+**The server's per-part numbers are not in the client.** Checked and ruled out:
 
 - All 19 asset bundles and the `GAR_Data` asset files. Their type trees
   (readable with `tools/serialized.py`) show the part components were built
@@ -591,22 +592,56 @@ What survives in the client, and is used:
 - The official wiki (gar.fandom.com): every part page is strategy text, no
   numbers. The server's template XMLs on S3 were never archived.
 
-What the numbers are built from instead (`src/GarRevival/Catalog.cs` and
-`Design.cs`):
+**Real numbers** (`src/GarRevival/RealStats.cs`) come from the tables in the
+Steam guide ["Best" Weapon // Body // Chassis](https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577)
+(August 2017, after the last rebalance):
+
+- 28 chassis: durability, speed (km/h), weight limit, terrain (+/o/-).
+- 21 bodies: durability, weight.
+- 26 barrels: damage per projectile, splash, shots per second.
+- Durability is the guide's value / 0.35, which gives whole numbers whose top
+  tier (x1.2) lands exactly on the garage's bar maxima (Warhawk 1000 -> 1200,
+  Mantis 935 -> 1122). Weights, speeds, limits and damage are as published.
+- These are tier-0 values; durability, damage and splash grow to x1.2 at the
+  top tier. Weights, limits, speeds and rates of fire do not change with tier.
+- Parts the guide leaves out take a sibling's row: Christmas Sleigh = Warhawk,
+  Maximus Pride = Bugsy, Cuckoo = Jackhammer, Maximus Legacy = Chromax; Barry
+  Light and the Christmas rocket launcher scale the Rocket Launcher, Justice and
+  Revenge scale the Blaster, the Witch Bow scales the Hailfire, each by the two
+  barrels' roles in `Design.cs`.
+- Guide names that differ from the template ids: Toad = MC_Frog, Behemoth =
+  HC_Bahemoth, Pistolero = LB_Sheriff, Ratchet = LB_Bandit, Elektra =
+  MB_Electra, Panzersturm = HB_Pazersturm, Slugger = LW_B_Revolver, Sprayshot =
+  LW_B_SawedOff, Nailer = LW_B_NailGun, Pewpew = LW_B_SmallLaser, Sandblaster =
+  LW_B_Shotgun, Reaper = LW_B_Arbalet, Stingray = LW_B_ElectroCutter, Oxidian =
+  MW_B_AcidCaster, Hailfire = MW_B_Katyusha, Dragonbelch = MW_B_FalmeCaster,
+  Blaster = MW_B_Laser, Chewing Gun = MW_B_StickyBombLauncher, Rocket Launcher =
+  LW_B_Bertha (a heavy barrel), Thunderbolt = HW_B_MachineGun, Missile Launcher
+  = HW_B_Missile.
+
+**Designed numbers** (`Catalog.cs` and `Design.cs`) for everything else:
+engines, batteries, heads, weapon cases, devices, and barrel accuracy, range,
+energy and durability.
 
 - **The original scale.** The garage's stat bars
   (`GameplayDataExtactTools`) hard-code each stat's maximum per part type
-  (muzzle damage 96, range 200, rate of fire 5, chassis durability 1200, speed
-  23, battery capacity 270...). A top-tier heavy part gets the maximum;
-  Light/Medium get 60%/80% and each lower tier 7.5% less.
+  (weapon case durability 628, range 200, battery capacity 270...). A
+  top-tier heavy part gets the maximum; Light/Medium get 60%/80% and tier 0
+  gets 1/1.2 of the top tier, like the real rows.
+- **Masses** of chassis, weapon cases and barrels are 30%/60%/100% of the bar
+  maxima (25.2/25.2/25.5) for Light/Medium/Heavy, so a body with two weapons
+  of its class stays under its class's real weight limits. Four-armed bodies
+  weigh what the guide says (195/260/340), so fully armed they usually run
+  over; the client takes 0.05 km/h per unit over the limit, down to 7 km/h.
 - **Each part's official description**, transcribed into `Design.cs`:
-  chassis type (wheeler/walker/tracker/hover) for all 30 chassis, body class
-  and 2 vs 4 arms, battery quality and capacity-vs-regen, engine trade-offs,
-  firing mechanism modifiers (including the stated 63%/50% damage for
-  multi-barrel Chimaera and Triceratops), and every barrel's role (sniper,
-  rapid fire, cone, splash). Plus the wiki's rules: wheelers fastest but worst
-  on terrain, hovers slowest but ignore terrain, trackers toughest, walkers
-  carry the most, 2-armed bodies tougher than 4-armed.
+  chassis type (wheeler/walker/tracker/hover) for all 30 chassis, body class,
+  battery quality and capacity-vs-regen, engine trade-offs (in km/h; the Yak's
+  +40 weight limit matches the guide), firing mechanism modifiers (the stated
+  63%/50% damage for multi-barrel Chimaera and Triceratops is applied by the
+  client itself), and every barrel's role (sniper, rapid fire, cone, splash).
+- **Units the client expects**: chassis and engine speeds in m/s (the garage
+  shows x3.6), a barrel's rate of fire as the delay between shots, a weapon
+  case's rate bonus as a delay factor (0.769 shows +30%).
 
 Other choices:
 
@@ -625,10 +660,13 @@ Other choices:
   naming, so the tutorial's preset robots find their parts.
 
 `generated-templates.txt` (written on each start) lists every part with its
-type, weight class and chosen weapon/device/chassis behaviour.
+type, weight class, chosen weapon/device/chassis behaviour and where its
+numbers come from (`real`, `real via <sibling>` or `designed`). `revival.log`
+has a `Weight budget` line per class.
 
-Rebalancing is a matter of editing `Design.cs` (each part's role) or
-`Catalog.Stats()` (the overall scale), then rebuilding.
+Rebalancing is a matter of editing `RealStats.cs` (real rows and siblings),
+`Design.cs` (each part's role) or `Catalog.Stats()` (the designed scale), then
+rebuilding.
 
 ## How it works
 
@@ -709,6 +747,7 @@ GARRevival/
     GameServer.cs     operation handlers and events
     Catalog.cs        part/module/price templates from the prefabs
     Design.cs         each part's role, from its official description
+    RealStats.cs      real chassis, body and barrel stats from a 2017 guide
     PlayerState.cs    the saved profile, starter robot, item creation
     DataFactory.cs    other startup data (portraits, prices...)
     Workshop*.cs      part upgrades, tech levels, boosts, repairs, slots, renting
