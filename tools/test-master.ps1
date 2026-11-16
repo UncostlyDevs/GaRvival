@@ -1,5 +1,4 @@
-# Compiles master\MasterServer.cs with Windows' own C# 5 compiler, runs it in a
-# throwaway folder on a spare port and exercises every endpoint with curl.
+# Compiles master\MasterServer.cs with Windows' C# 5 compiler and tests every endpoint in a throwaway folder.
 #   .\tools\test-master.ps1 [-Port 27191]
 param([int]$Port = 27191)
 $ErrorActionPreference = 'Stop'

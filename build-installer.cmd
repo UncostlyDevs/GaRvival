@@ -1,7 +1,6 @@
 @echo off
-rem Compiles the GAR Revival installer from source with the C# compiler that is
-rem part of Windows (.NET Framework 4.x, C# 5). Used by install.cmd and
-rem uninstall.cmd; the result, bin\GarRevival.Installer.exe, is deleted after use.
+rem Compiles the installer from source with Windows' own C# compiler (.NET Framework 4, C# 5).
+rem Used by install.cmd and uninstall.cmd, which delete bin\GarRevival.Installer.exe after use.
 set "SRC=%~dp0installer\Program.cs"
 if not exist "%SRC%" set "SRC=%~dp0src\Patcher\Program.cs"
 set "CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe"

@@ -1,9 +1,5 @@
-// GAR Revival master server: lists game servers, ranks them for matchmaking
-// and keeps an honour-based ladder. Plain HTTP/1.1 + JSON, GET and POST only.
-// One file, C# 5, .NET Framework 4 or mono; start-master.cmd compiles and runs it:
-//   csc /out:bin\GarRevival.Master.exe MasterServer.cs
-//   mcs -out:bin/GarRevival.Master.exe MasterServer.cs && mono bin/GarRevival.Master.exe
-// The optional first argument is the folder holding master.cfg (default: current folder).
+// GAR Revival master server: server list, matchmaking and an honour-based ladder over HTTP/1.1 + JSON (GET/POST).
+// Must stay C# 5: start-master.cmd compiles it with Windows' csc (or: mcs MasterServer.cs && mono).
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,8 +20,7 @@ namespace GarRevivalMaster
         {
             try
             {
-                // [folder] [--local] [--parent <pid>]: --local listens on 127.0.0.1 only;
-                // --parent exits when that process (the game that started it) ends.
+                // [folder holding master.cfg] [--local: 127.0.0.1 only] [--parent <pid>: exit with the game]
                 if (args.Length > 0 && !args[0].StartsWith("--"))
                 {
                     Directory.SetCurrentDirectory(args[0]);
@@ -59,21 +54,17 @@ namespace GarRevivalMaster
                 Environment.Exit(0); // already gone
                 return;
             }
-            Thread watch = new Thread(() =>
+            new Thread(() =>
             {
                 game.WaitForExit();
                 Environment.Exit(0);
-            });
-            watch.IsBackground = true;
-            watch.Start();
+            }) { IsBackground = true }.Start();
         }
     }
 
-    // ---- configuration ----
-
     internal sealed class Config
     {
-        // key, default, comment. The first start writes these to master.cfg.
+        // key, default, comment; the first start writes them to master.cfg.
         private static readonly string[][] Keys =
         {
             new[] { "port", "27090", "TCP port to listen on (allow it through the firewall / forward it on the router)" },
@@ -98,7 +89,7 @@ namespace GarRevivalMaster
             {
                 File.WriteAllText(path, "# GAR Revival master server\n" + string.Join(string.Empty, Keys.Select(k => "# " + k[2] + "\n" + k[0] + "=" + k[1] + "\n").ToArray()));
             }
-            Dictionary<string, string> values = Keys.ToDictionary(k => k[0].ToLowerInvariant(), k => k[1]);
+            var values = Keys.ToDictionary(k => k[0].ToLowerInvariant(), k => k[1]);
             foreach (string raw in File.ReadAllLines(path))
             {
                 int hash = raw.IndexOf('#');
@@ -109,17 +100,19 @@ namespace GarRevivalMaster
                     values[line.Substring(0, eq).Trim().ToLowerInvariant()] = line.Substring(eq + 1).Trim();
                 }
             }
-            Config c = new Config();
-            c.Port = Number(values, "port", 1, 65535);
-            c.ServerTimeout = Number(values, "servertimeout", 15, 3600);
-            c.MaxServers = Number(values, "maxservers", 1, 100000);
-            c.MaxServersPerIp = Number(values, "maxserversperip", 1, 1000);
-            c.RequestsPerMinute = Number(values, "requestsperminute", 10, 100000);
-            c.RegistersPerMinute = Number(values, "registersperminute", 1, 10000);
-            c.ResultsPerMinute = Number(values, "resultsperminute", 1, 10000);
-            c.MaxConnections = Number(values, "maxconnections", 1, 1000);
-            c.PublicAddress = values["publicaddress"];
-            c.LadderFile = values["ladderfile"];
+            var c = new Config
+            {
+                Port = Number(values, "port", 1, 65535),
+                ServerTimeout = Number(values, "servertimeout", 15, 3600),
+                MaxServers = Number(values, "maxservers", 1, 100000),
+                MaxServersPerIp = Number(values, "maxserversperip", 1, 1000),
+                RequestsPerMinute = Number(values, "requestsperminute", 10, 100000),
+                RegistersPerMinute = Number(values, "registersperminute", 1, 10000),
+                ResultsPerMinute = Number(values, "resultsperminute", 1, 10000),
+                MaxConnections = Number(values, "maxconnections", 1, 1000),
+                PublicAddress = values["publicaddress"],
+                LadderFile = values["ladderfile"],
+            };
             if (c.PublicAddress.Length > 0 && !Check.IsHost(c.PublicAddress))
             {
                 throw new InvalidDataException("master.cfg: publicAddress must be an IPv4 address or a host name");
@@ -141,8 +134,6 @@ namespace GarRevivalMaster
             return n;
         }
     }
-
-    // ---- the service ----
 
     internal sealed class Master
     {
@@ -176,9 +167,7 @@ namespace GarRevivalMaster
                 e.Cancel = true;
                 Stop();
             };
-            Thread tick = new Thread(Tick);
-            tick.IsBackground = true;
-            tick.Start();
+            new Thread(Tick) { IsBackground = true }.Start();
             _log.Write("Listening on TCP " + _config.Port + (_config.Local ? " (this PC only)" : string.Empty) + ", " + _ladder.Count + " ladder rows. Ctrl+C stops.");
             while (!_stopping)
             {
@@ -239,7 +228,7 @@ namespace GarRevivalMaster
 
         private void Serve(object state)
         {
-            TcpClient client = (TcpClient)state;
+            var client = (TcpClient)state;
             try
             {
                 string ip = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
@@ -265,15 +254,9 @@ namespace GarRevivalMaster
         private Reply Route(Request r)
         {
             int wait = _limiter.Take("all", r.Ip, _config.RequestsPerMinute);
-            if (wait > 0)
-            {
-                return Reply.TooMany(wait);
-            }
+            if (wait > 0) return Reply.TooMany(wait);
             string[] p = r.Path.Trim('/').Split('/');
-            if (p.Length < 2 || p[0] != "v1")
-            {
-                return Reply.Error(404, "not_found", null);
-            }
+            if (p.Length < 2 || p[0] != "v1") return Reply.Error(404, "not_found", null);
             string route = p.Length == 4 && p[1] == "servers" ? "servers/*/" + p[3] : p.Length == 2 ? p[1] : string.Empty;
             switch (route)
             {
@@ -290,50 +273,34 @@ namespace GarRevivalMaster
 
         private Reply Limited(Request r, string kind, int perMinute, Func<Request, Reply> handle)
         {
-            if (r.Method != "POST")
-            {
-                return Reply.NotAllowed();
-            }
+            if (r.Method != "POST") return Reply.NotAllowed();
             int wait = _limiter.Take(kind, r.Ip, perMinute);
             return wait > 0 ? Reply.TooMany(wait) : handle(r);
         }
-
-        // ---- routes ----
 
         private Reply Info()
         {
             lock (_lock)
             {
-                Dictionary<string, object> body = new Dictionary<string, object>();
-                body["api"] = 1;
-                body["servers"] = _servers.Count;
-                body["players"] = _servers.Values.Sum(s => s.Players);
-                body["ladder"] = _ladder.Count;
-                return Reply.Ok(body);
+                return Reply.Ok(new Dictionary<string, object>
+                {
+                    { "api", 1 }, { "servers", _servers.Count }, { "players", _servers.Values.Sum(s => s.Players) }, { "ladder", _ladder.Count },
+                });
             }
         }
 
         private Reply Register(Request r)
         {
             Fields f = Fields.FromBody(r.Body);
-            if (f == null)
-            {
-                return Reply.Error(400, "bad_json", null);
-            }
-            Listing s = new Listing();
-            s.Ip = r.Ip;
-            s.Port = f.Int("port", 1, 65535, 0, true);
-            s.Transport = f.OneOf("transport", new[] { "tcp", "steam" }, "tcp");
+            if (f == null) return Reply.Error(400, "bad_json", null);
+            var s = new Listing { Ip = r.Ip, Port = f.Int("port", 1, 65535, 0, true), Transport = f.OneOf("transport", new[] { "tcp", "steam" }, "tcp") };
             s.SteamLobby = f.Digits("steamLobby", 20, s.Transport == "steam");
             string address = f.Host("address");
             s.Lan = f.List("lan", 4, 15).Where(Check.IsLocal).ToArray();
             s.Dedicated = f.Bool("dedicated", false);
             Apply(s, f, true);
-            if (f.Bad != null)
-            {
-                return Reply.Error(400, "bad_field", f.Bad);
-            }
-            // A registrant on this PC or LAN cannot be reached at its observed address from outside.
+            if (f.Bad != null) return Reply.Error(400, "bad_field", f.Bad);
+            // A registrant on this PC or LAN is unreachable from outside at its observed address.
             s.Address = !Check.IsLocal(s.Ip) ? s.Ip : address ?? (_config.PublicAddress.Length > 0 ? _config.PublicAddress : s.Ip);
             s.Id = Secret.Hex(6);
             s.Token = Secret.Hex(16);
@@ -351,13 +318,10 @@ namespace GarRevivalMaster
                 _servers[s.Id] = s;
             }
             _log.Write("Registered " + s.Describe());
-            Dictionary<string, object> body = new Dictionary<string, object>();
-            body["id"] = s.Id;
-            body["token"] = s.Token;
-            body["address"] = s.Address;
-            body["port"] = s.Port;
-            body["timeout"] = _config.ServerTimeout;
-            return Reply.Ok(body);
+            return Reply.Ok(new Dictionary<string, object>
+            {
+                { "id", s.Id }, { "token", s.Token }, { "address", s.Address }, { "port", s.Port }, { "timeout", _config.ServerTimeout },
+            });
         }
 
         // Fields a registration sets and a heartbeat may change.
@@ -400,48 +364,30 @@ namespace GarRevivalMaster
         private Reply Beat(Request r, string id)
         {
             Fields f = Fields.FromBody(r.Body);
-            if (f == null)
-            {
-                return Reply.Error(400, "bad_json", null);
-            }
+            if (f == null) return Reply.Error(400, "bad_json", null);
             lock (_lock)
             {
                 Reply problem;
                 Listing s = Owned(id, f, out problem);
-                if (s == null)
-                {
-                    return problem;
-                }
-                Listing changed = s.Copy();
+                if (s == null) return problem;
+                var changed = s.Copy();
                 Apply(changed, f, false);
-                if (f.Bad != null)
-                {
-                    return Reply.Error(400, "bad_field", f.Bad);
-                }
+                if (f.Bad != null) return Reply.Error(400, "bad_field", f.Bad);
                 changed.LastBeat = Clock.Now;
                 _servers[id] = changed;
             }
-            Dictionary<string, object> body = new Dictionary<string, object>();
-            body["ok"] = true;
-            body["timeout"] = _config.ServerTimeout;
-            return Reply.Ok(body);
+            return Reply.Ok(new Dictionary<string, object> { { "ok", true }, { "timeout", _config.ServerTimeout } });
         }
 
         private Reply Remove(Request r, string id)
         {
             Fields f = Fields.FromBody(r.Body);
-            if (f == null)
-            {
-                return Reply.Error(400, "bad_json", null);
-            }
+            if (f == null) return Reply.Error(400, "bad_json", null);
             lock (_lock)
             {
                 Reply problem;
                 Listing s = Owned(id, f, out problem);
-                if (s == null)
-                {
-                    return problem;
-                }
+                if (s == null) return problem;
                 _servers.Remove(id);
                 _log.Write("Removed " + s.Describe());
             }
@@ -502,19 +448,13 @@ namespace GarRevivalMaster
 
         private Dictionary<string, object> Servers(IEnumerable<Listing> servers, string requester, int total)
         {
-            Dictionary<string, object> body = new Dictionary<string, object>();
-            body["total"] = total;
-            body["servers"] = servers.Select(s => (object)s.ToJson(requester)).ToList();
-            return body;
+            return new Dictionary<string, object> { { "total", total }, { "servers", servers.Select(s => (object)s.ToJson(requester)).ToList() } };
         }
 
         private Reply Results(Request r)
         {
             Fields f = Fields.FromBody(r.Body);
-            if (f == null)
-            {
-                return Reply.Error(400, "bad_json", null);
-            }
+            if (f == null) return Reply.Error(400, "bad_json", null);
             string mode = f.OneOf("mode", Modes, null);
             f.OneOf("map", Maps, "random");
             f.Int("seconds", 1, 7200, 0, true);
@@ -525,46 +465,32 @@ namespace GarRevivalMaster
             {
                 f.Bad = "winners";
             }
-            if (f.Bad != null)
-            {
-                return Reply.Error(400, "bad_field", f.Bad);
-            }
+            if (f.Bad != null) return Reply.Error(400, "bad_field", f.Bad);
             List<Ladder.Rating> ratings;
             lock (_lock)
             {
                 Reply problem;
                 Listing s = Owned(f.Token("id", 12, string.Empty), f, out problem);
-                if (s == null)
-                {
-                    return problem;
-                }
-                if (!s.Dedicated)
-                {
-                    return Reply.Error(403, "not_dedicated", null);
-                }
-                if (Clock.Now - s.LastResult < ResultInterval)
-                {
-                    return Reply.TooMany(ResultInterval);
-                }
+                if (s == null) return problem;
+                if (!s.Dedicated) return Reply.Error(403, "not_dedicated", null);
+                if (Clock.Now - s.LastResult < ResultInterval) return Reply.TooMany(ResultInterval);
                 s.LastResult = Clock.Now;
                 ratings = _ladder.Record(mode, winners, losers, winningTeam < 0);
                 _log.Write("Result from " + s.Describe() + ": " + winners.Count + " vs " + losers.Count + (winningTeam < 0 ? " (draw)" : string.Empty) + (ratings.Count > 0 ? ", rated" : string.Empty));
             }
-            Dictionary<string, object> body = new Dictionary<string, object>();
-            body["ok"] = true;
-            body["rated"] = ratings.Count > 0;
-            body["ratings"] = ratings.Select(x => (object)new Dictionary<string, object> { { "name", x.Name }, { "rating", x.Value }, { "delta", x.Delta } }).ToList();
-            return Reply.Ok(body);
+            return Reply.Ok(new Dictionary<string, object>
+            {
+                { "ok", true },
+                { "rated", ratings.Count > 0 },
+                { "ratings", ratings.Select(x => (object)new Dictionary<string, object> { { "name", x.Name }, { "rating", x.Value }, { "delta", x.Delta } }).ToList() },
+            });
         }
 
         private Reply LadderTable(Request r)
         {
             string mode = r.Query("mode") ?? "any";
             int top;
-            if (mode != "any" && Array.IndexOf(Modes, mode) < 0)
-            {
-                return Reply.Error(400, "bad_field", "mode");
-            }
+            if (mode != "any" && Array.IndexOf(Modes, mode) < 0) return Reply.Error(400, "bad_field", "mode");
             if (!int.TryParse(r.Query("top") ?? "50", NumberStyles.Integer, CultureInfo.InvariantCulture, out top) || top < 1 || top > 100)
             {
                 return Reply.Error(400, "bad_field", "top");
@@ -575,8 +501,6 @@ namespace GarRevivalMaster
             }
         }
     }
-
-    // ---- one listed game server ----
 
     internal sealed class Listing
     {
@@ -598,33 +522,33 @@ namespace GarRevivalMaster
 
         public Dictionary<string, object> ToJson(string requester)
         {
-            // Players on the master's own LAN reach a LAN-registered server at its LAN address;
-            // players behind the server's own router get its LAN addresses (no hairpin NAT needed).
+            // Players on the master's LAN reach a LAN-registered server at its LAN address; players behind
+            // the server's own router get its LAN addresses (no hairpin NAT needed).
             bool sameLan = Check.IsLocal(Ip) && Check.IsLocal(requester);
             bool sameNetwork = requester == Address;
-            Dictionary<string, object> o = new Dictionary<string, object>();
-            o["id"] = Id;
-            o["name"] = Name;
-            o["address"] = sameLan ? Ip : Address;
-            o["port"] = Port;
-            o["transport"] = Transport;
-            o["steamLobby"] = SteamLobby ?? string.Empty;
-            o["lan"] = sameNetwork ? Lan.Cast<object>().ToList() : new List<object>();
-            o["mode"] = Mode;
-            o["map"] = Map;
-            o["players"] = Players;
-            o["maxPlayers"] = MaxPlayers;
-            o["version"] = Version;
-            o["rules"] = Rules;
-            o["dedicated"] = Dedicated;
-            o["state"] = State;
-            o["age"] = (int)(Clock.Now - LastBeat);
-            return o;
+            return new Dictionary<string, object>
+            {
+                { "id", Id },
+                { "name", Name },
+                { "address", sameLan ? Ip : Address },
+                { "port", Port },
+                { "transport", Transport },
+                { "steamLobby", SteamLobby ?? string.Empty },
+                { "lan", sameNetwork ? Lan.Cast<object>().ToList() : new List<object>() },
+                { "mode", Mode },
+                { "map", Map },
+                { "players", Players },
+                { "maxPlayers", MaxPlayers },
+                { "version", Version },
+                { "rules", Rules },
+                { "dedicated", Dedicated },
+                { "state", State },
+                { "age", (int)(Clock.Now - LastBeat) },
+            };
         }
     }
 
-    // ---- ladder: team Elo per full player name, per mode and overall ("any") ----
-
+    // Team Elo per full player name, per mode and overall ("any").
     internal sealed class Ladder
     {
         public sealed class Rating
@@ -652,23 +576,14 @@ namespace GarRevivalMaster
         {
             _path = path;
             _log = log;
-            if (!File.Exists(path))
-            {
-                return;
-            }
+            if (!File.Exists(path)) return;
             foreach (string line in File.ReadAllLines(path))
             {
                 string[] p = line.Split('\t');
-                if (line.StartsWith("#") || p.Length != 8)
-                {
-                    continue;
-                }
-                Row row = new Row { Mode = p[0], Name = p[1] };
+                if (line.StartsWith("#") || p.Length != 8) continue;
+                var row = new Row { Mode = p[0], Name = p[1] };
                 double rating;
-                if (!double.TryParse(p[2], NumberStyles.Float, CultureInfo.InvariantCulture, out rating))
-                {
-                    continue;
-                }
+                if (!double.TryParse(p[2], NumberStyles.Float, CultureInfo.InvariantCulture, out rating)) continue;
                 row.Rating = rating;
                 int.TryParse(p[3], out row.Matches);
                 int.TryParse(p[4], out row.Wins);
@@ -687,7 +602,7 @@ namespace GarRevivalMaster
         // Rated only when both sides have players; otherwise only counted.
         public List<Rating> Record(string mode, List<string> winners, List<string> losers, bool draw)
         {
-            List<Rating> overall = new List<Rating>();
+            var overall = new List<Rating>();
             foreach (string m in new[] { "any", mode })
             {
                 List<Row> a = winners.Select(n => Get(m, n)).Where(x => x != null).ToList();
@@ -714,7 +629,7 @@ namespace GarRevivalMaster
         {
             double expectA = 1.0 / (1.0 + Math.Pow(10.0, (b.Average(x => x.Rating) - a.Average(x => x.Rating)) / 400.0));
             double scoreA = draw ? 0.5 : 1.0;
-            List<Rating> result = new List<Rating>();
+            var result = new List<Rating>();
             foreach (Row row in a.Concat(b))
             {
                 bool inA = a.Contains(row);
@@ -740,43 +655,33 @@ namespace GarRevivalMaster
         public Dictionary<string, object> Table(string mode, int top, string name)
         {
             List<Row> sorted = _rows.Values.Where(r => r.Mode == mode).OrderByDescending(r => r.Rating).ThenByDescending(r => r.Matches).ThenBy(r => r.Name, StringComparer.Ordinal).ToList();
-            Dictionary<string, object> body = new Dictionary<string, object>();
-            body["mode"] = mode;
-            body["total"] = sorted.Count;
-            body["rows"] = sorted.Take(top).Select((r, i) => (object)Json(r, i + 1)).ToList();
             int you = name == null ? -1 : sorted.FindIndex(r => r.Name == name);
-            body["you"] = you < 0 ? null : Json(sorted[you], you + 1);
-            return body;
+            return new Dictionary<string, object>
+            {
+                { "mode", mode },
+                { "total", sorted.Count },
+                { "rows", sorted.Take(top).Select((r, i) => (object)Json(r, i + 1)).ToList() },
+                { "you", you < 0 ? null : Json(sorted[you], you + 1) },
+            };
         }
 
         private static Dictionary<string, object> Json(Row r, int rank)
         {
-            Dictionary<string, object> o = new Dictionary<string, object>();
-            o["rank"] = rank;
-            o["name"] = r.Name;
-            o["rating"] = r.Rating;
-            o["matches"] = r.Matches;
-            o["wins"] = r.Wins;
-            o["losses"] = r.Losses;
-            o["draws"] = r.Draws;
-            o["last"] = r.Last;
-            return o;
+            return new Dictionary<string, object>
+            {
+                { "rank", rank }, { "name", r.Name }, { "rating", r.Rating }, { "matches", r.Matches },
+                { "wins", r.Wins }, { "losses", r.Losses }, { "draws", r.Draws }, { "last", r.Last },
+            };
         }
 
         public void SaveIfChanged(double interval)
         {
-            if (_changed && Clock.Now - _savedAt >= interval)
-            {
-                Save();
-            }
+            if (_changed && Clock.Now - _savedAt >= interval) Save();
         }
 
         public void Save()
         {
-            if (!_changed)
-            {
-                return;
-            }
+            if (!_changed) return;
             try
             {
                 string temp = _path + ".tmp";
@@ -786,10 +691,7 @@ namespace GarRevivalMaster
                     r.Wins.ToString(CultureInfo.InvariantCulture), r.Losses.ToString(CultureInfo.InvariantCulture),
                     r.Draws.ToString(CultureInfo.InvariantCulture), r.Last.ToString(CultureInfo.InvariantCulture),
                 }))).ToArray());
-                if (File.Exists(_path))
-                {
-                    File.Delete(_path);
-                }
+                if (File.Exists(_path)) File.Delete(_path);
                 File.Move(temp, _path);
                 _changed = false;
                 _savedAt = Clock.Now;
@@ -800,8 +702,6 @@ namespace GarRevivalMaster
             }
         }
     }
-
-    // ---- HTTP ----
 
     internal sealed class Request
     {
@@ -828,7 +728,7 @@ namespace GarRevivalMaster
 
         public static Reply Error(int status, string code, string field)
         {
-            Dictionary<string, object> body = new Dictionary<string, object>();
+            var body = new Dictionary<string, object>();
             body["error"] = code;
             if (field != null)
             {
@@ -839,7 +739,7 @@ namespace GarRevivalMaster
 
         public static Reply TooMany(int seconds)
         {
-            Reply r = Error(429, "rate_limited", null);
+            var r = Error(429, "rate_limited", null);
             r.RetryAfter = seconds;
             return r;
         }
@@ -856,23 +756,17 @@ namespace GarRevivalMaster
         private const int MaxBody = 8192;
         private const int Deadline = 5000;
 
-        // Reads one request; a non-null Reply is the error to answer with instead.
+        // A non-null Reply is the error to answer with instead.
         public static Reply Read(Socket socket, string ip, out Request request)
         {
             request = null;
-            Stopwatch watch = Stopwatch.StartNew();
-            MemoryStream buffer = new MemoryStream();
+            var watch = Stopwatch.StartNew();
+            var buffer = new MemoryStream();
             int headEnd = -1;
             while (headEnd < 0)
             {
-                if (buffer.Length > MaxHead)
-                {
-                    return Reply.Error(431, "headers_too_large", null);
-                }
-                if (!Receive(socket, buffer, watch))
-                {
-                    return Reply.Error(408, "timeout", null);
-                }
+                if (buffer.Length > MaxHead) return Reply.Error(431, "headers_too_large", null);
+                if (!Receive(socket, buffer, watch)) return Reply.Error(408, "timeout", null);
                 headEnd = Find(buffer.GetBuffer(), (int)buffer.Length);
             }
             byte[] bytes = buffer.ToArray();
@@ -882,44 +776,26 @@ namespace GarRevivalMaster
             {
                 return Reply.Error(400, "bad_request", null);
             }
-            Request r = new Request { Method = first[0], Ip = ip, Body = string.Empty };
+            var r = new Request { Method = first[0], Ip = ip, Body = string.Empty };
             request = r;
-            if (r.Method != "GET" && r.Method != "POST")
-            {
-                return Reply.NotAllowed();
-            }
-            if (!ParseTarget(first[1], r))
-            {
-                return Reply.Error(400, "bad_query", null);
-            }
-            Dictionary<string, string> headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            if (r.Method != "GET" && r.Method != "POST") return Reply.NotAllowed();
+            if (!ParseTarget(first[1], r)) return Reply.Error(400, "bad_query", null);
+            var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             foreach (string line in lines.Skip(1))
             {
                 int colon = line.IndexOf(':');
-                if (colon <= 0 || headers.Count >= 32)
-                {
-                    return Reply.Error(400, "bad_header", null);
-                }
+                if (colon <= 0 || headers.Count >= 32) return Reply.Error(400, "bad_header", null);
                 headers[line.Substring(0, colon).Trim()] = line.Substring(colon + 1).Trim();
             }
-            if (headers.ContainsKey("Transfer-Encoding"))
-            {
-                return Reply.Error(411, "length_required", null);
-            }
+            if (headers.ContainsKey("Transfer-Encoding")) return Reply.Error(411, "length_required", null);
             string lengthText;
             int length = 0;
             if (headers.TryGetValue("Content-Length", out lengthText) && (!int.TryParse(lengthText, NumberStyles.None, CultureInfo.InvariantCulture, out length)))
             {
                 return Reply.Error(400, "bad_length", null);
             }
-            if (r.Method == "POST" && lengthText == null)
-            {
-                return Reply.Error(411, "length_required", null);
-            }
-            if (length > MaxBody)
-            {
-                return Reply.Error(413, "too_large", null);
-            }
+            if (r.Method == "POST" && lengthText == null) return Reply.Error(411, "length_required", null);
+            if (length > MaxBody) return Reply.Error(413, "too_large", null);
             string expect;
             if (length > 0 && headers.TryGetValue("Expect", out expect) && expect.Equals("100-continue", StringComparison.OrdinalIgnoreCase))
             {
@@ -930,15 +806,9 @@ namespace GarRevivalMaster
             buffer.Write(bytes, bodyStart, bytes.Length - bodyStart);
             while (buffer.Length < length)
             {
-                if (!Receive(socket, buffer, watch))
-                {
-                    return Reply.Error(408, "timeout", null);
-                }
+                if (!Receive(socket, buffer, watch)) return Reply.Error(408, "timeout", null);
             }
-            if (buffer.Length > length)
-            {
-                return Reply.Error(400, "bad_length", null);
-            }
+            if (buffer.Length > length) return Reply.Error(400, "bad_length", null);
             try
             {
                 r.Body = new UTF8Encoding(false, true).GetString(buffer.ToArray());
@@ -953,12 +823,9 @@ namespace GarRevivalMaster
         private static bool Receive(Socket socket, MemoryStream into, Stopwatch watch)
         {
             int left = Deadline - (int)watch.ElapsedMilliseconds;
-            if (left <= 0)
-            {
-                return false;
-            }
+            if (left <= 0) return false;
             socket.ReceiveTimeout = left;
-            byte[] chunk = new byte[4096];
+            var chunk = new byte[4096];
             int n;
             try
             {
@@ -976,10 +843,7 @@ namespace GarRevivalMaster
         {
             for (int i = 0; i + 3 < length; i++)
             {
-                if (data[i] == '\r' && data[i + 1] == '\n' && data[i + 2] == '\r' && data[i + 3] == '\n')
-                {
-                    return i;
-                }
+                if (data[i] == '\r' && data[i + 1] == '\n' && data[i + 2] == '\r' && data[i + 3] == '\n') return i;
             }
             return -1;
         }
@@ -988,15 +852,9 @@ namespace GarRevivalMaster
         {
             int q = target.IndexOf('?');
             r.Path = q < 0 ? target : target.Substring(0, q);
-            if (q < 0)
-            {
-                return true;
-            }
+            if (q < 0) return true;
             string[] pairs = target.Substring(q + 1).Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
-            if (pairs.Length > 16)
-            {
-                return false;
-            }
+            if (pairs.Length > 16) return false;
             try
             {
                 foreach (string pair in pairs)
@@ -1017,7 +875,7 @@ namespace GarRevivalMaster
         public static void Write(Socket socket, Reply reply, bool cors)
         {
             byte[] body = Encoding.UTF8.GetBytes(Json.Write(reply.Body));
-            StringBuilder head = new StringBuilder();
+            var head = new StringBuilder();
             head.Append("HTTP/1.1 ").Append(reply.Status).Append(' ').Append(Reason(reply.Status)).Append("\r\n");
             head.Append("Content-Type: application/json; charset=utf-8\r\nCache-Control: no-store\r\nConnection: close\r\n");
             head.Append("Content-Length: ").Append(body.Length).Append("\r\n");
@@ -1060,10 +918,7 @@ namespace GarRevivalMaster
         }
     }
 
-    // ---- validation ----
-
-    // Typed access to a JSON object. A missing optional field gives the
-    // fallback; a wrong one records its name in Bad and gives the fallback.
+    // Typed JSON fields: a missing optional field gives the fallback; a bad one also sets Bad (the first one wins).
     internal sealed class Fields
     {
         private readonly Dictionary<string, object> _d;
@@ -1076,7 +931,7 @@ namespace GarRevivalMaster
 
         public static Fields FromBody(string body)
         {
-            Dictionary<string, object> d = Json.Parse(body) as Dictionary<string, object>;
+            var d = Json.Parse(body) as Dictionary<string, object>;
             return d == null ? null : new Fields(d);
         }
 
@@ -1087,20 +942,14 @@ namespace GarRevivalMaster
 
         private T Fail<T>(string key, T fallback)
         {
-            if (Bad == null)
-            {
-                Bad = key;
-            }
+            Bad = Bad ?? key;
             return fallback;
         }
 
         private object Raw(string key, bool required)
         {
             object value;
-            if (_d.TryGetValue(key, out value) && value != null)
-            {
-                return value;
-            }
+            if (_d.TryGetValue(key, out value) && value != null) return value;
             if (required)
             {
                 Fail(key, 0);
@@ -1111,10 +960,7 @@ namespace GarRevivalMaster
         public int Int(string key, int min, int max, int fallback, bool required)
         {
             object raw = Raw(key, required);
-            if (raw == null)
-            {
-                return fallback;
-            }
+            if (raw == null) return fallback;
             double n = raw is double ? (double)raw : double.NaN;
             return n >= min && n <= max && n == Math.Floor(n) ? (int)n : Fail(key, fallback);
         }
@@ -1129,20 +975,11 @@ namespace GarRevivalMaster
         public string Text(string key, int max, bool clip, string fallback)
         {
             object raw = Raw(key, false);
-            if (raw == null)
-            {
-                return fallback;
-            }
+            if (raw == null) return fallback;
             string s = raw as string;
-            if (s == null)
-            {
-                return Fail(key, fallback);
-            }
+            if (s == null) return Fail(key, fallback);
             s = Check.Clean(s, int.MaxValue);
-            if (s.Length > max && !clip)
-            {
-                return Fail(key, fallback);
-            }
+            if (s.Length > max && !clip) return Fail(key, fallback);
             s = Check.Clip(s, max);
             return s.Length == 0 ? fallback : s;
         }
@@ -1150,10 +987,7 @@ namespace GarRevivalMaster
         public string OneOf(string key, string[] allowed, string fallback)
         {
             object raw = Raw(key, fallback == null);
-            if (raw == null)
-            {
-                return fallback;
-            }
+            if (raw == null) return fallback;
             return Array.IndexOf(allowed, raw as string) >= 0 ? (string)raw : Fail(key, fallback);
         }
 
@@ -1161,10 +995,7 @@ namespace GarRevivalMaster
         public string Token(string key, int max, string fallback)
         {
             object raw = Raw(key, false);
-            if (raw == null)
-            {
-                return fallback;
-            }
+            if (raw == null) return fallback;
             string s = raw as string;
             return s != null && s.Length <= max && s.All(c => c < 128 && (char.IsLetterOrDigit(c) || c == '.' || c == '-' || c == '_')) ? s : Fail(key, fallback);
         }
@@ -1173,36 +1004,24 @@ namespace GarRevivalMaster
         {
             object raw = Raw(key, required);
             string s = raw as string;
-            if (raw == null || (s == string.Empty && !required))
-            {
-                return null;
-            }
+            if (raw == null || (s == string.Empty && !required)) return null;
             return s != null && s.Length > 0 && s.Length <= max && s.All(c => c >= '0' && c <= '9') ? s : Fail<string>(key, null);
         }
 
         public string Host(string key)
         {
             object raw = Raw(key, false);
-            if (raw == null || (raw as string) == string.Empty)
-            {
-                return null;
-            }
+            if (raw == null || (raw as string) == string.Empty) return null;
             return Check.IsHost(raw as string) ? (string)raw : Fail<string>(key, null);
         }
 
-        // A list of names: each 1..maxLength characters after cleaning.
+        // Names of 1..maxLength characters after cleaning.
         public List<string> List(string key, int maxCount, int maxLength)
         {
             object raw = Raw(key, false);
-            List<object> items = raw as List<object>;
-            if (raw == null)
-            {
-                return new List<string>();
-            }
-            if (items == null || items.Count > maxCount)
-            {
-                return Fail(key, new List<string>());
-            }
+            var items = raw as List<object>;
+            if (raw == null) return new List<string>();
+            if (items == null || items.Count > maxCount) return Fail(key, new List<string>());
             List<string> names = items.Select(i => i is string ? Check.Clean((string)i, int.MaxValue) : string.Empty).ToList();
             return names.All(n => n.Length > 0 && n.Length <= maxLength) ? names : Fail(key, new List<string>());
         }
@@ -1234,24 +1053,15 @@ namespace GarRevivalMaster
         public static bool IsLocal(string address)
         {
             IPAddress ip;
-            if (!IPAddress.TryParse(address, out ip))
-            {
-                return false;
-            }
-            if (IPAddress.IsLoopback(ip))
-            {
-                return true;
-            }
+            if (!IPAddress.TryParse(address, out ip)) return false;
+            if (IPAddress.IsLoopback(ip)) return true;
             byte[] b = ip.GetAddressBytes();
             return b.Length == 4 && (b[0] == 10 || (b[0] == 172 && b[1] >= 16 && b[1] < 32) || (b[0] == 192 && b[1] == 168) || (b[0] == 169 && b[1] == 254) || (b[0] == 100 && b[1] >= 64 && b[1] < 128));
         }
 
         public static bool SameSecret(string a, string b)
         {
-            if (a.Length != b.Length)
-            {
-                return false;
-            }
+            if (a.Length != b.Length) return false;
             int diff = 0;
             for (int i = 0; i < a.Length; i++)
             {
@@ -1261,14 +1071,11 @@ namespace GarRevivalMaster
         }
     }
 
-    // ---- JSON ----
-
     internal static class Json
     {
         private const int MaxDepth = 10;
 
-        // Objects become Dictionary<string, object>, arrays List<object>, numbers double.
-        // Anything malformed gives null.
+        // Objects become Dictionary<string, object>, arrays List<object>, numbers double; malformed input gives null.
         public static object Parse(string text)
         {
             try
@@ -1286,46 +1093,22 @@ namespace GarRevivalMaster
 
         private static object Value(string s, ref int i, int depth)
         {
-            if (depth > MaxDepth)
-            {
-                throw new FormatException("too deep");
-            }
+            if (depth > MaxDepth) throw new FormatException("too deep");
             Space(s, ref i);
-            if (i >= s.Length)
-            {
-                throw new FormatException("end");
-            }
+            if (i >= s.Length) throw new FormatException("end");
             char c = s[i];
-            if (c == '{')
-            {
-                return ParseObject(s, ref i, depth);
-            }
-            if (c == '[')
-            {
-                return ParseArray(s, ref i, depth);
-            }
-            if (c == '"')
-            {
-                return ParseString(s, ref i);
-            }
-            if (Word(s, ref i, "true"))
-            {
-                return true;
-            }
-            if (Word(s, ref i, "false"))
-            {
-                return false;
-            }
-            if (Word(s, ref i, "null"))
-            {
-                return null;
-            }
+            if (c == '{') return ParseObject(s, ref i, depth);
+            if (c == '[') return ParseArray(s, ref i, depth);
+            if (c == '"') return ParseString(s, ref i);
+            if (Word(s, ref i, "true")) return true;
+            if (Word(s, ref i, "false")) return false;
+            if (Word(s, ref i, "null")) return null;
             return ParseNumber(s, ref i);
         }
 
         private static Dictionary<string, object> ParseObject(string s, ref int i, int depth)
         {
-            Dictionary<string, object> d = new Dictionary<string, object>();
+            var d = new Dictionary<string, object>();
             i++;
             Space(s, ref i);
             if (i < s.Length && s[i] == '}')
@@ -1336,10 +1119,7 @@ namespace GarRevivalMaster
             while (true)
             {
                 Space(s, ref i);
-                if (i >= s.Length || s[i] != '"')
-                {
-                    throw new FormatException("key");
-                }
+                if (i >= s.Length || s[i] != '"') throw new FormatException("key");
                 string key = ParseString(s, ref i);
                 Space(s, ref i);
                 Expect(s, ref i, ':');
@@ -1357,7 +1137,7 @@ namespace GarRevivalMaster
 
         private static List<object> ParseArray(string s, ref int i, int depth)
         {
-            List<object> list = new List<object>();
+            var list = new List<object>();
             i++;
             Space(s, ref i);
             if (i < s.Length && s[i] == ']')
@@ -1381,28 +1161,19 @@ namespace GarRevivalMaster
 
         private static string ParseString(string s, ref int i)
         {
-            StringBuilder b = new StringBuilder();
+            var b = new StringBuilder();
             i++;
             while (i < s.Length)
             {
                 char c = s[i++];
-                if (c == '"')
-                {
-                    return b.ToString();
-                }
-                if (c < 0x20)
-                {
-                    throw new FormatException("control character");
-                }
+                if (c == '"') return b.ToString();
+                if (c < 0x20) throw new FormatException("control character");
                 if (c != '\\')
                 {
                     b.Append(c);
                     continue;
                 }
-                if (i >= s.Length)
-                {
-                    break;
-                }
+                if (i >= s.Length) break;
                 char e = s[i++];
                 switch (e)
                 {
@@ -1444,20 +1215,14 @@ namespace GarRevivalMaster
 
         private static bool Word(string s, ref int i, string word)
         {
-            if (string.CompareOrdinal(s, i, word, 0, word.Length) != 0)
-            {
-                return false;
-            }
+            if (string.CompareOrdinal(s, i, word, 0, word.Length) != 0) return false;
             i += word.Length;
             return true;
         }
 
         private static void Expect(string s, ref int i, char c)
         {
-            if (i >= s.Length || s[i] != c)
-            {
-                throw new FormatException("expected " + c);
-            }
+            if (i >= s.Length || s[i] != c) throw new FormatException("expected " + c);
             i++;
         }
 
@@ -1471,7 +1236,7 @@ namespace GarRevivalMaster
 
         public static string Write(object value)
         {
-            StringBuilder b = new StringBuilder();
+            var b = new StringBuilder();
             Write(b, value);
             return b.ToString();
         }
@@ -1548,8 +1313,6 @@ namespace GarRevivalMaster
         }
     }
 
-    // ---- small helpers ----
-
     internal sealed class RateLimiter
     {
         private sealed class Bucket
@@ -1611,7 +1374,7 @@ namespace GarRevivalMaster
 
         public static string Hex(int bytes)
         {
-            byte[] data = new byte[bytes];
+            var data = new byte[bytes];
             lock (Source)
             {
                 Source.GetBytes(data);

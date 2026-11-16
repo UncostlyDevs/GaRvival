@@ -1,6 +1,6 @@
-# Development aid: runs one scripted game instance on a throwaway profile.
+# Runs one scripted game instance on a throwaway profile.
 #   .\tools\testrun.ps1 -Autorun <file> [-Battle <battle.cfg text file>] [-Build] [-Seconds 200] [-Profile t]
-# The user's battle.cfg is restored afterwards. Any running game is closed first.
+# Closes any running game first; restores the user's battle.cfg afterwards.
 param([string]$Autorun, [string]$Battle, [switch]$Build, [int]$Seconds = 200, [string]$Profile = 't', [switch]$KeepSave)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
