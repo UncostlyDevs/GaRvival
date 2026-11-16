@@ -15,7 +15,7 @@ namespace GarRevival
 
         private enum Column { Name, Mode, Map, Players, Ping, Version }
 
-        private static readonly float[] ColumnWidths = { 296f, 150f, 120f, 80f, 70f, 50f };
+        private static readonly float[] ColumnWidths = { 236f, 150f, 120f, 100f, 70f, 90f };
         private const float StarWidth = 34f;
         private const float AutoRefresh = 30f;
         private const float DoubleClick = 0.4f;

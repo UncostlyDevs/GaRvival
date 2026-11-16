@@ -1142,7 +1142,7 @@ namespace GarRevivalMaster
         {
             object raw = Raw(key, required);
             string s = raw as string;
-            if (raw == null)
+            if (raw == null || (s == string.Empty && !required))
             {
                 return null;
             }

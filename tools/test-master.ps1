@@ -47,7 +47,7 @@ try {
     $r = Call GET '/v1/info' $null
     Check 'GET /v1/info' ($r.Code -eq 200 -and $r.Json.api -eq 1) $r.Text
 
-    $ded = Call POST '/v1/servers' '{"name":"Dedi\u0001 one","port":27015,"mode":"TeamDeadmach","map":"Western","players":1,"maxPlayers":4,"version":"3","rules":"profiles=own","dedicated":true,"lan":["192.168.1.20","8.8.8.8"]}'
+    $ded = Call POST '/v1/servers' '{"name":"Dedi\u0001 one","port":27015,"mode":"TeamDeadmach","map":"Western","players":1,"maxPlayers":4,"version":"3","rules":"profiles=own","dedicated":true,"transport":"tcp","steamLobby":"","state":"lobby","lan":["192.168.1.20","8.8.8.8"]}'
     Check 'register dedicated server' ($ded.Code -eq 200 -and $ded.Json.id.Length -eq 12 -and $ded.Json.token.Length -eq 32) $ded.Text
     Check 'loopback registrant gets publicAddress' ($ded.Json.address -eq '203.0.113.9') $ded.Json.address
     $host2 = Call POST '/v1/servers' '{"name":"Full host","port":27016,"mode":"CaptureTheFlag","players":4,"maxPlayers":4,"version":"3"}'
