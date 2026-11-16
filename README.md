@@ -454,7 +454,8 @@ hours.
 is part of Windows (into `master\bin`, no download) and runs it; Ctrl+C stops
 it. `--local` listens on 127.0.0.1 only and `--parent <pid>` exits with that
 process (how the game runs its own). Anyone can run a public one, change it,
-or build a different server against the same HTTP API. It needs no game install. On Linux or macOS with mono:
+or build a different server against the same HTTP API
+([protocol/MASTER-API.md](protocol/MASTER-API.md)). It needs no game install. On Linux or macOS with mono:
 `mcs -out:master/bin/GarRevival.Master.exe master/MasterServer.cs` then
 `mono master/bin/GarRevival.Master.exe master`. It writes `master\master.cfg`
 on the first start:
