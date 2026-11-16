@@ -107,6 +107,7 @@ namespace GarRevival
         public static bool SteamDeployLoginStart(object self, ref IEnumerator result)
         {
             LocalWeb.Start();
+            MasterLauncher.Start();
             result = OfflineLogin.Run((SteamDeployLogin)self);
             return true;
         }
@@ -119,6 +120,7 @@ namespace GarRevival
         {
             RevivalLog.Info("Timing check (quits on stutter) not started");
             LocalWeb.Start();
+            MasterLauncher.Start();
             return true;
         }
 

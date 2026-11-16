@@ -451,6 +451,9 @@ namespace GarRevival
                 case "skindump": // skindump <prefabPath> <index>: the part's albedo before/after as PNGs in skins-dump/
                     SkinPainter.Dump(words[1], byte.Parse(words[2], CultureInfo.InvariantCulture));
                     break;
+                case "quit": // close the game normally (OnApplicationQuit runs)
+                    Application.Quit();
+                    break;
                 case "log": // log <text>: a marker in the log
                     RevivalLog.Info("---- " + string.Join(" ", words.Skip(1).ToArray()));
                     break;

@@ -29,7 +29,8 @@ namespace GarRevival
         // Keys newer than DefaultConfig; appended to files that lack them.
         private static readonly string[][] AddedKeys =
         {
-            CfgFile.Key("master", string.Empty, "Master servers (server browser, FIND MATCH), comma-separated, e.g.\nmaster=http://master.example.org:27090"),
+            CfgFile.Key("master", string.Empty, "Master servers (server browser, FIND MATCH, ladder), comma-separated, e.g.\nmaster=http://master.example.org:27090\nEmpty = the master on this PC, which the game starts; off = none"),
+            CfgFile.Key("masterAutoStart", "on", "on = the game starts the bundled master (master\\MasterServer.cs) on this PC\nwhen master= points here and none is running"),
         };
 
         private static Dictionary<string, string> _values;
@@ -45,16 +46,19 @@ namespace GarRevival
             get { return !string.Equals(Get("skiptutorial"), "false", StringComparison.OrdinalIgnoreCase); }
         }
 
-        // Master servers for the server browser, FIND MATCH and public games:
-        // comma-separated http:// URLs. Empty hides the internet list.
-        public static string[] Masters
-        {
-            get { return ParseMasters(Get("master")); }
-        }
+        // Comma-separated http:// URLs; empty = this PC's master, "off" = none.
+        public static string[] Masters => ParseMasters(Get("master"));
+
+        public static bool MasterAutoStart => !string.Equals(Get("masterautostart"), "off", StringComparison.OrdinalIgnoreCase);
 
         public static string[] ParseMasters(string value)
         {
-            return (value ?? string.Empty).Split(',').Select(u => u.Trim().TrimEnd('/'))
+            value = (value ?? string.Empty).Trim();
+            if (value.Length == 0)
+            {
+                return new[] { MasterLauncher.LocalUrl };
+            }
+            return value.Split(',').Select(u => u.Trim().TrimEnd('/'))
                 .Where(u => u.Length <= 200 && u.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && u.Length > 7).Distinct().Take(4).ToArray();
         }
 

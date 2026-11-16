@@ -24,11 +24,20 @@ namespace GarRevivalMaster
         {
             try
             {
-                if (args.Length > 0)
+                // [folder] [--local] [--parent <pid>]: --local listens on 127.0.0.1 only;
+                // --parent exits when that process (the game that started it) ends.
+                if (args.Length > 0 && !args[0].StartsWith("--"))
                 {
                     Directory.SetCurrentDirectory(args[0]);
                 }
-                new Master(Config.Load("master.cfg")).Run();
+                Config config = Config.Load("master.cfg");
+                config.Local = args.Contains("--local");
+                int parent = Array.IndexOf(args, "--parent");
+                if (parent >= 0 && parent + 1 < args.Length)
+                {
+                    ExitWith(int.Parse(args[parent + 1], CultureInfo.InvariantCulture));
+                }
+                new Master(config).Run();
                 return 0;
             }
             catch (Exception ex)
@@ -36,6 +45,27 @@ namespace GarRevivalMaster
                 Console.Error.WriteLine("Master server stopped: " + ex.Message);
                 return 1;
             }
+        }
+
+        private static void ExitWith(int pid)
+        {
+            Process game;
+            try
+            {
+                game = Process.GetProcessById(pid);
+            }
+            catch (ArgumentException)
+            {
+                Environment.Exit(0); // already gone
+                return;
+            }
+            Thread watch = new Thread(() =>
+            {
+                game.WaitForExit();
+                Environment.Exit(0);
+            });
+            watch.IsBackground = true;
+            watch.Start();
         }
     }
 
@@ -60,6 +90,7 @@ namespace GarRevivalMaster
 
         public int Port, ServerTimeout, MaxServers, MaxServersPerIp, RequestsPerMinute, RegistersPerMinute, ResultsPerMinute, MaxConnections;
         public string PublicAddress, LadderFile;
+        public bool Local;
 
         public static Config Load(string path)
         {
@@ -138,7 +169,7 @@ namespace GarRevivalMaster
         public void Run()
         {
             _slots = new Semaphore(_config.MaxConnections, _config.MaxConnections);
-            _listener = new TcpListener(IPAddress.Any, _config.Port);
+            _listener = new TcpListener(_config.Local ? IPAddress.Loopback : IPAddress.Any, _config.Port);
             _listener.Start(128);
             Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e)
             {
@@ -148,7 +179,7 @@ namespace GarRevivalMaster
             Thread tick = new Thread(Tick);
             tick.IsBackground = true;
             tick.Start();
-            _log.Write("Listening on TCP " + _config.Port + " (" + _ladder.Count + " ladder rows). Ctrl+C stops.");
+            _log.Write("Listening on TCP " + _config.Port + (_config.Local ? " (this PC only)" : string.Empty) + ", " + _ladder.Count + " ladder rows. Ctrl+C stops.");
             while (!_stopping)
             {
                 TcpClient client;

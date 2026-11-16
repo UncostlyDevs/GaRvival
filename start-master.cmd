@@ -4,7 +4,8 @@ rem game servers register with. Compiles master\MasterServer.cs with the C#
 rem compiler that is part of Windows (.NET Framework 4, C# 5) into
 rem master\bin\GarRevival.Master.exe and runs it. Settings are in
 rem master\master.cfg (created on the first start); the log is master\master.log.
-rem Stop it with Ctrl+C. On Linux/macOS with mono:
+rem Stop it with Ctrl+C. --local listens on 127.0.0.1 only (the game starts
+rem it that way when settings.cfg has master= empty). On Linux/macOS with mono:
 rem   mcs -out:master/bin/GarRevival.Master.exe master/MasterServer.cs
 rem   mono master/bin/GarRevival.Master.exe master
 set "MASTER=%~dp0master"
@@ -20,4 +21,4 @@ if errorlevel 1 (
   echo Could not compile the master server.
   exit /b 1
 )
-"%MASTER%\bin\GarRevival.Master.exe" "%MASTER%"
+"%MASTER%\bin\GarRevival.Master.exe" "%MASTER%" %*
