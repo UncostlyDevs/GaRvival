@@ -27,10 +27,10 @@ This is an unofficial fan project, not affiliated with Masthead Studios.
 
 | Works | Not yet |
 | --- | --- |
-| Launching past the "servers are being shut down" notice | Original stats for engines, batteries, heads, weapon cases and devices (lost; designed, see below) |
+| Launching past the "servers are being shut down" notice | Original stats for engines, batteries, heads, weapon cases and devices: no source survives, so they are designed (see below) |
 | Garage, UI, portraits | |
 | Store with all 190 parts and 81 head/hat/eyewear/device modules, official names and descriptions | |
-| Real stats for 28 chassis, 21 bodies and 26 barrels (the 2017 live balance, see below) | |
+| Real stats for 28 chassis, 21 bodies and 26 barrels (the 2017 live balance), the other chassis, bodies and barrels inferred from them, tiers 0-10 (see below) | |
 | Buying and selling, credits, sparks exchange | |
 | A starter robot, robot builder, module editor | |
 | **Test Run** in the training ground | |
@@ -619,35 +619,46 @@ What survives in the client, and is used:
   without any stat fields; the editor-side stat classes still in the code
   (`WeaponBarrelPrefabTierableStatistics` etc.) were never serialized.
 - The game code: no stat tables, only two tutorial robot presets.
-- The official wiki (gar.fandom.com): every part page is strategy text, no
-  numbers. The server's template XMLs on S3 were never archived.
+- The official wiki (gar.fandom.com, every revision since 2013): strategy
+  text, no numbers.
+- The 2015 browser builds of the game (saved by the Wayback Machine): no stat
+  data either. They loaded the templates (`PartTemplateList.xml` and others)
+  from an S3 bucket that no longer exists and was never archived.
 
-**Real numbers** (`src/GarRevival/RealStats.cs`) come from the tables in the
-Steam guide ["Best" Weapon // Body // Chassis](https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577)
-(August 2017, after the last rebalance):
+**Real numbers** (`data/stats/`, `tools/infer_stats.py`, generated into
+`src/GarRevival/StatTable.g.cs`):
 
-- 28 chassis: durability, speed (km/h), weight limit, terrain (+/o/-).
-- 21 bodies: durability, weight.
-- 26 barrels: damage per projectile, splash, shots per second.
-- Durability is the guide's value / 0.35, which gives whole numbers whose top
-  tier (x1.2) lands exactly on the garage's bar maxima (Warhawk 1000 -> 1200,
-  Mantis 935 -> 1122). Weights, speeds, limits and damage are as published.
-- These are tier-0 values; durability, damage and splash grow to x1.2 at the
-  top tier. Weights, limits, speeds and rates of fire do not change with tier.
-- Parts the guide leaves out take a sibling's row: Christmas Sleigh = Warhawk,
-  Maximus Pride = Bugsy, Cuckoo = Jackhammer, Maximus Legacy = Chromax; Barry
-  Light and the Christmas rocket launcher scale the Rocket Launcher, Justice and
-  Revenge scale the Blaster, the Witch Bow scales the Hailfire, each by the two
-  barrels' roles in `Design.cs`.
-- Guide names that differ from the template ids: Toad = MC_Frog, Behemoth =
-  HC_Bahemoth, Pistolero = LB_Sheriff, Ratchet = LB_Bandit, Elektra =
-  MB_Electra, Panzersturm = HB_Pazersturm, Slugger = LW_B_Revolver, Sprayshot =
-  LW_B_SawedOff, Nailer = LW_B_NailGun, Pewpew = LW_B_SmallLaser, Sandblaster =
-  LW_B_Shotgun, Reaper = LW_B_Arbalet, Stingray = LW_B_ElectroCutter, Oxidian =
-  MW_B_AcidCaster, Hailfire = MW_B_Katyusha, Dragonbelch = MW_B_FalmeCaster,
-  Blaster = MW_B_Laser, Chewing Gun = MW_B_StickyBombLauncher, Rocket Launcher =
-  LW_B_Bertha (a heavy barrel), Thunderbolt = HW_B_MachineGun, Missile Launcher
-  = HW_B_Missile.
+- `data/stats/observations.csv` holds every surviving number with its source,
+  date and a short excerpt: the tables of the Steam guide
+  ["Best" Weapon // Body // Chassis](https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577)
+  (August 2017, the last balance: 28 chassis, 21 bodies, 26 barrels), the
+  garage's stat-bar maxima, and numbers players and developers posted on the
+  official forum, Steam discussions and patch notes from 2013 to 2017 (read
+  from the Wayback Machine). `patches.csv` lists every dated balance change,
+  `economy.csv` prices and rewards, `parts.csv` each part's type, weight class,
+  subtype and old names, `rules.md` the general rules.
+- `tools/infer_stats.py` (Python 3, standard library) brings older numbers to
+  the 2017 balance with the patch history, fits how each stat grows with tier
+  and how it differs between weight classes and subtypes, and fills every
+  part the sources leave out from the most similar parts. A type missing a
+  weight class borrows the class step of the most similar type.
+- It checks itself: every measured value is hidden in turn and predicted from
+  the rest (`data/stats/validation.md`). Median errors: chassis speed 0.5%,
+  weight limit 1.3%, durability 12%; body durability 14.5%; barrel rate of fire
+  16%, damage 24%, each better than the earlier designed rule. Where a model
+  is not better than the designed rule (body weight, barrel splash, weapon
+  module durability), the designed rule stays.
+- Tiers run 0-10 (devices 0-3), as in the original. Durability grows by 1/14
+  of its tier-0 value per tier and damage by 1/13: tier 10 is 12/7 of tier 0,
+  which lands exactly on the garage's bar maxima (chassis 1200 = 12/7 x
+  Warhawk 700, body 1122 = 12/7 x Mantis 654.5). Garage durability is the
+  guide's number x2, matching what players posted at tier 0.
+- Each value in `StatTable.g.cs` is marked measured, measured then patched,
+  inferred or designed; `data/stats/stats.csv` says what each inferred value
+  was worked out from.
+- Old and guide names map to template ids in `parts.csv` (Toad = MC_Frog,
+  Panzersturm = HB_Pazersturm, Slugger = LW_B_Revolver, Hailfire =
+  MW_B_Katyusha, Blaster = MW_B_Laser, Rocket Launcher = LW_B_Bertha, ...).
 
 **Designed numbers** (`Catalog.cs` and `Design.cs`) for everything else:
 engines, batteries, heads, weapon cases, devices, and barrel accuracy, range,
@@ -656,8 +667,8 @@ energy and durability.
 - **The original scale.** The garage's stat bars
   (`GameplayDataExtactTools`) hard-code each stat's maximum per part type
   (weapon case durability 628, range 200, battery capacity 270...). A
-  top-tier heavy part gets the maximum; Light/Medium get 60%/80% and tier 0
-  gets 1/1.2 of the top tier, like the real rows.
+  top-tier heavy part gets the maximum; Light/Medium get 60%/80%, and lower
+  tiers follow the fitted durability curve, like the real rows.
 - **Masses** of chassis, weapon cases and barrels are 30%/60%/100% of the bar
   maxima (25.2/25.2/25.5) for Light/Medium/Heavy, so a body with two weapons
   of its class stays under its class's real weight limits. Four-armed bodies
@@ -691,12 +702,12 @@ Other choices:
 
 `generated-templates.txt` (written on each start) lists every part with its
 type, weight class, chosen weapon/device/chassis behaviour and where its
-numbers come from (`real`, `real via <sibling>` or `designed`). `revival.log`
-has a `Weight budget` line per class.
+numbers come from (`measured`, `adjusted-by-patch`, `inferred`, `designed`).
+`revival.log` has a `Weight budget` line per class.
 
-Rebalancing is a matter of editing `RealStats.cs` (real rows and siblings),
-`Design.cs` (each part's role) or `Catalog.Stats()` (the designed scale), then
-rebuilding.
+To add a number someone finds, add a row to `data/stats/observations.csv`
+(with its source), run `python tools/infer_stats.py` and rebuild. Designed
+values live in `Design.cs` (each part's role) and `Catalog.Stats()` (the scale).
 
 ## How it works
 
@@ -777,7 +788,7 @@ GARRevival/
     GameServer.cs     operation handlers and events
     Catalog.cs        part/module/price templates from the prefabs
     Design.cs         each part's role, from its official description
-    RealStats.cs      real chassis, body and barrel stats from a 2017 guide
+    StatTable.g.cs    chassis, body and barrel stats, generated by tools/infer_stats.py
     PlayerState.cs    the saved profile, starter robot, item creation
     DataFactory.cs    other startup data (portraits, prices...)
     Workshop*.cs      part upgrades, tech levels, boosts, repairs, slots, renting
@@ -818,7 +829,9 @@ GARRevival/
   tools/            asset bundle readers; ProtoSchema and protocol_extract.py
                     generate the protocol manifest; check.ps1 (compile only),
                     testrun.ps1 / testrun2.ps1 (scripted one- and two-player runs),
-                    test-master.ps1 (master server endpoints)
+                    test-master.ps1 (master server endpoints),
+                    infer_stats.py (the stat model; writes StatTable.g.cs)
+  data/stats/       surviving numbers with sources, patch history, economy, validation
   build.ps1         builds both into bin/
 ```
 

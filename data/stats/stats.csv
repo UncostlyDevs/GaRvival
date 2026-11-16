@@ -1,0 +1,296 @@
+partId,stat,tier0,unit,provenance,basis
+HW_B_Barry_Light,damage,42.94,hp per projectile,inferred,"log-linear, ridge 0.1: class Heavy base 30.39 from 6 parts; feed=ammo x0.932 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design damage x0.974; log projectiles x1.000; role=rocket x1.557 (Missile Launcher, Rocket Launcher)"
+HW_B_Barry_Light,projectiles,1,count,designed,parts.csv subtype from the description
+HW_B_Barry_Light,rateOfFire,0.5,shots/s,inferred,"log-linear, ridge 0.1: class Heavy base 0.7216 from 6 parts; feed=ammo x1.113 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design rate x0.850; role=rocket x0.789 (Missile Launcher, Rocket Launcher)"
+HW_B_Barry_Light,splash,12.54,hp per hit (Oxidian per tick),designed,sibling LW_B_Bertha scaled by Design.Barrels traits; inference not trusted (LOO median 38%)
+HW_B_ChristmasRocketLauncher,damage,42.94,hp per projectile,inferred,"log-linear, ridge 0.1: class Heavy base 30.39 from 6 parts; feed=ammo x0.932 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design damage x0.974; log projectiles x1.000; role=rocket x1.557 (Missile Launcher, Rocket Launcher)"
+HW_B_ChristmasRocketLauncher,projectiles,1,count,designed,parts.csv subtype from the description
+HW_B_ChristmasRocketLauncher,rateOfFire,0.5,shots/s,inferred,"log-linear, ridge 0.1: class Heavy base 0.7216 from 6 parts; feed=ammo x1.113 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design rate x0.850; role=rocket x0.789 (Missile Launcher, Rocket Launcher)"
+HW_B_ChristmasRocketLauncher,splash,12.54,hp per hit (Oxidian per tick),designed,sibling LW_B_Bertha scaled by Design.Barrels traits; inference not trusted (LOO median 38%)
+HW_B_Fragunov,damage,31.35,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Fragunov,projectiles,1,count,designed,parts.csv subtype from the description
+HW_B_Fragunov,rateOfFire,0.7,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Fragunov,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+HW_B_MachineGun,damage,13.85,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_MachineGun,projectiles,1,count,designed,parts.csv subtype from the description
+HW_B_MachineGun,rateOfFire,2,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_MachineGun,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+HW_B_Missile,damage,39.2,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Missile,projectiles,1,count,designed,parts.csv subtype from the description
+HW_B_Missile,rateOfFire,0.7,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Missile,splash,11.9,hp per hit (Oxidian per tick),measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Necrotron3000,damage,31.35,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Necrotron3000,projectiles,1,count,designed,parts.csv subtype from the description
+HW_B_Necrotron3000,rateOfFire,0.7,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Necrotron3000,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+HW_B_Plumber,damage,11.2,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Plumber,projectiles,5,count,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Plumber,rateOfFire,0.6,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_B_Plumber,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_AntKiller,damage,22.61,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_AntKiller,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_AntKiller,rateOfFire,1.3,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_AntKiller,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Arbalet,damage,28.24,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Arbalet,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Arbalet,rateOfFire,1.3,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Arbalet,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Bertha,damage,49,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Bertha,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Bertha,rateOfFire,0.5,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Bertha,splash,15.68,hp per hit (Oxidian per tick),measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_ElectroCutter,damage,35.92,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_ElectroCutter,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_ElectroCutter,rateOfFire,1.1,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_ElectroCutter,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Flintlock,damage,21.34,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Flintlock,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Flintlock,rateOfFire,1.6,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Flintlock,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Humiliator,damage,21.77,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Humiliator,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Humiliator,rateOfFire,1,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Humiliator,splash,7.77,hp per hit (Oxidian per tick),measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_NailGun,damage,8.29,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_NailGun,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_NailGun,rateOfFire,4,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_NailGun,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Revolver,damage,17.36,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Revolver,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Revolver,rateOfFire,2.3,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Revolver,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_SawedOff,damage,29.4,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_SawedOff,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_SawedOff,rateOfFire,1,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_SawedOff,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Shotgun,damage,5.25,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Shotgun,projectiles,5,count,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Shotgun,rateOfFire,1,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Shotgun,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Slingshot,damage,16.24,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Slingshot,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Slingshot,rateOfFire,1.8,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Slingshot,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_SmallLaser,damage,11.1,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_SmallLaser,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_SmallLaser,rateOfFire,3,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_SmallLaser,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+LW_B_Trasher,damage,35.41,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Trasher,projectiles,1,count,designed,parts.csv subtype from the description
+LW_B_Trasher,rateOfFire,0.7,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LW_B_Trasher,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_AcidCaster,damage,6.27,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_AcidCaster,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_AcidCaster,rateOfFire,2,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_AcidCaster,splash,9.645,hp per hit (Oxidian per tick),measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; shown 2x per tick in the garage
+MW_B_DeathRay,damage,11.03,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_DeathRay,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_DeathRay,rateOfFire,2.5,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_DeathRay,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_FalmeCaster,damage,8.89,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_FalmeCaster,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_FalmeCaster,rateOfFire,5,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_FalmeCaster,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_Katyusha,damage,11.2,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Katyusha,projectiles,4,count,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Katyusha,rateOfFire,0.5,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Katyusha,splash,4.2,hp per hit (Oxidian per tick),measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Laser,damage,30.56,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Laser,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_Laser,rateOfFire,1,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Laser,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_Machine Gun,damage,9.72,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Machine Gun,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_Machine Gun,rateOfFire,3,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Machine Gun,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_Maximus_Justice,damage,19.51,hp per projectile,inferred,"log-linear, ridge 0.1: class Medium base 18.88 from 8 parts; feed=ammo x0.932 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design damage x1.108; log projectiles x1.000; role=heavy-bolt x1.000 (no measured part)"
+MW_B_Maximus_Justice,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_Maximus_Justice,rateOfFire,1.2,shots/s,inferred,"log-linear, ridge 0.1: class Medium base 1.401 from 8 parts; feed=ammo x1.113 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design rate x0.793; role=heavy-bolt x1.000 (no measured part)"
+MW_B_Maximus_Justice,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_Maximus_Revenge,damage,19.17,hp per projectile,inferred,"log-linear, ridge 0.1: class Medium base 18.88 from 8 parts; feed=ammo x0.932 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design damage x1.089; log projectiles x1.000; role=disc x1.000 (no measured part)"
+MW_B_Maximus_Revenge,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_Maximus_Revenge,rateOfFire,1.3,shots/s,inferred,"log-linear, ridge 0.1: class Medium base 1.401 from 8 parts; feed=ammo x1.113 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design rate x0.850; role=disc x1.000 (no measured part)"
+MW_B_Maximus_Revenge,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_Railgun,damage,11.93,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Railgun,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_Railgun,rateOfFire,2,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_Railgun,splash,0,hp per hit (Oxidian per tick),designed,no splash in its description (Design.cs)
+MW_B_StickyBombLauncher,damage,0,hp per projectile,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_StickyBombLauncher,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_StickyBombLauncher,rateOfFire,2,shots/s,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_StickyBombLauncher,splash,5.6,hp per hit (Oxidian per tick),measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MW_B_WitchBow,damage,23.8,hp per projectile,inferred,"log-linear, ridge 0.1: class Medium base 18.88 from 8 parts; feed=ammo x0.932 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design damage x1.000; log projectiles x1.000; role=splash x1.352 (Humiliator)"
+MW_B_WitchBow,projectiles,1,count,designed,parts.csv subtype from the description
+MW_B_WitchBow,rateOfFire,1,shots/s,inferred,"log-linear, ridge 0.1: class Medium base 1.401 from 8 parts; feed=ammo x1.113 (Fragunov, Thunderbolt, Missile Launcher, Plumber, Reaper); log design rate x0.904; role=splash x0.677 (Humiliator)"
+MW_B_WitchBow,splash,4.9,hp per hit (Oxidian per tick),designed,sibling MW_B_Katyusha scaled by Design.Barrels traits; inference not trusted (LOO median 38%)
+HB_Chopper,durability,653.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HB_Chopper,weight,160,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HB_Forge,durability,284.2,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HB_Forge,weight,340,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HB_GasLeak,durability,568.4,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HB_GasLeak,weight,159.9,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HB_Mantis,durability,654.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HB_Mantis,weight,160,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HB_Pazersturm,durability,287,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HB_Pazersturm,weight,340.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Bandit,durability,212.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Bandit,weight,40.1,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Cuckoo,durability,248,hp,inferred,"log-linear, ridge 3: class Light base 200.3 from 9 parts; arms=2 x1.237 (Chopper, Gasleak, Mantis, Ratchet, Firefighter)"
+LB_Cuckoo,weight,40,weight units,designed,sibling LB_Jackhammer; inference not trusted (LOO median 10%)
+LB_Firefighter,durability,263.9,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Firefighter,weight,39.9,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Flex,durability,284.9,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Flex,weight,40.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Ghast,durability,173.6,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Ghast,weight,195,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Jackhammer,durability,246.4,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Jackhammer,weight,40,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Lizgar,durability,281.4,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Lizgar,weight,40.1,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Sheriff,durability,212.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Sheriff,weight,40,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Shinobi,durability,207.9,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Shinobi,weight,39.8,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LB_Spitfire,durability,177.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LB_Spitfire,weight,195.3,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Chromax,durability,357.7,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Chromax,weight,100,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Clunker,durability,314.3,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Clunker,weight,99.9,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Dervish,durability,191.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Dervish,weight,260.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Eimer-Kreiger,durability,210.7,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Eimer-Kreiger,weight,260.3,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Electra,durability,521.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Electra,weight,100.3,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Headlight,durability,284.2,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Headlight,weight,339.8,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MB_Maximus_Lagacy,durability,349,hp,inferred,"log-linear, ridge 3: class Medium base 282.3 from 6 parts; arms=2 x1.237 (Chopper, Gasleak, Mantis, Ratchet, Firefighter)"
+MB_Maximus_Lagacy,weight,100,weight units,designed,sibling MB_Chromax; inference not trusted (LOO median 10%)
+MB_Six_Strings_Samurai,durability,327.6,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MB_Six_Strings_Samurai,weight,103,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_AO,durability,613.2,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_AO,speed,13,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_AO,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_AO,weightLimit,433,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Bahemoth,durability,494.2,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_Bahemoth,speed,14,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Bahemoth,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Bahemoth,weightLimit,416.8,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Bucephalas,durability,570.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_Bucephalas,speed,15,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Bucephalas,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Bucephalas,weightLimit,400,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_ChristmasSleigh,durability,634,hp,inferred,"log-linear, ridge 0.03: class Heavy base 581.1 from 7 parts; kind=hover x1.091 (Warhawk, Dynamo, Piranha, Tumbleweed, Chimney)"
+HC_ChristmasSleigh,speed,13,km/h,inferred,"log-linear, ridge 1: class Heavy base 13.54 from 7 parts; kind=hover x0.932 (Warhawk, Dynamo, Piranha, Tumbleweed, Chimney)"
+HC_ChristmasSleigh,terrain,1,rating +1/0/-1,inferred,most common rating of hover chassis (6 of 6)
+HC_ChristmasSleigh,weightLimit,450.1,weight units,inferred,"log-linear, ridge 3: class Heavy base 424.5 from 7 parts; kind=hover x1.060 (Warhawk, Dynamo, Piranha, Tumbleweed, Chimney)"
+HC_Daggerjaw,durability,507.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_Daggerjaw,speed,15,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Daggerjaw,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Daggerjaw,weightLimit,399.8,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Raptor,durability,559.3,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_Raptor,speed,14,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Raptor,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Raptor,weightLimit,417,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Rollover,durability,597.6,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_Rollover,speed,13,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Rollover,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Rollover,weightLimit,433,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Warhawk,durability,700,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+HC_Warhawk,speed,12,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Warhawk,terrain,1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HC_Warhawk,weightLimit,450,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Buzzer,durability,254.8,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Buzzer,speed,23,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Buzzer,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Buzzer,weightLimit,130,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Chicken,durability,311.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Chicken,speed,22,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Chicken,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Chicken,weightLimit,140,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Creeper,durability,290.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Creeper,speed,22,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Creeper,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Creeper,weightLimit,140.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Drifter,durability,238,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Drifter,speed,22,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Drifter,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Drifter,weightLimit,140.1,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Dune,durability,273.7,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Dune,speed,21,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Dune,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Dune,weightLimit,150.3,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Dynamo,durability,213.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Dynamo,speed,20,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Dynamo,terrain,1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Dynamo,weightLimit,160.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Meerkat,durability,217,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Meerkat,speed,23,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Meerkat,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Meerkat,weightLimit,129.9,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Piranha,durability,325.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Piranha,speed,20,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Piranha,terrain,1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Piranha,weightLimit,160.4,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Tumbleweed,durability,367.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Tumbleweed,speed,20,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Tumbleweed,terrain,1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Tumbleweed,weightLimit,160.5,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Ural,durability,292.6,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Ural,speed,23,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Ural,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Ural,weightLimit,128.9,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Zip-Line,durability,179.2,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+LC_Zip-Line,speed,23,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Zip-Line,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+LC_Zip-Line,weightLimit,129.7,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Bugsy,durability,350.7,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Bugsy,speed,19,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Bugsy,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Bugsy,weightLimit,255,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Chimney,durability,485.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Chimney,speed,16,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Chimney,terrain,1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Chimney,weightLimit,295.3,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Cucaracha,durability,471.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Cucaracha,speed,17,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Cucaracha,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Cucaracha,weightLimit,282.3,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Frog,durability,333.9,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Frog,speed,18,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Frog,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Frog,weightLimit,268,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_HotRod,durability,322,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_HotRod,speed,19,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_HotRod,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_HotRod,weightLimit,254.8,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Maximus_Pride,durability,358,hp,inferred,"log-linear, ridge 0.03: class Medium base 400.5 from 10 parts; kind=wheeler x0.894 (Bucephalas, Daggerjaw, Buzzer, Meerkat, Ural)"
+MC_Maximus_Pride,speed,19,km/h,inferred,"log-linear, ridge 1: class Medium base 17.33 from 10 parts; kind=wheeler x1.069 (Bucephalas, Daggerjaw, Buzzer, Meerkat, Ural)"
+MC_Maximus_Pride,terrain,-1,rating +1/0/-1,inferred,most common rating of wheeler chassis (9 of 10)
+MC_Maximus_Pride,weightLimit,261.1,weight units,inferred,"log-linear, ridge 3: class Medium base 276.5 from 10 parts; kind=wheeler x0.944 (Bucephalas, Daggerjaw, Buzzer, Meerkat, Ural)"
+MC_Off-Road_Warrior,durability,357,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Off-Road_Warrior,speed,19,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Off-Road_Warrior,terrain,-1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Off-Road_Warrior,weightLimit,255,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Prospector,durability,394.1,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Prospector,speed,18,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Prospector,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Prospector,weightLimit,268.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Samum,durability,358.4,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Samum,speed,16,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Samum,terrain,1,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Samum,weightLimit,295.2,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Troll,durability,439.6,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Troll,speed,17,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Troll,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Troll,weightLimit,282.1,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Wheelbarrow,durability,444.5,hp,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577; guide x2 garage scale
+MC_Wheelbarrow,speed,17,km/h,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Wheelbarrow,terrain,0,rating +1/0/-1,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+MC_Wheelbarrow,weightLimit,282.1,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+Engine_04,speedModifier,-0.5,km/h,measured,official 2013-07-04 https://web.archive.org/web/20160821183042id_/http://forum.play-gar.com/index.php?/topic/514-%D0%9A%D0%BE%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%80-%D0%BF%D0%BE-%D1%80%D0%B5%D0%B1%D0%B0%D0%BB%D0%B0%D0%BD%D1%81%D0%B0/
+Engine_04,weightLimitModifier,20,weight units,measured,official 2013-07-04 https://web.archive.org/web/20160821183042id_/http://forum.play-gar.com/index.php?/topic/514-%D0%9A%D0%BE%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%80-%D0%BF%D0%BE-%D1%80%D0%B5%D0%B1%D0%B0%D0%BB%D0%B0%D0%BD%D1%81%D0%B0/
+Engine_06,weightLimitModifier,40,weight units,measured,guide 2017-08-09 https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577
+HW_C_Ballistic,damageModifier,1,x,measured,"player DPS on Ballistic / guide DMG x ROF: Fragunov 0.949 (stale), Rocket Launcher 1.000"
+HW_C_Cannon,damageModifier,1.15,x,measured,"player DPS on Cannon / on Ballistic: Fragunov 1.1539, Rocket Launcher 1.1469"

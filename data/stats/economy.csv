@@ -1,0 +1,105 @@
+key,value,unit,era,url,excerpt,notes
+vip.xpMultiplier,2,x,2014-08-14,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,gives 2X more XP and credits,VIP from 14 Aug 2014
+vip.creditMultiplier,2,x,2014-08-14,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,gives 2X more XP and credits,
+vip.crateOpenChanceBonus,0.05,absolute,2014-08-14,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,5% higher chance to open crates,client BONUS_UNLOCK_CHANCE_VALUE = 0.05
+vip.partySlotBonus,1,slots,2014-08-14,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,a third party member slot,
+vip.priceSparks,85,sparks,2015-06-27,https://steamcommunity.com/app/293540/discussions/,if one of us finally gets 85 sparks,player; duration not given
+vip.monthPriceUsd,13,USD,2015-01-05,https://steamcommunity.com/app/293540/discussions/1/620700961099854508/,"for 1 mont VIP you will pay $13,00",player
+xp.bonusPerSource,1,"+100% each, additive",2014-08-14,https://web.archive.org/web/20160821184837id_/http://forum.play-gar.com/index.php?/topic/1317-game-update-notes-14-august-2014/,Each bonus gives you +100% exp,Support: VIP + event = +200%
+inventory.freeSlots,20,slots,2014-08-07,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,Free inventory slots are increased to 20,15 before 7 Aug 2014
+inventory.freeSlotsBefore,15,slots,2014-08-07,https://steamcommunity.com/app/293540/discussions/0/34093781844670222/,start with 20 free slots instead of 15,MastheadStudios; before 7 Aug 2014
+inventory.slotPrice.15to20,10,sparks,2014-08-07,https://steamcommunity.com/app/293540/discussions/0/34093781844670222/,the sum for unlocking the slots from 15 to 20,MastheadStudios; price before 7 Aug 2014
+inventory.slotPrice.20to25,10,sparks,2014-08-07,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,Upgrading from 20 to 25 costs 10 sparks,
+inventory.slotPrice.25to30,85,sparks,2014-09-05,https://steamcommunity.com/app/293540/reviews/,das zweite schon 85,German review
+inventory.slotPrice.30to35,175,sparks,2015-02-06,https://steamcommunity.com/app/293540/discussions/0/604941528492422477/?ctp=2,85+175+275 sparks,sequence to 40 slots
+inventory.slotPrice.35to40,275,sparks,2015-02-06,https://steamcommunity.com/app/293540/discussions/0/604941528492422477/?ctp=2,85+175+275 sparks,conflicts with 255 below
+inventory.slotPrice.35to40,255,sparks,2015-01-05,https://steamcommunity.com/app/293540/discussions/1/620700961099854508/,get more 5 i have to pay 255 sparks,conflicts with 275 above
+inventory.slotPrice.85to90,1105,sparks,2015-02-01,https://steamcommunity.com/app/293540/discussions/0/616199347853768858/,now i have to pay 1105 to get +5,
+inventory.slotPrice.range,300-400,sparks per +5,2014-08-06,https://steamcommunity.com/app/293540/discussions/0/34094415688474612/,300-400+ sparks for 5 additional slots,launch week
+garage.startSlots,3,robot slots,2013-02-05,https://web.archive.org/web/20140810051006id_/http://forum.play-gar.com:80/index.php?/topic/74-get-started/,You start with 3 available robot slots,2013 guide; Aug 2014 reviews say 2
+garage.startSlots,2,robot slots,2014-08-08,https://steamcommunity.com/app/293540/reviews/,Only 2 free Robot slots,Steam launch week review
+garage.slotPrice.3rd,85,sparks,2014-08-08,https://steamcommunity.com/app/293540/reviews/,it's 85 Sparks to get the third slot,
+garage.slotPrice.3rd,84,sparks,2014-12-22,https://web.archive.org/web/20160821200923id_/http://forum.play-gar.com/index.php?/topic/2225-%D0%B1%D1%8A%D0%B3-%D1%81-%D0%B7%D0%B0%D0%BA%D1%83%D0%BF%D1%83%D0%B2%D0%B0%D0%BD%D0%B5%D1%82%D0%BE-%D0%BD%D0%B0-%D0%BD%D0%BE%D0%B2-%D1%81%D0%BB%D0%BE%D1%82-%D0%B7%D0%B0-%D1%80%D0%BE%D0%B1%D0%BE%D1%82/,"взе ми 80(мисля, че беше 84 точно) спаркс","player unsure: ~80, 'maybe 84'"
+garage.slotPrice.next,340,sparks,2014-12-22,https://web.archive.org/web/20160821200923id_/http://forum.play-gar.com/index.php?/topic/2225-%D0%B1%D1%8A%D0%B3-%D1%81-%D0%B7%D0%B0%D0%BA%D1%83%D0%BF%D1%83%D0%B2%D0%B0%D0%BD%D0%B5%D1%82%D0%BE-%D0%BD%D0%B0-%D0%BD%D0%BE%D0%B2-%D1%81%D0%BB%D0%BE%D1%82-%D0%B7%D0%B0-%D1%80%D0%BE%D0%B1%D0%BE%D1%82/,ми иска 340 спаркс,next slot after the 3rd
+dailyMissions.refreshCredits,300,credits,2014-08-07,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,Refresh daily missions cost increased to 300 credits,client DailyMissionsRefreshCredits = 300
+dailyMissions.resetHours,20,hours,2017 client,client:CommonConstants.DailyMissionsResetHours,DailyMissionsResetHours = 20,
+sparks.toCreditsRate,50,credits per spark,2015-01-05,https://steamcommunity.com/app/293540/discussions/1/620700961099854508/,to trade 1 > 50,client CurrencyConvertionRate = 50
+sparks.toCreditsRate,50,credits per spark,2017 client,client:CommonConstants.CurrencyConvertionRate,CurrencyConvertionRate = 50f,
+sparks.sms.bulgaria,350,sparks per 5 BGN,2014-09-09,https://web.archive.org/web/20160821183440id_/http://forum.play-gar.com/index.php?/topic/1345-%D0%BF%D1%80%D0%BE%D0%B1%D0%BB%D0%B5%D0%BC-%D1%81-%D0%BA%D1%83%D0%BF%D1%83%D0%B2%D0%B0%D0%BD%D0%B5%D1%82%D0%BE-%D0%BD%D0%B0-%D0%B8%D1%81%D0%BA%D1%80%D0%B8/,350 спарка са на цена от 5 лева,Support
+sparks.pack.usd19.90,1970,sparks,2015-01-05,https://steamcommunity.com/app/293540/discussions/1/620700961099854508/,"$19,90 and get 1970 sparks",player
+sparks.pack.usd50,5270,sparks,2015-01-05,https://steamcommunity.com/app/293540/discussions/1/620700961099854508/,"$19,90 = 1970 sparks; $50 = 5270 sparks",player summary
+sparks.packs.usd,10/20/50/100,USD,2015-04-19,https://web.archive.org/web/20160822182856id_/http://forum.play-gar.com/index.php?/topic/4040-ridiculous-store-prices/,I can also offer you 2 cookies for 20$,player Orome analogy: linear pricing; screenshots lost
+cosmetic.colorPriceUsd,5/20/70,USD each,2015-04-19,https://web.archive.org/web/20160822182856id_/http://forum.play-gar.com/index.php?/topic/4040-ridiculous-store-prices/,"about 5$, 20$ and 70$ for a single color",player
+cosmetic.portraitPriceUsd,2-12,USD,2015-04-19,https://web.archive.org/web/20160822182856id_/http://forum.play-gar.com/index.php?/topic/4040-ridiculous-store-prices/,From about 2 to 12 dollars for a portrait,player
+cosmetic.portraitPriceSparks,230,sparks,2014-10-18,https://steamcommunity.com/app/293540/reviews/,230 SPARKS FOR A PORTRAIT,
+cosmetic.paintSprayPriceSparks,22,sparks,2015-02-02,https://steamcommunity.com/app/293540/discussions/0/604941528488976049/,I bought a paint spray for 22 sparks,
+cosmetic.paintCanPriceSparks,20,sparks,2014-08-06,https://steamcommunity.com/app/293540/discussions/0/34094415688474612/,20 sparks (approx) for a single can of paint,approximate
+cosmetic.epicPaintPriceSparks,8000,sparks,2014-12-18,https://steamcommunity.com/app/293540/reviews/,Seriously 8000 sparks for a bloody paint?,
+cosmetic.customPartPriceSparks,230-8000,sparks,2014-08-06,https://steamcommunity.com/app/293540/discussions/0/34094415688474612/,"230 - 8,000 for customized parts",launch week
+credits.perDay,3000-5000,credits,2015-01-15,https://steamcommunity.com/app/293540/discussions/1/620700961099854508/,easily win 3000-5000 credits per day,dev haidme
+match.objectiveReward.xp,50,xp,2014-10-12,https://steamcommunity.com/app/293540/discussions/0/613938693252303178/,Completing the objective gives you 50 exp,
+match.objectiveReward.credits,200,credits,2014-10-12,https://steamcommunity.com/app/293540/discussions/0/613938693252303178/,50 exp and 200 extra credits,
+match.reward.example,134,credits,2014-08-05,https://steamcommunity.com/app/293540/discussions/0/34093781872530912/,my reward ... would normally be 134 credits,367 with x2 bonus
+match.reward.tier1,100-600,credits,2015-05-03,https://steamcommunity.com/app/293540/discussions/0/613956964588891406/?ctp=2,tier one is max 100-600 coins now,after 30 Apr/7 May 2015 reward patch
+match.reward.tier8,1500+,credits,2015-05-03,https://steamcommunity.com/app/293540/discussions/0/613956964588891406/?ctp=2,tier 8 was 1.5k+ 5 sparks,plus 5 sparks and items
+match.reward.battleRu,500,credits,2015-06-08,https://steamcommunity.com/sharedfiles/filedetails/?id=457582658,Мне дали 500 монет!,Russian guide; +1000 on level up
+levelUp.rewardCredits,1000,credits,2015-06-08,https://steamcommunity.com/sharedfiles/filedetails/?id=457582658,Плюс я апнул уровень и мне дали ешё 1000,Russian guide
+resupply.sixT7Flintlock.avgPerGame,426,credits,2015-04-08,https://web.archive.org/web/20160821195212id_/http://forum.play-gar.com/index.php?/topic/4011-incentives-for-leveling-up/,the average cost of resupply ... was 426,10 games; winnings avg 338
+match.winnings.sixT7Flintlock.avgPerGame,338,credits,2015-04-08,https://web.archive.org/web/20160821195212id_/http://forum.play-gar.com/index.php?/topic/4011-incentives-for-leveling-up/,My average coin winnings were 338 per game,
+crate.lockpickChance,0.001-0.05,probability,2014-09-28,https://steamcommunity.com/app/293540/reviews/,0.1% ~ 5% chance depending on crate level,
+crate.creditToolChance,0.0025-0.05,probability,2014-12-16,https://steamcommunity.com/app/293540/reviews/,"success rate as low as 0.25%, upto 5%",
+crate.multitoolChanceEasiest,0.05,probability shown,2015-01-27,https://steamcommunity.com/app/293540/reviews/,says 5% chance of opening one of the easiest,player observed ~2%
+upgrade.componentsForT10Weapon,400,components (lower bound),2015-02-01,https://steamcommunity.com/app/293540/discussions/0/616199347853768858/,you need 400+ pieces to make a t10 weapon,~900+ sparks if bought
+upgrade.deviceMaxLevel,3,level,2017-08-09,https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577,the highest level for a device is level 3,
+upgrade.deviceLevel2to3Days,3,days,2017-08-09,https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577,3 days from level 2 to 3,
+consumable.priceCredits,120,credits per consumable,2017-08-09,https://steamcommunity.com/sharedfiles/filedetails/?id=1105439577,It cost 120 Gold per consumable and 1 charge,plus 1 charge
+consumable.maxEquipped,3,slots,2014-06-09,https://www.moddb.com/games/guns-and-robots/news/welcome-to-the-new-update-information,Players can equip up to 3 consumables,client ConsumableBoostSlotsCount = 3
+rank.tierPointsCapRank2,24,tier points,2015-03-09,https://steamcommunity.com/app/293540/discussions/0/610574394236393051/,i think tier 2 is max 24points,player guess
+gift.sparks.2014-08-07,100,sparks,2014-08-07,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,rewarding all current players with 100 free sparks,
+gift.credits.under1000,1001,credits,2014-08-06,https://steamcommunity.com/app/293540/discussions/0/34093781825051799/,less than 1000 credits will receive 1001 credits,dev haidme 6 Aug 2014
+sparks.starterAll.2014-06,100,sparks,2014-06-09,https://www.moddb.com/games/guns-and-robots/news/welcome-to-the-new-update-information,All players will receive a starter pack with 100,
+achievement.lethalBlind.creditsSpent,10000,credits,2014-10-02,https://web.archive.org/web/20160821182852id_/http://forum.play-gar.com/index.php?/topic/1364-game-update-notes-02-october-2014/,"Lethal Blind - Spend 10, 000 Credits",
+achievement.raisingTheStakes.creditsSpent,50000,credits,2014-10-02,https://web.archive.org/web/20160821182852id_/http://forum.play-gar.com/index.php?/topic/1364-game-update-notes-02-october-2014/,"Raising The Stakes - Spend 50, 000 Credits",
+achievement.callingTheShots.creditsSpent,150000,credits,2014-10-02,https://web.archive.org/web/20160821182852id_/http://forum.play-gar.com/index.php?/topic/1364-game-update-notes-02-october-2014/,"Calling The Shots - Spend 150, 000 Credits",
+achievement.allIn.creditsSpent,500000,credits,2014-10-02,https://web.archive.org/web/20160821182852id_/http://forum.play-gar.com/index.php?/topic/1364-game-update-notes-02-october-2014/,"All In - Spend 500, 000 Credits",
+achievement.sociable.rewardCredits,200,credits,2014-08-08,https://steamcommunity.com/app/293540/discussions/2/34094415703249529/,The sociable achievement(add 3 friends) gives you 200 credits,
+achievement.cockroach.rewardSparks,250,sparks,2014-10-23,https://steamcommunity.com/app/293540/discussions/0/617320628150625176/?ctp=4,the cockroach achievement and his 250 sparks,
+event.heartbreaker.2nd,100,sparks,2015-01-27,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,2nd place - 100 sparks,
+event.heartbreaker.3rd,50,sparks,2015-01-27,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,3rd place - 50 sparks,
+event.queenOfHearts.points,75,points,2015-01-27,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,players must collect 75 points,Valentine 2015
+event.zombiestein.parts,100,zombie parts,2014-11-25,https://web.archive.org/web/20160821183612id_/http://forum.play-gar.com/index.php?/topic/1426-who-wants-to-shoot-some-zombies-zombie-event-detailed/,You have to collect 100 zombie parts,
+event.jackOLantern.lanterns,80,lanterns,2014-10-23,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,Destroy 80 lanterns during the Halloween Special event,
+contest.robofighter.prizes,30000/15000/8000,credits,2013-02-19,https://web.archive.org/web/20130306044341id_/http://forum.play-gar.com:80/index.php?/topic/135-guns-and-robots-kicks-off-a-contest-robo-fighter-of-the-month/,1st place: 30000 credits 2nd place: 15000credits,Feb 2013
+guild.maxMembers,30,players,2015-06-08,https://web.archive.org/web/20160822183216id_/http://forum.play-gar.com/index.php?/topic/4065-what-are-the-powers-of-each-guild-rank/,The maxumum amaunt is 30 players in a guild,
+guild.creationCost,5000,credits,2017 client,client:CommonConstants.GuildCreationCost,GuildCreationCost = 5000f,currency not named in code
+guild.topBuff.damage,0.10,fraction,2015-02-03,https://web.archive.org/web/20150222211514id_/http://forum.play-gar.com:80/index.php?/topic/2502-aiming-and-endurance-of-top-players/,top players have their damage increased by 10%,player
+guild.topBuff.damageTaken,-0.10,fraction,2015-02-03,https://web.archive.org/web/20150222211514id_/http://forum.play-gar.com:80/index.php?/topic/2502-aiming-and-endurance-of-top-players/,damage taken reduced by 10%,player
+squad.maxSize,3,players,2015-07-21,https://web.archive.org/web/20150927002617id_/http://forum.play-gar.com/index.php?/topic/4115-important/,The squad is limited to only 3 players,Support
+ladder.botPoints,1000,points,2015-01-09,https://web.archive.org/web/20160821181840id_/http://forum.play-gar.com/index.php?/topic/2448-how-to-gain-points/,bots have 1000 ladder points,
+ladder.example.win1000vs1700,70,points,2015-04-27,https://web.archive.org/web/20160821192509id_/http://forum.play-gar.com/index.php?/topic/4038-lets-talk-about-gameplay-quality/,you are likely to get around 70,approximate
+battle.stuckUnlockMinutes,6,minutes,2014-09-26,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,robots will now automatically unlock after 6 minutes,
+battle.durationSeconds,300,s,2017 client,client:CommonConstants.GameDurationMSeconds,GameDurationMSeconds = 300000,
+tutorial.creditBonus,500,credits,2017 client,client:CommonConstants.TutorialCreditBonus,TutorialCreditBonus = 500f,
+player.maxLevel,120,level,2017 client,client:CommonConstants.MaxUserLevel,MaxUserLevel = 120,
+robot.maxRank,10,rank,2017 client,client:CommonConstants.MaxRobotRank,MaxRobotRank = 10,
+xp.destroyedHead,50,xp,2017 client,client:CommonConstants.BonusExpForDestroyedHead,BonusExpForDestroyedHead = 50,
+xp.destroyedBody,10,xp,2017 client,client:CommonConstants.BonusExpForDestroyedBody,BonusExpForDestroyedBody = 10,
+xp.destroyedWeapon,10,xp,2017 client,client:CommonConstants.BonusExpForDestroyedWeapon,BonusExpForDestroyedWeapon = 10,
+xp.destroyedChassis,20,xp,2017 client,client:CommonConstants.BonusExpForDestroyedChassis,BonusExpForDestroyedChassis = 20,
+dlc.starter.sparks,1000,count,2014-08-04,https://store.steampowered.com/api/appdetails?appids=316710,1000 Sparks ... 150 Upgrade Components,
+dlc.starter.components,150,count,2014-08-04,https://store.steampowered.com/api/appdetails?appids=316710,150 Upgrade Components,
+dlc.veteran.sparks,500,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331890,500 Sparks / 8000 Credits,
+dlc.veteran.credits,8000,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331890,500 Sparks / 8000 Credits,
+dlc.veteran.components,150,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331890,150 Upgrade components / 30x Actuators,
+dlc.terminator.sparks,1000,count,2014-11-06,https://store.steampowered.com/api/appdetails?appids=331891,1000 Sparks / 12000 Credits,
+dlc.terminator.credits,12000,count,2014-11-06,https://store.steampowered.com/api/appdetails?appids=331891,1000 Sparks / 12000 Credits,
+dlc.terminator.components,200,count,2014-11-06,https://store.steampowered.com/api/appdetails?appids=331891,200 Upgrade components / 40x Actuators,
+dlc.terminator.vipDays,7,count,2014-11-06,https://store.steampowered.com/api/appdetails?appids=331891,VIP 7 days,
+dlc.epic.sparks,1500,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331892,1500 Sparks / 12000 Credits,
+dlc.epic.credits,12000,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331892,1500 Sparks / 12000 Credits,
+dlc.epic.components,250,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331892,250 Upgrade components / 50x Actuators,
+dlc.epic.vipDays,30,count,2014-11-25,https://store.steampowered.com/api/appdetails?appids=331892,VIP 30 days,
+discount.blackFriday2013,0.5,fraction off,2013-11-29,https://www.moddb.com/games/guns-and-robots/news/lock-nload-black-friday-special-from-guns-and-robots,favorite weapons and accessories at half price,
+discount.christmas2013.bundles,0.5,fraction off (up to),2013-12,https://www.moddb.com/games/guns-and-robots/news/guns-and-robots-christmas-events-coming-to-town,Up to 50% OFF parts bundles,
+discount.easter2015.starterPack,0.5,fraction off,2015-03-31,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,50% off! Guns and Robots - Starter Pack,
+discount.easter2015.otherPacks,0.33,fraction off,2015-03-31,https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=293540&count=1000&maxlength=0,33% off! Guns and Robots - Veteran Pack,

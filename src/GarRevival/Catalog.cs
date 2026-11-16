@@ -14,14 +14,10 @@ using UnityEngine;
 namespace GarRevival;
 
 // Part, module and price templates built from the part prefabs (PartPrefab, DockingPoint).
-// Chassis, body and barrel stats come from RealStats; the rest are designed in Stats() and PriceFor().
+// Chassis, body and barrel stats come from StatTable (tools/infer_stats.py); the rest are designed in Stats() and PriceFor().
 internal static class Catalog
 {
-    public const int MaxTier = 4;
-
-    // Top tier is 1.2 x tier 0: the bar maxima are 1.2 x the strongest real
-    // part (chassis 1200 = 1.2 x Warhawk, body 1122 = 1.2 x Mantis).
-    private const float TopTierGain = 0.2f;
+    public const int MaxTier = StatTable.MaxTier;
 
     private static readonly Dictionary<string, GamePlayActions> WeaponOverrides = new()
     {
@@ -143,7 +139,7 @@ internal static class Catalog
             keywords = prefab.keywords ?? [],
             weightType = WeightOf(indent, prefab.type),
             minTier = 0,
-            maxTier = MaxTier,
+            maxTier = prefab.type == LogicalType.DeviceCase ? StatTable.MaxDeviceTier : MaxTier,
         };
         // Match what the client sees after protobuf + VoNormalizer, so
         // Utils.KeywordMach gives the same answer here as in the garage.
@@ -186,10 +182,8 @@ internal static class Catalog
         _ => 1f,
     };
 
-    private static float Up(int tier) => 1f + TopTierGain * tier / MaxTier;
-
-    // Designed values are top-tier maxima, so their tier 0 sits at max/1.2 like the real rows.
-    private static float TierScale(int tier) => Up(tier) / Up(MaxTier);
+    // Designed values are top-tier maxima (the garage's bar maxima), scaled down the fitted durability curve.
+    private static float TierScale(int tier) => StatTable.DurabilityCurve(tier) / StatTable.DurabilityCurve(MaxTier);
 
     private static float Hundredths(float value) => Mathf.Round(value * 100f) / 100f;
 
@@ -198,14 +192,12 @@ internal static class Catalog
 
     private static Statistic Stat(float value) => new() { maxValue = value, currentValue = value, modifier = 0f };
 
-    private static string RowOf(PartTemplate template) => RealStats.RowId(template.indent, template.type, template.weightType);
+    // The part's own row; a part the table does not know takes a plain part of its class.
+    private static T RowOf<T>(Dictionary<string, T> table, PartTemplate template, string light, string medium, string heavy) =>
+        table.TryGetValue(template.indent, out var row) ? row
+            : table[template.weightType == WeightType.Light ? light : template.weightType == WeightType.Heavy ? heavy : medium];
 
-    private static string Origin(PartTemplate template)
-    {
-        if (!RealStats.Covers(template.type)) return "designed";
-        string row = RowOf(template);
-        return row == template.indent ? "real" : "real via " + row;
-    }
+    private static string Origin(PartTemplate template) => StatTable.Origin.TryGetValue(template.indent, out var origin) ? origin : "designed";
 
     // Designed stats use the garage's stat-bar scale: each stat's per-type bar maximum
     // (e.g. weapon case durability 628, battery capacity 270) is a top-tier heavy part,
@@ -224,15 +216,16 @@ internal static class Catalog
             case LogicalType.CassisCase:
             {
                 var kind = Design.Chassis.TryGetValue(template.indent, out var described) ? described : ChassisTypeOf(go);
-                var row = RealStats.Chassis[RowOf(template)];
-                durability = Mathf.Round(row.Durability * Up(tier));
+                var row = RowOf(StatTable.Chassis, template, "LC_Buzzer", "MC_Bugsy", "HC_Daggerjaw");
+                durability = Mathf.Round(row.Durability * StatTable.DurabilityCurve(tier));
                 mass = 25.2f * m;
                 specific = new ChassisCaseVO
                 {
                     Speed = row.SpeedKmh / GlobalConstants.visualiseSpeedMod,
                     WeightLimit = row.WeightLimit,
                     EnergyConsumption = 0.001f,
-                    TerrainPenaltyNegate = row.TerrainPenaltyNegate,
+                    // Guide terrain rating: good, average, poor.
+                    TerrainPenaltyNegate = row.Terrain > 0 ? 1f : row.Terrain == 0 ? 0.5f : 0.1f,
                     chassisType = kind,
                 };
                 break;
@@ -242,15 +235,17 @@ internal static class Catalog
                 var engine = Design.Engines.TryGetValue(template.indent, out var e) ? e : new Design.EngineTraits();
                 durability = 20f * t;
                 mass = 3f;
-                specific = new ChassisEngineVO { SpeedModifier = engine.Speed / GlobalConstants.visualiseSpeedMod, EnergyConsumption = 0.001f, WeightLimit = 40f * engine.WeightLimit };
+                float speedKmh = StatTable.EngineSpeedKmh.TryGetValue(template.indent, out var measuredSpeed) ? measuredSpeed : engine.Speed;
+                float weightLimit = StatTable.EngineWeightLimit.TryGetValue(template.indent, out var measuredLimit) ? measuredLimit : 40f * engine.WeightLimit;
+                specific = new ChassisEngineVO { SpeedModifier = speedKmh / GlobalConstants.visualiseSpeedMod, EnergyConsumption = 0.001f, WeightLimit = weightLimit };
                 break;
             }
             case LogicalType.BodyCase:
             {
                 // Four-armed bodies use more energy per shot.
                 bool fourArms = WeaponSlots(template) > 2;
-                var row = RealStats.Bodies[RowOf(template)];
-                durability = Mathf.Round(row.Durability * Up(tier));
+                var row = RowOf(StatTable.Bodies, template, "LB_Jackhammer", "MB_Chromax", "HB_Chopper");
+                durability = Mathf.Round(row.Durability * StatTable.DurabilityCurve(tier));
                 mass = row.Weight;
                 specific = new BodyCaseVO { EnergyConsumption = fourArms ? 0.002f : 0.001f, EnergyPerShootModifier = fourArms ? 1.3f : 1f };
                 break;
@@ -278,7 +273,7 @@ internal static class Catalog
                 {
                     fireDelay = mechanism.FireDelay,
                     accuracyModidifer = mechanism.Accuracy,
-                    damageModidifer = mechanism.Damage,
+                    damageModidifer = StatTable.DamageModifier.TryGetValue(template.indent, out var measuredDamage) ? measuredDamage : mechanism.Damage,
                     splashDamageModidifer = mechanism.Splash,
                     projectileSpeedModidifer = mechanism.ProjectileSpeed,
                     energyConsumptionModidifer = mechanism.Energy,
@@ -324,16 +319,14 @@ internal static class Catalog
     // Barrels with ammo types fire ammo (AmmoDesign); the rest are energy weapons:
     // AmmoPerShot 0 skips WeaponBarrel.AreRequermentsMeet's ammo check, MaxAmmo -1 skips
     // garage ammo distribution. CurrentAmmo must not be negative: the bot AI sums it to
-    // decide whether to look for ammo. A sibling's real row is scaled by both barrels' traits.
+    // decide whether to look for ammo.
     private static WeaponBarrelVO Barrel(PartTemplate template, int tier)
     {
         var traits = TraitsOf(template.indent, template.keywords);
-        string rowId = RowOf(template);
-        var row = RealStats.Barrels[rowId];
-        var rowTraits = TraitsOf(rowId, []);
-        float shotDamage = Hundredths(row.Damage * traits.Damage / rowTraits.Damage * Up(tier));
-        float splash = rowTraits.Splash > 0f ? Hundredths(row.Splash * traits.Splash / rowTraits.Splash * Up(tier)) : 0f;
-        float shotsPerSecond = row.ShotsPerSecond * traits.RateOfFire / rowTraits.RateOfFire;
+        var row = RowOf(StatTable.Barrels, template, "LW_B_Flintlock", "MW_B_Laser", "HW_B_Fragunov");
+        float shotDamage = Hundredths(row.Damage * StatTable.DamageCurve(tier));
+        float splash = Hundredths(row.Splash * StatTable.DamageCurve(tier));
+        float shotsPerSecond = row.ShotsPerSecond;
         float range = template.weightType == WeightType.Light ? 110f : template.weightType == WeightType.Heavy ? 200f : 150f;
         string[] ammo = AmmoDesign.TypesFor(template.indent);
         bool usesAmmo = ammo.Length > 0;
@@ -345,7 +338,7 @@ internal static class Catalog
             CurrentAmmo = 0f,
             // UI maxima: accuracy 1, rate of fire 5/s, range 200.
             // RateOfFire is the delay between shots in seconds (WeaponBarrel.GetRateOfFire).
-            Accuracy = Mathf.Min(1f, traits.Accuracy + 0.0125f * tier),
+            Accuracy = Mathf.Min(1f, traits.Accuracy + 0.05f * tier / MaxTier),
             RateOfFire = 1f / Mathf.Min(5f, shotsPerSecond),
             Damage = shotDamage,
             Range = Mathf.Min(200f, range * traits.Range),

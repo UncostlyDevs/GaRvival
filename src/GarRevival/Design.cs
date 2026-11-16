@@ -4,7 +4,7 @@ using JunkWars.Common.Robot.Enums;
 namespace GarRevival;
 
 // Per-part role traits from each part's in-game description (<id>_Description) and the wiki,
-// for stats with no real numbers (RealStats covers chassis, bodies and barrels).
+// for stats with no real numbers (StatTable covers chassis, bodies and barrels).
 // Catalog.Stats() turns them into numbers.
 internal static class Design
 {
@@ -96,7 +96,7 @@ internal static class Design
     };
 
     // Barrel role within its weight class; Accuracy is absolute (0-1). Damage, RateOfFire and
-    // Splash scale a barrel without a real row from its RealStats sibling and size ammo loads.
+    // Splash size ammo loads (AmmoDesign); StatTable holds the barrels' real numbers.
     public sealed class BarrelTraits
     {
         public float Damage = 1f;
