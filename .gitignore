@@ -31,3 +31,4 @@ master/master.cfg
 master/master*.log*
 master/master-ladder.txt*
 battle.cfg.user
+skins-dump/
