@@ -6,12 +6,13 @@ using System.Linq;
 namespace GarRevival;
 
 // Starts the bundled master (loopback only) when settings point at it and nothing answers there.
-// It exits with this game.
+// It exits with the game that started it, so another game on this PC starts a new one when it finds it gone.
 internal static class MasterLauncher
 {
     public const string LocalUrl = "http://127.0.0.1:27090";
 
     private static bool _checked;
+    private static float _launchedAt = -60f;
 
     public static void Start()
     {
@@ -28,8 +29,17 @@ internal static class MasterLauncher
         });
     }
 
+    // A local master that does not answer at all (status 0) has exited: start another, at most every 30 s.
+    public static void Revive(string url, MasterHttp.Response r)
+    {
+        if (url != LocalUrl || r.Status != 0 || !Settings.MasterAutoStart || UnityEngine.Time.realtimeSinceStartup - _launchedAt < 30f) return;
+        RevivalLog.Info("Master: the one on this PC stopped answering, starting it again");
+        Launch();
+    }
+
     private static void Launch()
     {
+        _launchedAt = UnityEngine.Time.realtimeSinceStartup;
         string script = Path.Combine(RevivalLog.Folder, "start-master.cmd");
         if (!File.Exists(script))
         {

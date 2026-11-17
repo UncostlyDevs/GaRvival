@@ -276,7 +276,9 @@ masterAutoStart=on   # off: never start the bundled master
 
 With `master=` empty the game starts the bundled master itself (compiled from
 `master\MasterServer.cs` as `start-master.cmd` does, listening on this PC only)
-and it exits with the game. Every install then has a working server list, FIND
+and it exits with the game that started it; another copy of the game running
+on this PC (a dedicated server, say) starts it again within 30 seconds when it
+stops answering. Every install then has a working server list, FIND
 MATCH and ladder for games on this PC and LAN. To play over the internet,
 everyone points `master=` at one shared master.
 

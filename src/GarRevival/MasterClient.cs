@@ -114,6 +114,7 @@ internal static class MasterClient
             if (!r.Ok)
             {
                 l.Status = $"could not list ({r.Error})";
+                MasterLauncher.Revive(l.Url, r);
                 // 5, 10, 20, 40, then 60 s: a master the game just started needs a few seconds to compile.
                 l.NextAt = Now + Mathf.Min(RetryInterval, 5f * (1 << Mathf.Min(l.Failures++, 4)));
                 RevivalLog.Info($"Master {l.Url}: {l.Status}");
@@ -147,6 +148,7 @@ internal static class MasterClient
             else if (!r.Ok)
             {
                 l.Status = $"no answer to the heartbeat ({r.Error})";
+                MasterLauncher.Revive(l.Url, r);
             }
         });
     }
@@ -208,6 +210,7 @@ internal static class MasterClient
             else
             {
                 error = $"Master {masters[i]}: {r.Error}";
+                MasterLauncher.Revive(masters[i], r);
             }
             if (firstAnswer && !r.Ok && i + 1 < masters.Length)
             {
