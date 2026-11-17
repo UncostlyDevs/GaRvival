@@ -414,7 +414,10 @@ social screens by hand (the tests called the same operations the buttons do).
 Known gaps: only the host can start a battle; a player who loads slower than
 the host misses part of the countdown; a player who leaves mid-battle leaves an
 idle robot behind. Sprinting is now sent with the position updates but has not
-been watched from the other screen.
+been watched from the other screen. A match that starts while a player has the
+store's item preview open makes the game log `NullReferenceException` from
+`ShopArticlesPreviewBuilder` until the arena has loaded (the game's own
+preview, harmless).
 
 `GAR.exe -garprofile <name>` runs a second, separate player on the same PC
 (own save, log and test script), which is how the above was tested.
